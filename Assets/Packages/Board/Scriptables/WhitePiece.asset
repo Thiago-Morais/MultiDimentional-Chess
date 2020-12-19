@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3286808955fbb7a4e85af1622df830ce, type: 3}
+  m_Name: WhitePiece
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2046110545164497460, guid: ab76eb2ad4725b444b01e4c3b3129c49, type: 3}
+  pieceBounds:
+    m_Center: {x: 0.6819324, y: 0.5867207, z: 0.49104285}
+    m_Extent: {x: 0.6830677, y: 0.72047067, z: 1.2296765}

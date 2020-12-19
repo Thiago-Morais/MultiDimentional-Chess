@@ -1,0 +1,33 @@
+{
+    "name": "Chess",
+    "maps": [
+        {
+            "name": "gameplay",
+            "id": "93c93088-e10f-4248-9e02-a898a8d8d86f",
+            "actions": [
+                {
+                    "name": "Highlight",
+                    "type": "Value",
+                    "id": "bdf2ff4e-2fc9-473a-ac81-25d16f80053c",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "de5d87f3-b62d-4913-9fcb-ceee418fdf8c",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Highlight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
