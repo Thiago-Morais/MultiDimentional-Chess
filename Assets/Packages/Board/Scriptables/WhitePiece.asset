@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3286808955fbb7a4e85af1622df830ce, type: 3}
   m_Name: WhitePiece
   m_EditorClassIdentifier: 
-  prefab: {fileID: 2046110545164497460, guid: ab76eb2ad4725b444b01e4c3b3129c49, type: 3}
+  prefab: {fileID: 3978231055418502224, guid: 4765b74d31fd528458d87e41ee66a2da, type: 3}
   pieceBounds:
-    m_Center: {x: 0.6819324, y: 0.5867207, z: 0.49104285}
-    m_Extent: {x: 0.6830677, y: 0.72047067, z: 1.2296765}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.06685, z: 0.5}
