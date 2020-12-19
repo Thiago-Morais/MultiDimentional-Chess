@@ -168,6 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 8, y: 2, z: 8}
   center: {x: 0, y: 0, z: 0}
+  padding: {x: 0.1, y: 1, z: 0.1}
   whiteSquare: {fileID: 11400000, guid: 44762c0a011a82c41814418c968a88f8, type: 2}
   blackSquare: {fileID: 11400000, guid: 139ceaa071680304093f119ef98cdf6d, type: 2}
   boardPivot: {fileID: 1427458131}

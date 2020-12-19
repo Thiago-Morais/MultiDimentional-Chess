@@ -6,42 +6,43 @@ public class CreateBoard : MonoBehaviour
 {
     public Vector3Int size;
     public Vector3 center;
+    public Vector3 padding;
     public SO_BoardPiece whiteSquare;
     public SO_BoardPiece blackSquare;
     public GameObject[,,] board;
     public Transform boardPivot;
+    Vector3 cachePadding;
     Vector3 cacheSize;
     [ContextMenu(nameof(UpdateBoard))]
     void UpdateBoard() => UpdateBoard(size);
     public void UpdateBoard(Vector3Int size)
     {
-        if (size == cacheSize) return;
+        if (size == cacheSize && padding == cachePadding) return;
 
         if (board == null) InitializeBoard(size);
         else DestroyBoard();
 
+        Vector3 index = new Vector3();
         for (int i = 0; i < board.GetLength(0); i++)
             for (int j = 0; j < board.GetLength(1); j++)
                 for (int k = 0; k < board.GetLength(2); k++)
                 {
-                    GameObject obj = board[i, j, k];
-                    // GameObject boardPiece = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                    index.Set(i, j, k);
                     SO_BoardPiece square = blackSquare;
                     GameObject squareObj = square.prefab;
-                    float x = square.pieceBounds.size.x * i;
-                    float y = square.pieceBounds.size.y * j;
-                    float z = square.pieceBounds.size.z * k;
-                    Vector3 position = new Vector3(x, y, z);
-                    GameObject boardPiece = Instantiate(squareObj, position, squareObj.transform.rotation, boardPivot);
-                    Debug.Log($"{nameof(i)} = {i.ToString("D2")}; {nameof(j)} = {j.ToString("D2")}; {nameof(k)} = {k.ToString("D2")}; ", boardPiece);
-                    Debug.Log($"{nameof(position)} = {position}", boardPiece);
-                    Debug.Log($"{nameof(square.pieceBounds.size)} = {square.pieceBounds.size}", boardPiece);
-                    // boardPiece.transform.position = center + new Vector3(i, j, k);
+                    Vector3 squarePosition = MemberWiseMultiply(square.pieceBounds.size, index);
+                    squarePosition += center;
+                    Vector3 padding = MemberWiseMultiply(this.padding, index);
+                    squarePosition += padding;
+
+                    GameObject boardPiece = Instantiate(squareObj, squarePosition, squareObj.transform.rotation, boardPivot);
                     board[i, j, k] = boardPiece;
                 }
         cacheSize = size;
+        cachePadding = padding;
         PrintBoard();
     }
+    Vector3 MemberWiseMultiply(Vector3 a, Vector3 b) => new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
     void DestroyBoard() { foreach (GameObject obj in board) Destroy(obj); }
     GameObject[,,] InitializeBoard(Vector3Int size) => board = new GameObject[size.x, size.y, size.z];
     [ContextMenu(nameof(PrintBoard))]

@@ -8,6 +8,8 @@ public class SO_BoardPiece : ScriptableObject
     public GameObject prefab;
     public Bounds pieceBounds;
     public bool HavePrefab => prefab;
+    void Awake() => UpdateSize();
+
     [ContextMenu(nameof(UpdateSize))]
     public void UpdateSize()
     {
