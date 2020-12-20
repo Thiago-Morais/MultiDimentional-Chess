@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Board/Piece", fileName = "new BoardPiece")]
-public class SO_BoardPiece : ScriptableObject
+public class SO_BoardSquare : ScriptableObject
 {
     public GameObject prefab;
     public Bounds pieceBounds;
