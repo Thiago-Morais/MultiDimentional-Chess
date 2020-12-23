@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6cfe423139c361a459da7ed9831d4b1c, type: 2}
+  - {fileID: 2100000, guid: 9f3c256f4ab72944596a241375bf9c05, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -188,6 +188,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cae11f03ca0b16b48bf043362398c9b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetSquare: {fileID: 0}
+  targetTransform: {fileID: 0}
+  highlight: {fileID: 1121327800}
+  intFlags: 0
 --- !u!114 &1121327800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,7 +204,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06c069a94125f2a4ea45ed8ed08edc48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isHighlighted: 0
-  renderer:
-  - {fileID: 3393157009651647064}
-  highlightMaterial: {fileID: 2100000, guid: 9f575f7a3a175b5459f7b4a0606e28a1, type: 2}
+  lockHighlight: 0
+  m_IsHighlighted: 0
+  m_Renderer: []
+  highlightMaterial: {fileID: 0}
+  m_HoverMaterial: {fileID: 0}
+  m_SelectedMaterial: {fileID: 0}
+  currentHighlight: 0

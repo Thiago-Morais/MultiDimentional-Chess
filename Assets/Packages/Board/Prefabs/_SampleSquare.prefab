@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1338618668129565598}
   - component: {fileID: 1338618668129565585}
   - component: {fileID: 1338618668129565584}
-  - component: {fileID: 2429024528858933562}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -28,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1338618668129565587}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.5, y: -0.06685, z: 0.5}
-  m_LocalScale: {x: 1, y: 0.1337, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 0.15, z: 1}
   m_Children: []
   m_Father: {fileID: 4540623889461212801}
   m_RootOrder: 0
@@ -96,22 +95,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2429024528858933562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1338618668129565587}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c069a94125f2a4ea45ed8ed08edc48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isHighlighted: 0
-  renderer:
-  - {fileID: 0}
-  highlightMaterial: {fileID: 2100000, guid: 9f575f7a3a175b5459f7b4a0606e28a1, type: 2}
 --- !u!1 &1613485900237508818
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,6 +106,7 @@ GameObject:
   - component: {fileID: 8879296973378645314}
   - component: {fileID: 3764994950085636426}
   - component: {fileID: 2358331636038180982}
+  - component: {fileID: 7746064819887506147}
   m_Layer: 0
   m_Name: _SampleSquare
   m_TagString: Untagged
@@ -158,7 +142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22794c1d2f0c4db42b06d13443a08028, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  piecePivot: {fileID: 3429455051161475264}
+  so_pieceData: {fileID: 0}
+  pieceTarget: {fileID: 3429455051161475264}
+  highlight: {fileID: 7746064819887506147}
 --- !u!54 &2358331636038180982
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -175,6 +161,32 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &7746064819887506147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613485900237508818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06c069a94125f2a4ea45ed8ed08edc48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockHighlight: 0
+  m_IsHighlighted: 0
+  currentHighlight: 0
+  highlightVariations:
+  - type: 2
+    highlightColor: {r: 0, g: 10, b: 1, a: 11}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 3, y: 5}
+  - type: 3
+    highlightColor: {r: 11.984314, g: 0.1, b: 0, a: 11}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 3, y: 5}
+  highlightMaterials: []
+  m_Renderer: []
 --- !u!1 &3834919326004120634
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,8 +242,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6767842496187046911}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0, z: 0.5}
-  m_LocalScale: {x: 1, y: 0.1337, z: 1}
+  m_LocalPosition: {x: 0, y: 0.075, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8879296973378645314}
   m_RootOrder: 1

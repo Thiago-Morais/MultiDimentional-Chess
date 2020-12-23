@@ -1,15 +1,23 @@
 {
-    "name": "Chess",
+    "name": "InputChess",
     "maps": [
         {
             "name": "gameplay",
             "id": "93c93088-e10f-4248-9e02-a898a8d8d86f",
             "actions": [
                 {
-                    "name": "Highlight",
+                    "name": "MousePosition",
                     "type": "Value",
                     "id": "bdf2ff4e-2fc9-473a-ac81-25d16f80053c",
                     "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "1d3dbf75-34eb-432a-aedb-f38686eb560d",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 }
@@ -22,7 +30,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Highlight",
+                    "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c4c8cf70-562e-4c55-b081-3be62391054f",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

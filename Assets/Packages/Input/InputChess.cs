@@ -19,10 +19,18 @@ public class @InputChess : IInputActionCollection, IDisposable
             ""id"": ""93c93088-e10f-4248-9e02-a898a8d8d86f"",
             ""actions"": [
                 {
-                    ""name"": ""Highlight"",
+                    ""name"": ""MousePosition"",
                     ""type"": ""Value"",
                     ""id"": ""bdf2ff4e-2fc9-473a-ac81-25d16f80053c"",
                     ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Select"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d3dbf75-34eb-432a-aedb-f38686eb560d"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -35,7 +43,18 @@ public class @InputChess : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Highlight"",
+                    ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c4c8cf70-562e-4c55-b081-3be62391054f"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Select"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -46,7 +65,8 @@ public class @InputChess : IInputActionCollection, IDisposable
 }");
         // gameplay
         m_gameplay = asset.FindActionMap("gameplay", throwIfNotFound: true);
-        m_gameplay_Highlight = m_gameplay.FindAction("Highlight", throwIfNotFound: true);
+        m_gameplay_MousePosition = m_gameplay.FindAction("MousePosition", throwIfNotFound: true);
+        m_gameplay_Select = m_gameplay.FindAction("Select", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -96,12 +116,14 @@ public class @InputChess : IInputActionCollection, IDisposable
     // gameplay
     private readonly InputActionMap m_gameplay;
     private IGameplayActions m_GameplayActionsCallbackInterface;
-    private readonly InputAction m_gameplay_Highlight;
+    private readonly InputAction m_gameplay_MousePosition;
+    private readonly InputAction m_gameplay_Select;
     public struct GameplayActions
     {
         private @InputChess m_Wrapper;
         public GameplayActions(@InputChess wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Highlight => m_Wrapper.m_gameplay_Highlight;
+        public InputAction @MousePosition => m_Wrapper.m_gameplay_MousePosition;
+        public InputAction @Select => m_Wrapper.m_gameplay_Select;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -111,22 +133,29 @@ public class @InputChess : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_GameplayActionsCallbackInterface != null)
             {
-                @Highlight.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnHighlight;
-                @Highlight.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnHighlight;
-                @Highlight.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnHighlight;
+                @MousePosition.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMousePosition;
+                @MousePosition.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMousePosition;
+                @MousePosition.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMousePosition;
+                @Select.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSelect;
+                @Select.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSelect;
+                @Select.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSelect;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Highlight.started += instance.OnHighlight;
-                @Highlight.performed += instance.OnHighlight;
-                @Highlight.canceled += instance.OnHighlight;
+                @MousePosition.started += instance.OnMousePosition;
+                @MousePosition.performed += instance.OnMousePosition;
+                @MousePosition.canceled += instance.OnMousePosition;
+                @Select.started += instance.OnSelect;
+                @Select.performed += instance.OnSelect;
+                @Select.canceled += instance.OnSelect;
             }
         }
     }
     public GameplayActions @gameplay => new GameplayActions(this);
     public interface IGameplayActions
     {
-        void OnHighlight(InputAction.CallbackContext context);
+        void OnMousePosition(InputAction.CallbackContext context);
+        void OnSelect(InputAction.CallbackContext context);
     }
 }
