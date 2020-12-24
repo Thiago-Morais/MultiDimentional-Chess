@@ -59,24 +59,38 @@ public class PieceMoveSet : ScriptableObject
         List<int> binds = DimentionalBindsAsList();
         if (binds.Count == 0) return true;
 
+        Dimentions difRank = GetDimentionalRank(dif);
+
         List<int> dimentions = dif.AsList();
 
-        IEnumerable<IGrouping<int, int>> enumerable = dimentions.GroupBy(c => Mathf.Abs(c));
-        foreach (int bind in binds)
-        {
-            IEnumerable<IGrouping<int, int>> enumerable2 = enumerable.Where(binded => binded.Count() >= bind);
-            if (enumerable2.Count() > 0) return true;
-        }
-        // IEnumerable<int> enumerable1 = enumerable.Select(grp => grp.Count(c => c >= 0));
-        // List<int> list = enumerable1.ToList();
+        if (!dimentionalBinding.HasAny(difRank)) return false;
 
-        // IEnumerable<IGrouping<int, int>> equalDistances = dimentions.GroupBy(c => Mathf.Abs(c));
-        // foreach (IGrouping<int, int> equalDistance in equalDistances)
-        // {
-        //     int count = equalDistance.Count(c => c != 0);
-        //     if (binds.Any(b => count >= b)) return true;
-        // }
-        return false;
+        // if (difRank == Dimentions.one)
+        //     return dimentionalBinding.HasAny(difRank);
+        if (difRank == Dimentions.two)
+        {
+            IEnumerable<IGrouping<int, int>> dimentionsGrouped = dimentions.GroupBy(c => Mathf.Abs(c));
+
+            bool isBinded = true;
+            // foreach (int bind in binds)
+            // {
+            // IEnumerable<IGrouping<int, int>> enumerable2 = dimentionsGrouped.Where(group => group.Key != 0 && group.Count() >= bind);
+            IEnumerable<IGrouping<int, int>> binded = dimentionsGrouped.Where(group => group.Key != 0 && group.Count() >= 2);
+            // if (enumerable2.Count() > 0) return true;
+            if (!(binded.Count() > 0)) isBinded = false;
+            // }
+            return isBinded;
+        }
+        if (difRank == Dimentions.three)
+        {
+            IEnumerable<IGrouping<int, int>> difDimentionsGrouped = dimentions.GroupBy(c => Mathf.Abs(c));
+            IEnumerable<IGrouping<int, int>> binded = difDimentionsGrouped.Where(group => group.Key != 0 && group.Count() >= 3);
+            if (!(binded.Count() > 0)) return false;
+
+
+            // return false;
+        }
+        return true;
     }
     List<int> DimentionalBindsAsList()
     {
