@@ -11,7 +11,9 @@ public class PieceMoveSet : ScriptableObject
     public Dimentions dimentionalLimits = Dimentions.all;
     public Dimentions dimentionalBinding = Dimentions.none;
     [Tooltip("Number of squares this piece can move on this dimention.\n" + "0 means no limit.")]
-    public List<MinMaxCurve> movimentLimits = new List<MinMaxCurve>(new MinMaxCurve[3]);
+    public LimitType limitType = LimitType.atMostAll;
+    // public List<MinMaxCurve> movimentLimits = new List<MinMaxCurve>(new MinMaxCurve[3]);
+    public List<int> movimentLimits = new List<int>();
     public bool IsMovimentAvailable(Vector3Int dif)
     {
         if (IsPiecePosition(dif)
@@ -90,17 +92,32 @@ public class PieceMoveSet : ScriptableObject
     public bool IsWithinMovimentLimits(Vector3Int dif)
     {
         //TODO otimizar essa verificação
-        List<int> limits = GetPositiveLimitsAsList();
-        if (limits.Count == 0) return true;
+        // List<int> limits = GetPositiveLimitsAsList();
+        // if (limits.Count == 0) return true;
+        if (movimentLimits.Count == 0) return true;
 
-        List<int> difVectors = new List<int> { Mathf.Abs(dif.x), Mathf.Abs(dif.y), Mathf.Abs(dif.z), };
+        // List<int> difVectors = new List<int> { Mathf.Abs(dif.x), Mathf.Abs(dif.y), Mathf.Abs(dif.z), };
+        List<int> list = dif.AsList(i => Mathf.Abs(i));
+        List<int> difVectors = list.Where(i => i > 0).ToList();
+
+        List<int> limits = new List<int>(movimentLimits);
 
         RemoveMatchingElements(limits, difVectors);
+        switch (limitType)
+        {
+            case LimitType.atMostAll:
+                return difVectors.Count == 0;
+            case LimitType.atLeastAll:
+                return limits.Count == 0;
+            case LimitType.all:
+                return limits.Count == 0 && difVectors.Count == 0;
+            default: return true;
+        }
+        // RemoveMatchingElements(limits, difVectors);
 
-        return limits.Count == 0;
+        // return limits.Count == 0;
     }
-
-    private List<int> GetPositiveLimitsAsList()
+    List<int> GetPositiveLimitsAsList()
     {
         List<int> limits = new List<int>();
         foreach (MinMaxCurve limitMinMax in movimentLimits)
@@ -110,8 +127,7 @@ public class PieceMoveSet : ScriptableObject
         }
         return limits;
     }
-
-    private static void RemoveMatchingElements(List<int> limits, List<int> difVectors)
+    static void RemoveMatchingElements(List<int> limits, List<int> difVectors)
     {
         int i = 0;
         while (i < limits.Count)
@@ -138,4 +154,11 @@ public enum Dimentions
     two = 1 << 1,
     three = 1 << 2,
     all = ~0
+}
+public enum LimitType
+{
+    none,
+    atMostAll,
+    atLeastAll,
+    all,
 }
