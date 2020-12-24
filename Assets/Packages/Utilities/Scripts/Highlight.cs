@@ -52,7 +52,7 @@ public class Highlight : MonoBehaviour
         foreach (var renderer in m_Renderer)
             highlightMaterials.AddRange(renderer.materials);
     }
-    public void SetHighlightOnUsing(HighlightType highlightType)
+    public void HighlightOn(HighlightType highlightType)
     {
         TrySetHighlightValues(highlightType);
         SetHighlightOn(true);
@@ -73,7 +73,7 @@ public class Highlight : MonoBehaviour
         SampleHighlight sampleHighlight = highlightVariations.FirstOrDefault(c => c.type == highlightType);
         if (sampleHighlight == null)
         {
-            Debug.LogError($"Highlight type not found", gameObject);
+            Debug.LogError($"Highlight type {highlightType} not found", gameObject);
             return false;
         }
         SetHighlightValues(sampleHighlight);
@@ -92,6 +92,14 @@ public class Highlight : MonoBehaviour
     #endregion //METHODS
 
     #region -------- ENUM
-    public enum HighlightType { none, hover, selected, error, atention }
+    public enum HighlightType
+    {
+        none = 0,
+        hover = 1 << 0,
+        selected = 1 << 1,
+        error = 1 << 2,
+        atention = 1 << 3,
+        available = 1 << 4
+    }
     #endregion //ENUM
 }

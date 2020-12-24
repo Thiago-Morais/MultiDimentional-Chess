@@ -15,4 +15,4 @@ MonoBehaviour:
   prefab: {fileID: 2046110545164497460, guid: ab76eb2ad4725b444b01e4c3b3129c49, type: 3}
   pieceBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.06684999, z: 0.5}
+    m_Extent: {x: 0.5, y: 0.075, z: 0.5}

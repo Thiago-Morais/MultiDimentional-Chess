@@ -145,6 +145,7 @@ MonoBehaviour:
   so_pieceData: {fileID: 0}
   pieceTarget: {fileID: 3429455051161475264}
   highlight: {fileID: 7746064819887506147}
+  boardPosition: {x: 0, y: 0, z: 0}
 --- !u!54 &2358331636038180982
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -177,11 +178,15 @@ MonoBehaviour:
   m_IsHighlighted: 0
   currentHighlight: 0
   highlightVariations:
-  - type: 2
+  - type: 1
+    highlightColor: {r: 0.627451, g: 1.6941177, b: 1.8980392, a: 11}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 3, y: 5}
+  - type: 16
     highlightColor: {r: 0, g: 10, b: 1, a: 11}
     highlightPulseSpeed: 3
     hightlightPulseAperture: {x: 3, y: 5}
-  - type: 3
+  - type: 4
     highlightColor: {r: 11.984314, g: 0.1, b: 0, a: 11}
     highlightPulseSpeed: 3
     hightlightPulseAperture: {x: 3, y: 5}
