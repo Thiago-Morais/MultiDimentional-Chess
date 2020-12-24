@@ -90,23 +90,27 @@ public class PieceMoveSet : ScriptableObject
     public bool IsWithinMovimentLimits(Vector3Int dif)
     {
         //TODO otimizar essa verificação
+        List<int> limits = GetPositiveLimitsAsList();
+        if (limits.Count == 0) return true;
+
+        List<int> difVectors = new List<int> { Mathf.Abs(dif.x), Mathf.Abs(dif.y), Mathf.Abs(dif.z), };
+
+        RemoveMatchingElements(limits, difVectors);
+
+        return limits.Count == 0;
+    }
+
+    private List<int> GetPositiveLimitsAsList()
+    {
         List<int> limits = new List<int>();
         foreach (MinMaxCurve limitMinMax in movimentLimits)
         {
             int limit = (int)limitMinMax.constant;
             if (limit > -1) limits.Add(limit);
         }
-        if (limits.Count == 0) return true;
-
-        List<int> difVectors = new List<int>();
-        difVectors.Add(dif.x);
-        difVectors.Add(dif.y);
-        difVectors.Add(dif.z);
-
-        RemoveMatchingElements(limits, difVectors);
-
-        return limits.Count == 0;
+        return limits;
     }
+
     private static void RemoveMatchingElements(List<int> limits, List<int> difVectors)
     {
         int i = 0;
