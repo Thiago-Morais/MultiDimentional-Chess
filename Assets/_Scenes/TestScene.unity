@@ -1116,8 +1116,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1769386436}
-  m_LocalRotation: {x: 0.3148065, y: 0.30609414, z: -0.10804562, w: 0.89192456}
-  m_LocalPosition: {x: -0.7555016, y: 3.7450984, z: -1.1522285}
+  m_LocalRotation: {x: 0.19217287, y: 0.35701925, z: -0.07531148, w: 0.91100776}
+  m_LocalPosition: {x: -3.831904, y: 7.1101537, z: -4.1404123}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1283,15 +1283,15 @@ PrefabInstance:
       objectReference: {fileID: 1031028449}
     - target: {fileID: 1121327799, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
       propertyPath: boardPosition.x
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1121327799, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
       propertyPath: boardPosition.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1121327799, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
       propertyPath: boardPosition.z
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1121327800, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
       propertyPath: highlightMaterial.Array.size

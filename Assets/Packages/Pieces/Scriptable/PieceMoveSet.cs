@@ -11,19 +11,24 @@ public class PieceMoveSet : ScriptableObject
     public Dimentions dimentionalBinding = Dimentions.none;
     // public List<DimentionBind> movimentLimit = new List<DimentionBind>(new DimentionBind[3]);
     [Tooltip("Number of squares this piece can move on this dimention.\n" + "0 means no limit.")]
-    public List<MinMaxCurve> movimentLimit = new List<MinMaxCurve>(new MinMaxCurve[3]);
-    public bool IsMoveAvailable(Vector3Int dif)
+    /// <summary> Number of squares this piece can move on this dimention.\n" + "0 means no limit. </summary>
+    public List<MinMaxCurve> movimentLimits = new List<MinMaxCurve>(new MinMaxCurve[3]);
+    public bool IsMovimentAvailable(Vector3Int dif)
     {
-        if (dif == Vector3Int.zero) return false;
-        if (!IsWithinDimentionLimits(dif)) return false;
+        if (IsPiecePosition(dif)
+            || !IsWithinDimentionLimits(dif)
+            || !IsWithinDimentionalBinding(dif)
+            || !IsWithinMovimentLimits(dif))
+            return false;
         return true;
     }
-    bool IsWithinDimentionLimits(Vector3Int dif)
+    public static bool IsPiecePosition(Vector3Int dif) => dif == Vector3Int.zero;
+    public bool IsWithinDimentionLimits(Vector3Int dif)
     {
         Dimentions dimentionalRank = GetDimentionalRank(dif);
         return dimentionalLimits.HasAny(dimentionalRank);
     }
-    Dimentions GetDimentionalRank(Vector3Int dif)
+    public static Dimentions GetDimentionalRank(Vector3Int dif)
     {
         uint rank = 0;
         if (dif.x != 0) rank++;
@@ -39,7 +44,48 @@ public class PieceMoveSet : ScriptableObject
             default: dimentionalRank = Dimentions.none; break;
         }
         return dimentionalRank;
+    }
+    public bool IsWithinDimentionalBinding(Vector3Int dif)
+    {
+        //TODO
+        return true;
+    }
+    public bool IsWithinMovimentLimits(Vector3Int dif)
+    {
+        //TODO otimizar essa verificação
+        List<int> limits = new List<int>();
+        foreach (MinMaxCurve limitMinMax in movimentLimits)
+        {
+            int limit = (int)limitMinMax.constant;
+            if (limit > 0) limits.Add(limit);
+        }
+        if (limits.Count == 0) return true;
 
+        List<int> difVectors = new List<int>();
+        if (dif.x > 0) difVectors.Add(dif.x);
+        if (dif.y > 0) difVectors.Add(dif.y);
+        if (dif.z > 0) difVectors.Add(dif.z);
+
+        RemoveMatchingElements(limits, difVectors);
+
+        return limits.Count == 0 && difVectors.Count == 0;
+    }
+    private static void RemoveMatchingElements(List<int> limits, List<int> difVectors)
+    {
+        int i = 0;
+        while (i < limits.Count)
+        {
+            int limit = limits[i];
+
+            if (difVectors.Contains(limit))
+            {
+                difVectors.Remove(limit);
+                limits.Remove(limit);
+                i = -1;
+            }
+
+            i++;
+        }
     }
 }
 [Serializable]

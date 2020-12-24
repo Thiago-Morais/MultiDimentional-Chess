@@ -80,7 +80,7 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     {
         Vector3Int dif = square.boardPosition - boardPosition;
 
-        return moveSet.IsMoveAvailable(dif);
+        return moveSet.IsMovimentAvailable(dif);
     }
     #endregion //METHODS
 }
