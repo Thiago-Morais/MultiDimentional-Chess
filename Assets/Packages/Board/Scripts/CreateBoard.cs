@@ -8,10 +8,7 @@ public partial class CreateBoard : MonoBehaviour
     public Vector3Int size;
     public Vector3 boardCenter;
     public Vector3 padding;
-    // public SO_BoardSquare whiteSquare;
-    // public SO_BoardSquare blackSquare;
     public GameObject[,,] board;
-    // public Transform boardPivot;
     public SquarePool whitePool;
     public SquarePool blackPool;
     [Serializable]
@@ -23,6 +20,7 @@ public partial class CreateBoard : MonoBehaviour
     Vector3 cachePadding;
     Vector3 cacheSize;
     #endregion //FIELDS
+    void Start() => TryUpdateBoard();
     void Update() => TryUpdateBoard();
 
     #region METHODS
@@ -33,6 +31,8 @@ public partial class CreateBoard : MonoBehaviour
 
         if (IsSizeDiferent(size)) ResetBoardSize(size);
         UpdatePadding(padding);
+
+        SetSquareRanks();
     }
     [ContextMenu(nameof(ForceUpdateBoard))]
     public void ForceUpdateBoard() => ForceUpdateBoard(size, padding);
@@ -73,7 +73,6 @@ public partial class CreateBoard : MonoBehaviour
         return newBoard;
     }
     GameObject GenerateSquareUsing(int index) => GetPoolUsing(index).GetFromPool();
-    // IsPair(index) ? whitePool.GetFromPool() : blackPool.GetFromPool();
     GameObject ExtractSquareUsing(int i, int j, int k)
     {
         GameObject square = board[i, j, k];
@@ -89,7 +88,6 @@ public partial class CreateBoard : MonoBehaviour
             squarePool.PushToPool(board[i, j, k]);
         };
         MultidimentionalAction(board, PushToPool);
-        // foreach (GameObject obj in board) if (obj != null) ReturnToPool(obj);
     }
     SquarePool GetPoolUsing(int value) => IsPair(value) ? whitePool : blackPool;
     static void MultidimentionalAction(GameObject[,,] board, Action<int, int, int> action)
@@ -114,6 +112,18 @@ public partial class CreateBoard : MonoBehaviour
                     board[i, j, k].transform.position = squarePosition;
                 }
         cachePadding = padding;
+    }
+    [ContextMenu(nameof(SetSquareRanks))]
+    void SetSquareRanks()
+    {
+        for (int i = 0; i < board.GetLength(0); i++)
+            for (int j = 0; j < board.GetLength(1); j++)
+                for (int k = 0; k < board.GetLength(2); k++)
+                {
+                    //TODO alterar script pra não precisar fazer GetComponent. Provavelmente, alterar o board de "GameObject" pra "SampleBoardPiece" resolva
+                    SampleBoardPiece sampleBoardPiece = board[i, j, k].GetComponent<SampleBoardPiece>();
+                    sampleBoardPiece.boardPosition = new Vector3Int(i, j, k);
+                }
     }
     static bool IsPair(int value) => value % 2 == 0;
     static Vector3 MemberWiseMultiply(Vector3 a, Vector3 b) => new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);

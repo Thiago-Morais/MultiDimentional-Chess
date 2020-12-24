@@ -189,9 +189,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetSquare: {fileID: 0}
+  currentSquare: {fileID: 0}
   targetTransform: {fileID: 0}
   highlight: {fileID: 1121327800}
   intFlags: 0
+  boardPosition: {x: 0, y: 0, z: 0}
+  moveSet: {fileID: 11400000, guid: 944f04d37741e17448820545d7a25b12, type: 2}
 --- !u!114 &1121327800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,8 +209,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lockHighlight: 0
   m_IsHighlighted: 0
-  m_Renderer: []
-  highlightMaterial: {fileID: 0}
-  m_HoverMaterial: {fileID: 0}
-  m_SelectedMaterial: {fileID: 0}
   currentHighlight: 0
+  highlightVariations:
+  - type: 2
+    highlightColor: {r: 0, g: 10, b: 1, a: 11}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 3, y: 5}
+  highlightMaterials: []
+  m_Renderer: []

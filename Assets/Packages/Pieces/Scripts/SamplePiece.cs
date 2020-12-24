@@ -8,9 +8,12 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
 {
     #region -------- FIELDS
     public SampleBoardPiece targetSquare;
+    public SampleBoardPiece currentSquare;
     public Transform targetTransform;
     public Highlight highlight;
     public IntFlags intFlags;
+    public Vector3Int boardPosition;
+    public PieceMoveSet moveSet;
     #endregion //FIELDS
     #region -------- PROPERTIES
     public bool Selected
@@ -61,6 +64,8 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     public void MoveTo(SampleBoardPiece target)
     {
         transform.position = target.pieceTarget.position;
+        currentSquare = target;
+        boardPosition = target.boardPosition;
     }
     public void OnSelected()
     {
@@ -70,6 +75,12 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     public void OnDeselected()
     {
         // highlight.UnlockHighlight();
+    }
+    public bool IsMoveAvailable(SampleBoardPiece square)
+    {
+        Vector3Int dif = square.boardPosition - boardPosition;
+
+        return moveSet.IsMoveAvailable(dif);
     }
     #endregion //METHODS
 }

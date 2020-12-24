@@ -9,6 +9,7 @@ public class SampleBoardPiece : MonoBehaviour, ISelectable, IMediator<SampleBoar
     public SO_BoardSquare so_pieceData;
     public Transform pieceTarget;
     public Highlight highlight;
+    public Vector3Int boardPosition;        //TODO setar posição do square no inicio
     #endregion //FIELDS
     #region -------- PROPERTIES
     public bool Selected { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
