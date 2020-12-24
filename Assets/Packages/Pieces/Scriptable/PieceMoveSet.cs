@@ -3,27 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
 using ExtensionMethods;
+using System.Linq;
 
 [CreateAssetMenu(menuName = "Scriptable/" + nameof(PieceMoveSet))]
 public class PieceMoveSet : ScriptableObject
 {
     public Dimentions dimentionalLimits = Dimentions.all;
     public Dimentions dimentionalBinding = Dimentions.none;
-    // public List<DimentionBind> movimentLimit = new List<DimentionBind>(new DimentionBind[3]);
     [Tooltip("Number of squares this piece can move on this dimention.\n" + "0 means no limit.")]
-    /// <summary> Number of squares this piece can move on this dimention.\n" + "0 means no limit. </summary>
     public List<MinMaxCurve> movimentLimits = new List<MinMaxCurve>(new MinMaxCurve[3]);
     public bool IsMovimentAvailable(Vector3Int dif)
     {
         if (IsPiecePosition(dif)
-            || !IsWithinDimentionLimits(dif)
+            || !IsWithinDimentionalLimits(dif)
             || !IsWithinDimentionalBinding(dif)
             || !IsWithinMovimentLimits(dif))
             return false;
         return true;
     }
     public static bool IsPiecePosition(Vector3Int dif) => dif == Vector3Int.zero;
-    public bool IsWithinDimentionLimits(Vector3Int dif)
+    #region -------- DIMENTIONAL LIMITS
+    public bool IsWithinDimentionalLimits(Vector3Int dif)
     {
         Dimentions dimentionalRank = GetDimentionalRank(dif);
         return dimentionalLimits.HasAny(dimentionalRank);
@@ -45,11 +45,48 @@ public class PieceMoveSet : ScriptableObject
         }
         return dimentionalRank;
     }
+    #endregion //DIMENTIONAL LIMITS
+
+    #region -------- DIMENTIONAL BINDINGS 
     public bool IsWithinDimentionalBinding(Vector3Int dif)
     {
-        //TODO
-        return true;
+        //TODO 
+        /*
+        verifica se o movimento tem uma quantidade expecificadas de dimenções com o mesmo numero
+        */
+        List<int> binds = DimentionalBindsAsList();
+        if (binds.Count == 0) return true;
+
+        List<int> dimentions = dif.AsList();
+
+        IEnumerable<IGrouping<int, int>> enumerable = dimentions.GroupBy(c => Mathf.Abs(c));
+        foreach (int bind in binds)
+        {
+            IEnumerable<IGrouping<int, int>> enumerable2 = enumerable.Where(binded => binded.Count() >= bind);
+            if (enumerable2.Count() > 0) return true;
+        }
+        // IEnumerable<int> enumerable1 = enumerable.Select(grp => grp.Count(c => c >= 0));
+        // List<int> list = enumerable1.ToList();
+
+        // IEnumerable<IGrouping<int, int>> equalDistances = dimentions.GroupBy(c => Mathf.Abs(c));
+        // foreach (IGrouping<int, int> equalDistance in equalDistances)
+        // {
+        //     int count = equalDistance.Count(c => c != 0);
+        //     if (binds.Any(b => count >= b)) return true;
+        // }
+        return false;
     }
+    List<int> DimentionalBindsAsList()
+    {
+        List<int> bind = new List<int>();
+        if (dimentionalBinding.HasAny(Dimentions.one)) bind.Add(1);
+        if (dimentionalBinding.HasAny(Dimentions.two)) bind.Add(2);
+        if (dimentionalBinding.HasAny(Dimentions.three)) bind.Add(3);
+        return bind;
+    }
+    #endregion //DIMENTIONAL BINDINGS 
+
+    #region -------- MOVIMENT LIMITS
     public bool IsWithinMovimentLimits(Vector3Int dif)
     {
         //TODO otimizar essa verificação
@@ -57,18 +94,18 @@ public class PieceMoveSet : ScriptableObject
         foreach (MinMaxCurve limitMinMax in movimentLimits)
         {
             int limit = (int)limitMinMax.constant;
-            if (limit > 0) limits.Add(limit);
+            if (limit > -1) limits.Add(limit);
         }
         if (limits.Count == 0) return true;
 
         List<int> difVectors = new List<int>();
-        if (dif.x > 0) difVectors.Add(dif.x);
-        if (dif.y > 0) difVectors.Add(dif.y);
-        if (dif.z > 0) difVectors.Add(dif.z);
+        difVectors.Add(dif.x);
+        difVectors.Add(dif.y);
+        difVectors.Add(dif.z);
 
         RemoveMatchingElements(limits, difVectors);
 
-        return limits.Count == 0 && difVectors.Count == 0;
+        return limits.Count == 0;
     }
     private static void RemoveMatchingElements(List<int> limits, List<int> difVectors)
     {
@@ -87,14 +124,8 @@ public class PieceMoveSet : ScriptableObject
             i++;
         }
     }
+    #endregion //MOVIMENT LIMITS
 }
-[Serializable]
-public class DimentionBind
-{
-    [Tooltip("Number of squares this piece can move on this dimention.\n" + "0 means no limit.")]
-    public MinMaxCurve distanceLimit;
-}
-
 [Flags]
 public enum Dimentions
 {

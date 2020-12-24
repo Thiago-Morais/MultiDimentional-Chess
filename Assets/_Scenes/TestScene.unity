@@ -1283,7 +1283,7 @@ PrefabInstance:
       objectReference: {fileID: 1031028449}
     - target: {fileID: 1121327799, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
       propertyPath: boardPosition.x
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1121327799, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
       propertyPath: boardPosition.y
@@ -1291,7 +1291,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1121327799, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
       propertyPath: boardPosition.z
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1121327800, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
       propertyPath: highlightMaterial.Array.size

@@ -36,7 +36,8 @@ public class ContextMediator
                 Passar em cada square e chamar a verificação pra saber se ele deve ser ligado
                 */
                 foreach (SampleBoardPiece square in squares)
-                    if (sender.IsMoveAvailable(square)) square.highlight.HighlightOn(Highlight.HighlightType.available);
+                    if (sender.boardPosition == square.boardPosition) square.highlight.HighlightOn(Highlight.HighlightType.selected);
+                    else if (sender.IsMoveAvailable(square)) square.highlight.HighlightOn(Highlight.HighlightType.available);
                     else square.highlight.HighlightOff();
                 break;
             default: break;

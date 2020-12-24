@@ -182,6 +182,10 @@ MonoBehaviour:
     highlightColor: {r: 0.627451, g: 1.6941177, b: 1.8980392, a: 11}
     highlightPulseSpeed: 3
     hightlightPulseAperture: {x: 3, y: 5}
+  - type: 2
+    highlightColor: {r: 0, g: 1, b: 23.968628, a: 11}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 3, y: 5}
   - type: 16
     highlightColor: {r: 0, g: 10, b: 1, a: 11}
     highlightPulseSpeed: 3

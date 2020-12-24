@@ -21,7 +21,7 @@ public partial class CreateBoard : MonoBehaviour
     Vector3 cacheSize;
     #endregion //FIELDS
     void Start() => TryUpdateBoard();
-    void Update() => TryUpdateBoard();
+    // void Update() => TryUpdateBoard();
 
     #region METHODS
     [ContextMenu(nameof(TryUpdateBoard))] void TryUpdateBoard() => TryUpdateBoard(size, padding);
