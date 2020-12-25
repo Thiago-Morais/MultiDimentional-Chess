@@ -99,7 +99,8 @@ public class Highlight : MonoBehaviour
         selected = 1 << 1,
         error = 1 << 2,
         atention = 1 << 3,
-        available = 1 << 4
+        movable = 1 << 4,
+        capturable = 1 << 5
     }
     #endregion //ENUM
 }

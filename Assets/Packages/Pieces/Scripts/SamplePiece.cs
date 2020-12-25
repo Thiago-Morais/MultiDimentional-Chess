@@ -13,7 +13,9 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     public Highlight highlight;
     public IntFlags intFlags;
     public Vector3Int boardPosition;
+    public bool isWhite = true;
     public PieceMoveSet moveSet;
+    public PieceMoveSet captureSet;
     #endregion //FIELDS
     #region -------- PROPERTIES
     public bool Selected
@@ -76,11 +78,11 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     {
         // highlight.UnlockHighlight();
     }
-    public bool IsMoveAvailable(SampleBoardPiece square)
+    public bool IsMoveAvailable(SampleBoardPiece square, PieceMoveSet moveSet)
     {
         Vector3Int dif = square.boardPosition - boardPosition;
 
-        return moveSet.IsMovimentAvailable(dif);
+        return moveSet.IsMovimentAvailable(dif, isWhite);
     }
     #endregion //METHODS
 }

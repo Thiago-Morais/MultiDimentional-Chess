@@ -194,6 +194,10 @@ MonoBehaviour:
     highlightColor: {r: 11.984314, g: 0.1, b: 0, a: 11}
     highlightPulseSpeed: 3
     hightlightPulseAperture: {x: 3, y: 5}
+  - type: 32
+    highlightColor: {r: 11.984314, g: 0.1, b: 0, a: 11}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 3, y: 5}
   highlightMaterials: []
   m_Renderer: []
 --- !u!1 &3834919326004120634

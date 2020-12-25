@@ -4,6 +4,7 @@ using UnityEngine;
 using static UnityEngine.ParticleSystem;
 using ExtensionMethods;
 using System.Linq;
+using UnityEngine.Animations;
 
 [CreateAssetMenu(menuName = "Scriptable/" + nameof(PieceMoveSet))]
 public class PieceMoveSet : ScriptableObject
@@ -12,40 +13,71 @@ public class PieceMoveSet : ScriptableObject
     public Dimentions dimentionalBinding = Dimentions.none;
     [Tooltip("Number of squares this piece can move on this dimention.\n" + "0 means no limit.")]
     public LimitType limitType = LimitType.atMostAll;
-    // public List<MinMaxCurve> movimentLimits = new List<MinMaxCurve>(new MinMaxCurve[3]);
     public List<int> movimentLimits = new List<int>();
-    public bool IsMovimentAvailable(Vector3Int dif)
+    public Axis axisBlocker = Axis.None;
+    public Axis backwardsBlocker = Axis.None;
+    public bool IsMovimentAvailable(Vector3Int dif, bool isWhite)
     {
-        if (IsPiecePosition(dif)
+        if (HasBlockedAxis(dif)
+            || HasBlockedBackwards(dif, isWhite)
             || !IsWithinDimentionalLimits(dif)
             || !IsWithinDimentionalBinding(dif)
-            || !IsWithinMovimentLimits(dif))
+            || !IsWithinMovimentLimits(dif)
+            || IsOwnPosition(dif))
             return false;
         return true;
     }
-    public static bool IsPiecePosition(Vector3Int dif) => dif == Vector3Int.zero;
-    #region -------- DIMENTIONAL LIMITS
-    public bool IsWithinDimentionalLimits(Vector3Int dif)
+    public bool HasBlockedAxis(Vector3Int dif)
     {
-        Dimentions dimentionalRank = GetDimentionalRank(dif);
-        return dimentionalLimits.HasAny(dimentionalRank);
+        if (axisBlocker == Axis.None) return false;
+
+        if (axisBlocker.HasAny(Axis.X) && (dif.x != 0)) return true;
+        if (axisBlocker.HasAny(Axis.Y) && (dif.y != 0)) return true;
+        if (axisBlocker.HasAny(Axis.Z) && (dif.z != 0)) return true;
+        return false;
     }
-    public static Dimentions GetDimentionalRank(Vector3Int dif)
+    public bool HasBlockedBackwards(Vector3Int dif, bool isWhite)
     {
-        uint rank = 0;
+        if (backwardsBlocker == Axis.None) return false;
+
+        if (isWhite)
+        {
+            if (backwardsBlocker.HasAny(Axis.X) && (dif.x < 0)) return true;
+            if (backwardsBlocker.HasAny(Axis.Y) && (dif.y < 0)) return true;
+            if (backwardsBlocker.HasAny(Axis.Z) && (dif.z < 0)) return true;
+        }
+        else
+        {
+            if (backwardsBlocker.HasAny(Axis.X) && (dif.x > 0)) return true;
+            if (backwardsBlocker.HasAny(Axis.Y) && (dif.y > 0)) return true;
+            if (backwardsBlocker.HasAny(Axis.Z) && (dif.z > 0)) return true;
+        }
+        return false;
+    }
+    #region -------- DIMENTIONAL LIMITS
+    public bool IsWithinDimentionalLimits(Vector3Int dif) => dimentionalLimits.HasAny(DimentionalLimits(dif));
+    public static Dimentions DimentionalLimits(Vector3Int dif)
+    {
+        byte rank = DimentionalRank(dif);
+        return RankAsDimentions(rank);
+    }
+    static byte DimentionalRank(Vector3Int dif)
+    {
+        byte rank = 0;
         if (dif.x != 0) rank++;
         if (dif.y != 0) rank++;
         if (dif.z != 0) rank++;
-
-        Dimentions dimentionalRank;
+        return rank;
+    }
+    static Dimentions RankAsDimentions(byte rank)
+    {
         switch (rank)
         {
-            case 1: dimentionalRank = Dimentions.one; break;
-            case 2: dimentionalRank = Dimentions.two; break;
-            case 3: dimentionalRank = Dimentions.three; break;
-            default: dimentionalRank = Dimentions.none; break;
+            case 1: return Dimentions.one;
+            case 2: return Dimentions.two;
+            case 3: return Dimentions.three;
+            default: return Dimentions.none;
         }
-        return dimentionalRank;
     }
     #endregion //DIMENTIONAL LIMITS
 
@@ -53,46 +85,19 @@ public class PieceMoveSet : ScriptableObject
     public bool IsWithinDimentionalBinding(Vector3Int dif)
     {
         //TODO 
-        /*
-        verifica se o movimento tem uma quantidade expecificadas de dimenções com o mesmo numero
-        */
-        List<int> binds = DimentionalBindsAsList();
+        List<int> binds = DimentionalBinds();
         if (binds.Count == 0) return true;
 
-        Dimentions difRank = GetDimentionalRank(dif);
+        Dimentions dimentionalLimits = DimentionalLimits(dif);
+        if (!dimentionalBinding.HasAny(dimentionalLimits)) return false;
 
-        List<int> dimentions = dif.AsList();
-
-        if (!dimentionalBinding.HasAny(difRank)) return false;
-
-        // if (difRank == Dimentions.one)
-        //     return dimentionalBinding.HasAny(difRank);
-        if (difRank == Dimentions.two)
-        {
-            IEnumerable<IGrouping<int, int>> dimentionsGrouped = dimentions.GroupBy(c => Mathf.Abs(c));
-
-            bool isBinded = true;
-            // foreach (int bind in binds)
-            // {
-            // IEnumerable<IGrouping<int, int>> enumerable2 = dimentionsGrouped.Where(group => group.Key != 0 && group.Count() >= bind);
-            IEnumerable<IGrouping<int, int>> binded = dimentionsGrouped.Where(group => group.Key != 0 && group.Count() >= 2);
-            // if (enumerable2.Count() > 0) return true;
-            if (!(binded.Count() > 0)) isBinded = false;
-            // }
-            return isBinded;
-        }
-        if (difRank == Dimentions.three)
-        {
-            IEnumerable<IGrouping<int, int>> difDimentionsGrouped = dimentions.GroupBy(c => Mathf.Abs(c));
-            IEnumerable<IGrouping<int, int>> binded = difDimentionsGrouped.Where(group => group.Key != 0 && group.Count() >= 3);
-            if (!(binded.Count() > 0)) return false;
-
-
-            // return false;
-        }
+        List<int> limits = dif.AsList();
+        if (dimentionalLimits == Dimentions.two) return HasBindedLimits(limits, 2);
+        if (dimentionalLimits == Dimentions.three) return HasBindedLimits(limits, 3);
         return true;
     }
-    List<int> DimentionalBindsAsList()
+    public List<int> DimentionalBinds() => DimentionalBinds(dimentionalBinding);
+    public static List<int> DimentionalBinds(Dimentions dimentionalBinding)
     {
         List<int> bind = new List<int>();
         if (dimentionalBinding.HasAny(Dimentions.one)) bind.Add(1);
@@ -100,48 +105,36 @@ public class PieceMoveSet : ScriptableObject
         if (dimentionalBinding.HasAny(Dimentions.three)) bind.Add(3);
         return bind;
     }
+    public static bool HasBindedLimits(List<int> limits, int bindingAmount)
+    {
+        var groupedLimits = limits.GroupBy(limit => Mathf.Abs(limit));
+        var binded = groupedLimits.Where(group => group.Key != 0 && group.Count() >= bindingAmount);
+        return binded.Count() > 0;
+    }
     #endregion //DIMENTIONAL BINDINGS 
 
     #region -------- MOVIMENT LIMITS
     public bool IsWithinMovimentLimits(Vector3Int dif)
     {
-        //TODO otimizar essa verificação
-        // List<int> limits = GetPositiveLimitsAsList();
-        // if (limits.Count == 0) return true;
         if (movimentLimits.Count == 0) return true;
-
-        // List<int> difVectors = new List<int> { Mathf.Abs(dif.x), Mathf.Abs(dif.y), Mathf.Abs(dif.z), };
-        List<int> list = dif.AsList(i => Mathf.Abs(i));
-        List<int> difVectors = list.Where(i => i > 0).ToList();
-
-        List<int> limits = new List<int>(movimentLimits);
-
-        RemoveMatchingElements(limits, difVectors);
+        List<int> difVectors = dif.AbsolutesOverZero();
+        return IsWithinMovimentLimits(difVectors);
+    }
+    public bool IsWithinMovimentLimits(List<int> _difVectors)
+    {
+        List<int> limitsCache = new List<int>(movimentLimits);
+        List<int> difVectorsCahe = new List<int>(_difVectors);
+        //TODO otimizar essa verificação (só precisa retornar a quantidade de elementos que não deram match)
+        RemoveMatchingElements(limitsCache, difVectorsCahe);
         switch (limitType)
         {
-            case LimitType.atMostAll:
-                return difVectors.Count == 0;
-            case LimitType.atLeastAll:
-                return limits.Count == 0;
-            case LimitType.all:
-                return limits.Count == 0 && difVectors.Count == 0;
+            case LimitType.atMostAll: return difVectorsCahe.Count == 0;
+            case LimitType.atLeastAll: return limitsCache.Count == 0;
+            case LimitType.all: return limitsCache.Count == 0 && difVectorsCahe.Count == 0;
             default: return true;
         }
-        // RemoveMatchingElements(limits, difVectors);
-
-        // return limits.Count == 0;
     }
-    List<int> GetPositiveLimitsAsList()
-    {
-        List<int> limits = new List<int>();
-        foreach (MinMaxCurve limitMinMax in movimentLimits)
-        {
-            int limit = (int)limitMinMax.constant;
-            if (limit > -1) limits.Add(limit);
-        }
-        return limits;
-    }
-    static void RemoveMatchingElements(List<int> limits, List<int> difVectors)
+    public static void RemoveMatchingElements(List<int> limits, List<int> difVectors)
     {
         int i = 0;
         while (i < limits.Count)
@@ -159,6 +152,7 @@ public class PieceMoveSet : ScriptableObject
         }
     }
     #endregion //MOVIMENT LIMITS
+    public static bool IsOwnPosition(Vector3Int dif) => dif == Vector3Int.zero;
 }
 [Flags]
 public enum Dimentions
