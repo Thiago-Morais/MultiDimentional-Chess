@@ -79,11 +79,15 @@ MonoBehaviour:
   boardCenter: {x: 0, y: 0, z: 0}
   padding: {x: 0.1, y: 1, z: 0.1}
   whitePool:
+    prefabSample: {fileID: 0}
+    sample: {fileID: 1544231113136393672, guid: 4765b74d31fd528458d87e41ee66a2da, type: 3}
+    objectPool: []
     poolParent: {fileID: 7358931587352030086}
-    squareData: {fileID: 11400000, guid: 44762c0a011a82c41814418c968a88f8, type: 2}
   blackPool:
+    prefabSample: {fileID: 0}
+    sample: {fileID: 4485176923743949740, guid: ab76eb2ad4725b444b01e4c3b3129c49, type: 3}
+    objectPool: []
     poolParent: {fileID: 7358931588557992042}
-    squareData: {fileID: 11400000, guid: 139ceaa071680304093f119ef98cdf6d, type: 2}
 --- !u!1 &7358931588557992043
 GameObject:
   m_ObjectHideFlags: 0

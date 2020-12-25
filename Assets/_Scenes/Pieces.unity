@@ -499,5 +499,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: DinamicBoard
       objectReference: {fileID: 0}
+    - target: {fileID: 7358931588202527261, guid: 5a4013eb9122ccb41863554c727fd212, type: 3}
+      propertyPath: padding.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7358931588202527261, guid: 5a4013eb9122ccb41863554c727fd212, type: 3}
+      propertyPath: padding.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a4013eb9122ccb41863554c727fd212, type: 3}

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SampleBoardPiece : MonoBehaviour, ISelectable, IMediator<SampleBoardPiece, SampleBoardPiece.IntFlags>
+public class SampleBoardPiece : MonoBehaviour, IPoolable, ISelectable, IMediator<SampleBoardPiece, SampleBoardPiece.IntFlags>
 {
     #region -------- FIELDS
     public SO_BoardSquare so_pieceData;
@@ -42,5 +42,16 @@ public class SampleBoardPiece : MonoBehaviour, ISelectable, IMediator<SampleBoar
     }
     [ContextMenu(nameof(UpdateSize))]
     public void UpdateSize() => so_pieceData.UpdateSize();
+    public IPoolable Deactivated()
+    {
+        gameObject.SetActive(false);
+        return this;
+    }
+    public IPoolable Activated()
+    {
+        gameObject.SetActive(true);
+        return this;
+    }
+    public IPoolable Instantiate(Transform poolParent) => Instantiate(so_pieceData.prefab, poolParent).GetComponent<SampleBoardPiece>();
     #endregion //METHODS
 }
