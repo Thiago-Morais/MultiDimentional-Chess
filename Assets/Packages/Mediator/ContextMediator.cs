@@ -68,12 +68,7 @@ public class ContextMediator
         switch (action)
         {
             case BoardPiece.IntFlags.Selected:
-                /*
-                verifica se ele pode ser movido
-                se for, move
-                deseleciona
-                */
-                SamplePiece selectedPiece = (SamplePiece)selector.currentSelected;
+                SamplePiece selectedPiece = selector.currentSelected as SamplePiece;
                 if (!selectedPiece) break;
 
                 if (selectedPiece.IsAnyMovimentAvailable(sender))

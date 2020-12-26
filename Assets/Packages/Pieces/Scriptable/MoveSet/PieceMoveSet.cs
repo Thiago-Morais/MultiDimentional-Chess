@@ -6,7 +6,7 @@ using ExtensionMethods;
 using System.Linq;
 using UnityEngine.Animations;
 
-[CreateAssetMenu(menuName = "Scriptable/" + nameof(PieceMoveSet))]
+[CreateAssetMenu(menuName = nameof(ScriptableObject) + "/" + nameof(PieceMoveSet))]
 public class PieceMoveSet : ScriptableObject
 {
     public Dimentions dimentionalLimits = Dimentions.all;

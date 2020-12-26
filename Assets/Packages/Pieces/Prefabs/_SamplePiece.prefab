@@ -143,7 +143,7 @@ MonoBehaviour:
   highlight: {fileID: 1121327800}
   intFlags: 0
   boardCoord: {x: 0, y: 0, z: 0}
-  isWhite: 1
+  playerData: {fileID: 11400000, guid: ad7c957d3d8c5ef43976f40300194a3b, type: 2}
   moveSet: {fileID: 11400000, guid: 944f04d37741e17448820545d7a25b12, type: 2}
   captureSet: {fileID: 0}
 --- !u!114 &1121327800

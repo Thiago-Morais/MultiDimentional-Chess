@@ -25,6 +25,8 @@ public class InputHighlight : MonoBehaviour
     // }
     public void OnPointer(InputAction.CallbackContext context)
     {
+        if (!context.performed) return;
+
         m_MousePosition = context.ReadValue<Vector2>();
         UpdateHighlight(Highlight.HighlightType.hover);
     }

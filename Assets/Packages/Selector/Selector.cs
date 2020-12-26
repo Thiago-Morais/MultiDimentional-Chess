@@ -18,7 +18,6 @@ public class Selector : MonoBehaviour, IMediator<Selector, Selector.IntFlags>
     [Flags]
     public enum IntFlags
     {
-
     }
     void Awake()
     {
@@ -32,13 +31,17 @@ public class Selector : MonoBehaviour, IMediator<Selector, Selector.IntFlags>
     public void Notify(IntFlags intFlag) => ContextMediator.Notify(this, intFlag);
     #endregion //MEDIATOR
 
-    public void OnPoint(InputAction.CallbackContext context) => m_PointerPosition = context.ReadValue<Vector2>();
+    public void OnPoint(InputAction.CallbackContext context)
+    {
+        if (context.performed) m_PointerPosition = context.ReadValue<Vector2>();
+    }
     public void OnSelect(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
 
         ISelectable newSelected = GetSelectableUsingRaycast();
         if (newSelected == null) return;
+
         ChangeSelection(newSelected);
     }
     void ChangeSelection(ISelectable newSelected)

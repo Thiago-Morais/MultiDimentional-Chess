@@ -13,7 +13,8 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     public Highlight highlight;
     public IntFlags intFlags;
     [SerializeField] Vector3Int boardCoord;
-    public bool isWhite = true;
+    public PlayerData playerData;
+    // public bool isWhite = true;
     public PieceMoveSet moveSet;
     public PieceMoveSet captureSet;
     #endregion //FIELDS
@@ -42,6 +43,7 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     {
         InitializeVariables();
         SignOn(this);
+        playerData.ApplyPlayerData(this);
     }
     void Start() => MoveToCoord();
     void InitializeVariables()
@@ -91,7 +93,8 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     {
         Vector3Int dif = square.BoardCoord - BoardCoord;
 
-        return moveSet.IsMovimentAvailable(dif, isWhite);
+        // return moveSet.IsMovimentAvailable(dif, isWhite);
+        return moveSet.IsMovimentAvailable(dif, playerData.isWhite);
     }
     #endregion //METHODS
 }

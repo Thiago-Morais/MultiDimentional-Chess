@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Board/Piece", fileName = "new BoardPiece")]
+[CreateAssetMenu(menuName = nameof(ScriptableObject) + "/Board/Piece", fileName = "new BoardPiece")]
 public class SO_BoardSquare : ScriptableObject
 {
     public GameObject prefab;

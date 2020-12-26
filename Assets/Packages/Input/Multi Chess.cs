@@ -308,7 +308,7 @@ public class @MultiChess : IInputActionCollection, IDisposable
                     ""id"": ""79b325a3-9fcd-4b86-af85-7c94e5295442"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap""
                 },
                 {
                     ""name"": ""ScrollWheel"",
@@ -324,7 +324,7 @@ public class @MultiChess : IInputActionCollection, IDisposable
                     ""id"": ""862cb7af-b09f-4bae-b760-edf08d34f1e9"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap""
                 },
                 {
                     ""name"": ""RightClick"",
@@ -332,7 +332,7 @@ public class @MultiChess : IInputActionCollection, IDisposable
                     ""id"": ""e521f866-18ca-4e16-b142-4e6a08290854"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap""
                 },
                 {
                     ""name"": ""TrackedDevicePosition"",
@@ -677,7 +677,7 @@ public class @MultiChess : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
