@@ -7,13 +7,15 @@ public partial class CreateBoard : MonoBehaviour
 {
     #region FIELDS
     public Vector3Int size;
-    public Vector3 boardCenter;
     public Vector3 padding;
+    public Transform center;
     public SampleBoardPiece[,,] board;
     public Pool<SampleBoardPiece> whitePool;
     public Pool<SampleBoardPiece> blackPool;
     Vector3 cachePadding;
     Vector3 cacheSize;
+    Vector3 cacheCenter;
+    public Vector3 offset;
     #endregion //FIELDS
 
     void Start() => TryUpdateBoard();
@@ -29,11 +31,15 @@ public partial class CreateBoard : MonoBehaviour
     [ContextMenu(nameof(TryUpdateBoard))] void TryUpdateBoard() => TryUpdateBoard(size, padding);
     public void TryUpdateBoard(Vector3Int size, Vector3 padding)
     {
-        if (!DidValuesChange(size, padding)) return;
+        // if (!DidValuesChange(size, padding)) return;
 
-        if (DidSizeChanged(size)) ResetBoardSize(size);
+        if (DidSizeChanged(size))
+        {
+            ResetBoardSize(size);
+            SetSquareCoordenates();
+        }
         UpdatePadding(padding);
-        SetSquareCoordenates();
+        UpdateCenter();
     }
     [ContextMenu(nameof(ForceUpdateBoard))]
     public void ForceUpdateBoard() => ForceUpdateBoard(size, padding);
@@ -41,7 +47,27 @@ public partial class CreateBoard : MonoBehaviour
     {
         ResetBoardSize(size);
         UpdatePadding(padding);
+        UpdateCenter();
         SetSquareCoordenates();
+    }
+    [ContextMenu(nameof(UpdateCenter))]
+    public void UpdateCenter()
+    {
+        Vector3 whiteSquareSize = GetSquareSize(0);
+        Vector3 blackSquareSize = GetSquareSize(0);
+
+        int x = board.GetLength(0);
+        int y = board.GetLength(1);
+        int z = board.GetLength(2);
+        Vector3 boardCount = new Vector3(x, y, z) / 2;
+
+        Vector3 whitePadded = whiteSquareSize + padding;
+        Vector3 blackPadded = blackSquareSize + padding;
+
+        Vector3 whiteSizeMultiplied = whitePadded.Scaled(boardCount);
+        Vector3 blackSizeMultiplied = blackPadded.Scaled(boardCount);
+
+        center.localPosition = (whiteSizeMultiplied + blackSizeMultiplied - whiteSquareSize - padding + offset) / 2;
     }
     [ContextMenu(nameof(PrintBoard))] void PrintBoard() { foreach (SampleBoardPiece square in board) Debug.Log(square, square); }
 
@@ -98,14 +124,15 @@ public partial class CreateBoard : MonoBehaviour
                 for (int k = 0; k < board.GetLength(2); k++)
                 {
                     index.Set(i, j, k);
-                    Vector3 squareSize = this.GetPool(i + j + k).sample.so_pieceData.pieceBounds.size;
+                    Vector3 squareSize = GetSquareSize(i + j + k);
                     Vector3 squarePosition = squareSize.Scaled(index);
                     Vector3 squarePadding = padding.Scaled(index);
 
-                    board[i, j, k].transform.position = squarePosition + squarePadding + boardCenter;
+                    board[i, j, k].transform.position = squarePosition + squarePadding;
                 }
         cachePadding = padding;
     }
+    Vector3 GetSquareSize(int index) => this.GetPool(index).sample.so_pieceData.pieceBounds.size;
     Pool<SampleBoardPiece> GetPool(int index) => IsPair(index) ? whitePool : blackPool;
     [ContextMenu(nameof(SetSquareCoordenates))]
     void SetSquareCoordenates() => board.ForEachDoAction(SetSquareCoordenates);
