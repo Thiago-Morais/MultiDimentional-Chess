@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using ExtensionMethods;
 using UnityEngine;
 
-public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, SamplePiece.IntFlags>, IHighlightable
+public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, SamplePiece.IntFlags>, IHighlightable, IOnBoard
 {
     #region -------- FIELDS
     public SampleBoardPiece targetSquare;
@@ -12,12 +12,13 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     public Transform targetTransform;
     public Highlight highlight;
     public IntFlags intFlags;
-    public Vector3Int boardPosition;
+    [SerializeField] Vector3Int boardCoord;
     public bool isWhite = true;
     public PieceMoveSet moveSet;
     public PieceMoveSet captureSet;
     #endregion //FIELDS
     #region -------- PROPERTIES
+    public Vector3Int BoardCoord { get => boardCoord; set => boardCoord = value; }
     public bool Selected
     {
         get => intFlags.HasAny(IntFlags.Selected);
@@ -67,7 +68,7 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     {
         transform.position = target.pieceTarget.position;
         currentSquare = target;
-        boardPosition = target.boardPosition;
+        BoardCoord = target.BoardCoord;
     }
     public void OnSelected()
     {
@@ -80,7 +81,7 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     }
     public bool IsMoveAvailable(SampleBoardPiece square, PieceMoveSet moveSet)
     {
-        Vector3Int dif = square.boardPosition - boardPosition;
+        Vector3Int dif = square.BoardCoord - BoardCoord;
 
         return moveSet.IsMovimentAvailable(dif, isWhite);
     }

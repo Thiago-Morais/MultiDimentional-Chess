@@ -3,15 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SampleBoardPiece : MonoBehaviour, IPoolable, ISelectable, IMediator<SampleBoardPiece, SampleBoardPiece.IntFlags>
+public class SampleBoardPiece : MonoBehaviour, IPoolable, ISelectable, IMediator<SampleBoardPiece, SampleBoardPiece.IntFlags>, IOnBoard
 {
     #region -------- FIELDS
     public SO_BoardSquare so_pieceData;
     public Transform pieceTarget;
     public Highlight highlight;
-    public Vector3Int boardPosition;        //TODO setar posição do square no inicio
+    [SerializeField] Vector3Int boardCoord;
+
     #endregion //FIELDS
     #region -------- PROPERTIES
+    public Vector3Int BoardCoord { get => boardCoord; set => boardCoord = value; }        //TODO setar posição do square no inicio
     public bool Selected { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
     #endregion //PROPERTIES
     void Awake()

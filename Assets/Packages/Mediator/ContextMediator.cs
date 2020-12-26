@@ -33,7 +33,7 @@ public class ContextMediator
         {
             case SamplePiece.IntFlags.Selected:
                 foreach (SampleBoardPiece square in squares)
-                    if (sender.boardPosition == square.boardPosition)
+                    if (sender.BoardCoord == square.BoardCoord)
                     {
                         square.highlight.HighlightOn(Highlight.HighlightType.selected);
                     }

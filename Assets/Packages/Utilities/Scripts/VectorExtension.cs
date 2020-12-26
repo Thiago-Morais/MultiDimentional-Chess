@@ -17,5 +17,11 @@ namespace ExtensionMethods
             List<int> difLimits = vector.AsList(i => Mathf.Abs(i));
             return difLimits.Where(i => i > 0).ToList();
         }
+        public static Vector3 Scaled(this Vector3 vector, Vector3 scale)
+        {
+            Vector3 aux = new Vector3(vector.x, vector.y, vector.z);
+            aux.Scale(scale);
+            return aux;
+        }
     }
 }
