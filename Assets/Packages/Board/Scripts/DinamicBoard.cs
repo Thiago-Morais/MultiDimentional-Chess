@@ -3,25 +3,41 @@ using System.Collections;
 using ExtensionMethods;
 using UnityEngine;
 
-public partial class CreateBoard : MonoBehaviour
+public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard, DinamicBoard.IntFlags>
 {
     #region FIELDS
     public Vector3Int size;
     public Vector3 padding;
     public Transform center;
-    public SampleBoardPiece[,,] board;
-    public Pool<SampleBoardPiece> whitePool;
-    public Pool<SampleBoardPiece> blackPool;
+    public BoardPiece[,,] board;
+    public Pool<BoardPiece> whitePool;
+    public Pool<BoardPiece> blackPool;
+    public Vector3 offset;
     Vector3 cachePadding;
     Vector3 cacheSize;
     Vector3 cacheCenter;
-    public Vector3 offset;
     #endregion //FIELDS
 
-    void Start() => TryUpdateBoard();
+    #region -------- PROPERTIES
+    #endregion //PROPERTIES
+    [Flags]
+    public enum IntFlags
+    {
+    }
+    void Awake()
+    {
+        SignOn(this);
+        TryUpdateBoard();
+    }
     void Update() => TryUpdateBoard();
 
-    #region METHODS
+    #region -------- METHODS
+    #region ------------ MEDIATOR
+    public void SignOn(DinamicBoard sender)
+        => ContextMediator.SignOn(this);
+    public void Notify(IntFlags intFlag)
+        => ContextMediator.Notify(this, intFlag);
+    #endregion //MEDIATOR
     [ContextMenu(nameof(SetPools))]
     void SetPools()
     {
@@ -69,28 +85,28 @@ public partial class CreateBoard : MonoBehaviour
 
         center.localPosition = (whiteSizeMultiplied + blackSizeMultiplied - whiteSquareSize - padding + offset) / 2;
     }
-    [ContextMenu(nameof(PrintBoard))] void PrintBoard() { foreach (SampleBoardPiece square in board) Debug.Log(square, square); }
+    [ContextMenu(nameof(PrintBoard))] void PrintBoard() { foreach (BoardPiece square in board) Debug.Log(square, square); }
 
-    #region CHANGE VERIFICATION
+    #region ------------ CHANGE VERIFICATION
     bool DidValuesChange(Vector3Int size, Vector3 padding) => DidSizeChanged(size) || DidPaddingChanged(padding);
     bool DidSizeChanged(Vector3Int size) => size != cacheSize;
     bool DidPaddingChanged(Vector3 padding) => padding != cachePadding;
     #endregion //CHANGE VERIFICATION
 
+    #region ------------ BOARD GENERATION
     void ResetBoardSize(Vector3Int size)
     {
         if (board == null) InitializeBoard(size);
-        SampleBoardPiece[,,] newBoard = GenerateBoardFromOld(size);
+        BoardPiece[,,] newBoard = GenerateBoardFromOld(size);
         DestroyBoard(board);
         board = newBoard;
         cacheSize = size;
     }
-    SampleBoardPiece[,,] InitializeBoard(Vector3Int size) => board = InstantiateABoard(size);
-    static SampleBoardPiece[,,] InstantiateABoard(Vector3Int size) => new SampleBoardPiece[size.x, size.y, size.z];
+    BoardPiece[,,] InitializeBoard(Vector3Int size) => board = InstantiateABoard(size);
+    static BoardPiece[,,] InstantiateABoard(Vector3Int size) => new BoardPiece[size.x, size.y, size.z];
 
-    #region -------- BOARD GENERATOR
-    SampleBoardPiece[,,] GenerateBoardFromOld(Vector3Int size) => ResizeUsing(InstantiateABoard(size), board);
-    SampleBoardPiece[,,] ResizeUsing(SampleBoardPiece[,,] newBoard, SampleBoardPiece[,,] board)
+    BoardPiece[,,] GenerateBoardFromOld(Vector3Int size) => ResizeUsing(InstantiateABoard(size), board);
+    BoardPiece[,,] ResizeUsing(BoardPiece[,,] newBoard, BoardPiece[,,] board)
     {
         return newBoard.ForEachDoAction((i, j, k) =>
         {
@@ -100,18 +116,17 @@ public partial class CreateBoard : MonoBehaviour
                 newBoard[i, j, k] = board.RemoveAt(i, j, k);
         });
     }
-    SampleBoardPiece GenerateSquareUsing(int index)
+    BoardPiece GenerateSquareUsing(int index)
     {
-        Pool<SampleBoardPiece> genericPool = GetPool(index);
+        Pool<BoardPiece> genericPool = GetPool(index);
         return genericPool.GetFromPool(genericPool.sample);
     }
-    #endregion //BOARD GENERATOR
 
-    void DestroyBoard(SampleBoardPiece[,,] board)
+    void DestroyBoard(BoardPiece[,,] board)
     {
         Action<int, int, int> PushToPool = (i, j, k) =>
         {
-            Pool<SampleBoardPiece> squarePool = GetPool(i + j + k);
+            Pool<BoardPiece> squarePool = GetPool(i + j + k);
             squarePool.PushToPool(board[i, j, k]);
         };
         board.ForEachDoAction(PushToPool);
@@ -133,11 +148,17 @@ public partial class CreateBoard : MonoBehaviour
         cachePadding = padding;
     }
     Vector3 GetSquareSize(int index) => this.GetPool(index).sample.so_pieceData.pieceBounds.size;
-    Pool<SampleBoardPiece> GetPool(int index) => IsPair(index) ? whitePool : blackPool;
+    Pool<BoardPiece> GetPool(int index) => IsPair(index) ? whitePool : blackPool;
     [ContextMenu(nameof(SetSquareCoordenates))]
     void SetSquareCoordenates() => board.ForEachDoAction(SetSquareCoordenates);
     void SetSquareCoordenates(int i, int j, int k) => board[i, j, k].BoardCoord = new Vector3Int(i, j, k);
+    #endregion //BOARD GENERATION
+
+    public BoardPiece GetSquareAt(Vector3Int boardCoord)
+    {
+        if (board.OutOfBounds(boardCoord.x, boardCoord.y, boardCoord.z)) return default(BoardPiece);
+        return board[boardCoord.x, boardCoord.y, boardCoord.z];
+    }
     static bool IsPair(int value) => value % 2 == 0;
-    static Vector3 MemberWiseMultiply(Vector3 a, Vector3 b) => new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
     #endregion //METHODS
 }

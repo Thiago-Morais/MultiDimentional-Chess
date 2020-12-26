@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SampleBoardPiece : MonoBehaviour, IPoolable, ISelectable, IMediator<SampleBoardPiece, SampleBoardPiece.IntFlags>, IOnBoard
+public class BoardPiece : MonoBehaviour, IPoolable, ISelectable, IMediator<BoardPiece, BoardPiece.IntFlags>, IOnBoard
 {
     #region -------- FIELDS
     public SO_BoardSquare so_pieceData;
-    public Transform pieceTarget;
     public Highlight highlight;
+    public Transform pieceTarget;
     [SerializeField] Vector3Int boardCoord;
 
     #endregion //FIELDS
@@ -21,25 +21,28 @@ public class SampleBoardPiece : MonoBehaviour, IPoolable, ISelectable, IMediator
         if (!highlight) highlight = GetComponentInChildren<Highlight>();
         SignOn(this);
     }
-    public enum IntFlags { }
+    public enum IntFlags
+    {
+        none = 0,
+        Selected = 1 << 0,
+        Deselected = 1 << 1,
+    }
 
     #region -------- METHODS
     #region -------- MEDIATOR
-    public void SignOn(SampleBoardPiece sender)
-    {
-        ContextMediator.SignOn(this);
-    }
-    public void Notify(SampleBoardPiece sender, IntFlags intFlag)
-    {
-    }
+    public void SignOn(BoardPiece sender) => ContextMediator.SignOn(this);
+    public void Notify(IntFlags intFlag) => ContextMediator.Notify(this, intFlag);
     #endregion //MEDIATOR
     public void OnSelected()
     {
+        Notify(IntFlags.Selected);
         // highlight.LockHighlight();
         // highlightSelected
     }
     public void OnDeselected()
     {
+        Notify(IntFlags.Deselected);
+        highlight.HighlightOff();
         // highlight.UnlockHighlight();
     }
     [ContextMenu(nameof(UpdateSize))]
@@ -54,6 +57,6 @@ public class SampleBoardPiece : MonoBehaviour, IPoolable, ISelectable, IMediator
         gameObject.SetActive(true);
         return this;
     }
-    public IPoolable Instantiate(Transform poolParent) => Instantiate(so_pieceData.prefab, poolParent).GetComponent<SampleBoardPiece>();
+    public IPoolable Instantiate(Transform poolParent) => Instantiate(so_pieceData.prefab, poolParent).GetComponent<BoardPiece>();
     #endregion //METHODS
 }

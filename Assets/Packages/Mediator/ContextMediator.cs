@@ -20,28 +20,30 @@ public class ContextMediator
         if (squares != null)
         {
             foreach (var item in squares)
-                Debug.Log($"{nameof(SampleBoardPiece)} - {item.name}", item.gameObject);
+                Debug.Log($"{nameof(BoardPiece)} - {item.name}", item.gameObject);
         }
     }
 #endif //UNITY_EDITOR
-    public static List<SamplePiece> pieces = new List<SamplePiece>();
-    public static List<SampleBoardPiece> squares = new List<SampleBoardPiece>();
+    static List<SamplePiece> pieces = new List<SamplePiece>();
+    static List<BoardPiece> squares = new List<BoardPiece>();
+    static DinamicBoard dinamicBoard;
+    static Selector selector;
     public static void SignOn(SamplePiece sender) => pieces.Add(sender);
     public static void Notify(SamplePiece sender, Enum action)
     {
         switch (action)
         {
             case SamplePiece.IntFlags.Selected:
-                foreach (SampleBoardPiece square in squares)
+                foreach (BoardPiece square in squares)
                     if (sender.BoardCoord == square.BoardCoord)
                     {
                         square.highlight.HighlightOn(Highlight.HighlightType.selected);
                     }
-                    else if (sender.IsMoveAvailable(square, sender.captureSet))
+                    else if (sender.IsMovimentAvailable(square, sender.captureSet))
                     {
                         square.highlight.HighlightOn(Highlight.HighlightType.capturable);
                     }
-                    else if (sender.IsMoveAvailable(square, sender.moveSet))
+                    else if (sender.IsMovimentAvailable(square, sender.moveSet))
                     {
                         square.highlight.HighlightOn(Highlight.HighlightType.movable);
                     }
@@ -50,12 +52,46 @@ public class ContextMediator
                         square.highlight.HighlightOff();
                     }
                 break;
+            case SamplePiece.IntFlags.UpdateTarget:
+                Vector3Int boardCoord = sender.BoardCoord;
+                BoardPiece boardPiece = dinamicBoard.GetSquareAt(boardCoord);
+                if (!boardPiece) { Debug.LogError($"Tryed to get Square at {boardCoord} but it was out of bounds.", sender); break; }
+
+                sender.targetSquare = boardPiece;
+                break;
             default: break;
         }
     }
-    public static void SignOn(SampleBoardPiece sender) => squares.Add(sender);
-    public static void Notify(SampleBoardPiece sender, Enum action)
+    public static void SignOn(BoardPiece sender) => squares.Add(sender);
+    public static void Notify(BoardPiece sender, Enum action)
+    {
+        switch (action)
+        {
+            case BoardPiece.IntFlags.Selected:
+                /*
+                verifica se ele pode ser movido
+                se for, move
+                deseleciona
+                */
+                SamplePiece selectedPiece = (SamplePiece)selector.currentSelected;
+                if (!selectedPiece) break;
+
+                if (selectedPiece.IsAnyMovimentAvailable(sender))
+                {
+                    selectedPiece.BoardCoord = sender.BoardCoord;
+                    selectedPiece.MoveToCoord();
+                }
+                foreach (BoardPiece square in squares) square.OnDeselected();
+                break;
+            default: break;
+        }
+    }
+    public static void SignOn(DinamicBoard sender) => dinamicBoard = sender;
+    public static void Notify(DinamicBoard sender, Enum action)
     {
     }
-
+    public static void SignOn(Selector sender) => selector = sender;
+    public static void Notify(Selector sender, Enum action)
+    {
+    }
 }

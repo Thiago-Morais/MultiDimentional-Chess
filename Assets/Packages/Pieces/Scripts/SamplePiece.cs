@@ -7,8 +7,8 @@ using UnityEngine;
 public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, SamplePiece.IntFlags>, IHighlightable, IOnBoard
 {
     #region -------- FIELDS
-    public SampleBoardPiece targetSquare;
-    public SampleBoardPiece currentSquare;
+    public BoardPiece targetSquare;
+    public BoardPiece currentSquare;
     public Transform targetTransform;
     public Highlight highlight;
     public IntFlags intFlags;
@@ -35,12 +35,15 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     {
         none = 0,
         Selected = 1 << 0,
+        Deselected = 1 << 1,
+        UpdateTarget = 1 << 2,
     }
     void Awake()
     {
         InitializeVariables();
         SignOn(this);
     }
+    void Start() => MoveToCoord();
     void InitializeVariables()
     {
         if (!highlight) highlight = GetComponent<Highlight>();
@@ -48,38 +51,43 @@ public class SamplePiece : MonoBehaviour, ISelectable, IMediator<SamplePiece, Sa
     #region -------- METHODS
     #region -------- MEDIATOR
     public void SignOn(SamplePiece sender)
-    {
-        ContextMediator.SignOn(sender);
-    }
-    public void Notify(SamplePiece sender, IntFlags intFlag)
-    {
-        ContextMediator.Notify(sender, intFlag);
-    }
+        => ContextMediator.SignOn(sender);
+    public void Notify(IntFlags intFlag)
+        => ContextMediator.Notify(this, intFlag);
     #endregion //MEDIATOR
-    [ContextMenu(nameof(MoveUsingTransform))]
-    public void MoveUsingTransform() => MoveTo(targetTransform);
-    public void MoveTo(Transform target)
+
+    [ContextMenu(nameof(MoveToCoord))]
+    public void MoveToCoord()
     {
-        transform.position = target.position;
+        UpdateSquareTarget();
+        MoveUsingSquare();
     }
-    [ContextMenu(nameof(MoveUsingSO))]
-    public void MoveUsingSO() => MoveTo(targetSquare);
-    public void MoveTo(SampleBoardPiece target)
+    [ContextMenu(nameof(UpdateSquareTarget))]
+    public void UpdateSquareTarget()
     {
+        Notify(IntFlags.UpdateTarget);
+    }
+    [ContextMenu(nameof(MoveUsingSquare))]
+    public void MoveUsingSquare() => MoveTo(targetSquare);
+    public void MoveTo(BoardPiece target)
+    {
+        if (!target) return;
         transform.position = target.pieceTarget.position;
         currentSquare = target;
         BoardCoord = target.BoardCoord;
     }
     public void OnSelected()
     {
-        // highlight.LockHighlight();
-        Notify(this, IntFlags.Selected);
+        Notify(IntFlags.Selected);
     }
     public void OnDeselected()
     {
-        // highlight.UnlockHighlight();
+        Notify(IntFlags.Deselected);
     }
-    public bool IsMoveAvailable(SampleBoardPiece square, PieceMoveSet moveSet)
+    public bool IsAnyMovimentAvailable(BoardPiece square) => IsMovimentAvailable(square, moveSet) || IsMovimentAvailable(square, captureSet);
+    public bool IsMoveAvailable(BoardPiece square) => IsMovimentAvailable(square, moveSet);
+    public bool IsCaptureAvailable(BoardPiece square) => IsMovimentAvailable(square, captureSet);
+    public bool IsMovimentAvailable(BoardPiece square, PieceMoveSet moveSet)
     {
         Vector3Int dif = square.BoardCoord - BoardCoord;
 

@@ -142,7 +142,7 @@ MonoBehaviour:
   targetTransform: {fileID: 0}
   highlight: {fileID: 1121327800}
   intFlags: 0
-  boardPosition: {x: 0, y: 0, z: 0}
+  boardCoord: {x: 0, y: 0, z: 0}
   isWhite: 1
   moveSet: {fileID: 11400000, guid: 944f04d37741e17448820545d7a25b12, type: 2}
   captureSet: {fileID: 0}
@@ -162,6 +162,10 @@ MonoBehaviour:
   m_IsHighlighted: 0
   currentHighlight: 0
   highlightVariations:
+  - type: 1
+    highlightColor: {r: 1.8196079, g: 3.9843137, b: 5.6784315, a: 11}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 3, y: 5}
   - type: 2
     highlightColor: {r: 0, g: 10, b: 1, a: 11}
     highlightPulseSpeed: 3
