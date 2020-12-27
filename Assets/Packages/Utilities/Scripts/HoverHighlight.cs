@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputHighlight : MonoBehaviour
+public class HoverHighlight : MonoBehaviour
 {
     #region -------- FIELDS
     public InputChess inputChess;
@@ -20,7 +20,7 @@ public class InputHighlight : MonoBehaviour
 
     #region -------- EXTERNAL CALL
     void Awake() { if (!mainCamera) mainCamera = Camera.main; }
-    public void OnPointer(InputAction.CallbackContext context)
+    public void OnPoint(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
 

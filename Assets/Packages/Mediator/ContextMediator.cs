@@ -15,7 +15,7 @@ public class ContextMediator
         if (pieces != null)
         {
             foreach (var item in pieces)
-                Debug.Log($"{nameof(SamplePiece)} - {item.name}", item.gameObject);
+                Debug.Log($"{nameof(Piece)} - {item.name}", item.gameObject);
         }
         if (squares != null)
         {
@@ -24,16 +24,43 @@ public class ContextMediator
         }
     }
 #endif //UNITY_EDITOR
-    static List<SamplePiece> pieces = new List<SamplePiece>();
+    static List<Piece> pieces = new List<Piece>();
     static List<BoardPiece> squares = new List<BoardPiece>();
     static DinamicBoard dinamicBoard;
     static Selector selector;
-    public static void SignOn(SamplePiece sender) => pieces.Add(sender);
-    public static void Notify(SamplePiece sender, Enum action)
+    static GameManager gameManager;
+
+    // public static void SignOn(MonoBehaviour sender)
+    // {
+    //     switch (sender)
+    //     {
+    //         case Piece c: SignOn(sender as Piece); break;
+    //         case BoardPiece c: SignOn(sender as BoardPiece); break;
+    //         case DinamicBoard c: SignOn(sender as DinamicBoard); break;
+    //         case Selector c: SignOn(sender as Selector); break;
+    //     }
+    // }
+    // public static void Notify(MonoBehaviour sender, Enum action)
+    // {
+    //     switch (sender)
+    //     {
+    //         case Piece c: Notify(sender as Piece, action); break;
+    //         case BoardPiece c: Notify(sender as BoardPiece, action); break;
+    //         case DinamicBoard c: Notify(sender as DinamicBoard, action); break;
+    //         case Selector c: Notify(sender as Selector, action); break;
+    //     }
+    // }
+    public static void SignOn(GameManager sender) => gameManager = sender;
+    public static void Notify(GameManager sender, Enum action)
+    {
+    }
+    public static void SignOn(Piece sender) => pieces.Add(sender);
+    public static void Notify(Piece sender, Enum action)
     {
         switch (action)
         {
-            case SamplePiece.IntFlags.Selected:
+            case Piece.IntFlags.Selected:
+                sender.highlight.SetHighlightOn(true);
                 foreach (BoardPiece square in squares)
                     if (sender.BoardCoord == square.BoardCoord)
                     {
@@ -52,12 +79,18 @@ public class ContextMediator
                         square.highlight.HighlightOff();
                     }
                 break;
-            case SamplePiece.IntFlags.UpdateTarget:
-                Vector3Int boardCoord = sender.BoardCoord;
-                BoardPiece boardPiece = dinamicBoard.GetSquareAt(boardCoord);
-                if (!boardPiece) { Debug.LogError($"Tryed to get Square at {boardCoord} but it was out of bounds.", sender); break; }
+            case Piece.IntFlags.UpdateTarget:
+                // Vector3Int boardCoord = sender.BoardCoord;
+                // BoardPiece boardPiece = dinamicBoard.GetSquareAt(boardCoord);
+                // if (!boardPiece) { Debug.LogError($"Tryed to get Square at {boardCoord} but it was out of bounds.", sender); break; }
 
-                sender.targetSquare = boardPiece;
+                // sender.targetSquare = boardPiece;
+                break;
+            case Piece.IntFlags.MoveToCoord:
+                BoardPiece boardPiece = dinamicBoard.GetSquareAt(sender.BoardCoord);
+                if (!boardPiece) { Debug.LogError($"Tryed to get Square at {sender.BoardCoord} but it was out of bounds.", sender); break; }
+
+                sender.MoveTo(boardPiece);
                 break;
             default: break;
         }
@@ -68,7 +101,7 @@ public class ContextMediator
         switch (action)
         {
             case BoardPiece.IntFlags.Selected:
-                SamplePiece selectedPiece = selector.currentSelected as SamplePiece;
+                Piece selectedPiece = selector.currentSelected as Piece;
                 if (!selectedPiece) break;
 
                 if (selectedPiece.IsAnyMovimentAvailable(sender))
@@ -88,5 +121,36 @@ public class ContextMediator
     public static void SignOn(Selector sender) => selector = sender;
     public static void Notify(Selector sender, Enum action)
     {
+        switch (action)
+        {
+            case Selector.IntFlags.SelectionChanged:
+                /*
+                verifica se foi clicado em:
+                    nada
+                    um quadrado vazio
+                    um quadrado com uma peça
+                        se essa peça é aliada
+                        se essa peça é inimiga
+                */
+                // Type type = sender.currentSelected.GetType();
+                // if (type == typeof(Piece))
+                // {
+                //     Piece selectedPiece = selector.currentSelected as Piece;
+                // }
+                // else if (type == typeof(BoardPiece))
+                //     if (!selectedPiece) break;
+
+                // if (selectedPiece.IsAnyMovimentAvailable(sender))
+                // {
+                //     selectedPiece.BoardCoord = sender.BoardCoord;
+                //     selectedPiece.MoveToCoord();
+                // }
+                break;
+            case Selector.IntFlags.DeselectAll:
+                foreach (BoardPiece square in squares) square.OnDeselected();
+                foreach (Piece piece in pieces) piece.OnDeselected();
+                break;
+            default: break;
+        }
     }
 }

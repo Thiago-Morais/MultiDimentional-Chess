@@ -9,15 +9,17 @@ public class Highlight : MonoBehaviour
 {
     #region -------- FIELDS
     public bool lockHighlight;
-    [SerializeField] bool m_IsHighlighted;
+    [SerializeField] bool isHighlighted;
     [SerializeField] HighlightType m_CurrentHighlight;
     [SerializeField] List<SampleHighlight> m_HighlightVariations = new List<SampleHighlight> { new SampleHighlight() };
     [SerializeField] List<Material> highlightMaterials = new List<Material>();
     [SerializeField] List<Renderer> m_Renderer;
     HighlightType m_CacheHighlight;
+
     #endregion //FIELDS
 
     #region -------- PROPERTIES
+    public bool IsHighlighted { get => isHighlighted; private set => isHighlighted = value; }
     #endregion //PROPERTIES
 
     void Awake() => InitializeVariables();
@@ -64,7 +66,7 @@ public class Highlight : MonoBehaviour
             else
                 material.DisableKeyword("HIGHLIGHT_ON");
         }
-        m_IsHighlighted = shouldHighlight;
+        IsHighlighted = shouldHighlight;
     }
     public bool TrySetHighlightValues(HighlightType highlightType)
     {

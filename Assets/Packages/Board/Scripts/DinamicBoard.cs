@@ -3,7 +3,7 @@ using System.Collections;
 using ExtensionMethods;
 using UnityEngine;
 
-public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard, DinamicBoard.IntFlags>
+public partial class DinamicBoard : MonoBehaviour,/* IMediatorInstance<DinamicBoard, DinamicBoard.IntFlags> */IMediator<DinamicBoard.IntFlags>
 {
     #region FIELDS
     public Vector3Int size;
@@ -16,9 +16,11 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard, Dinam
     Vector3 cachePadding;
     Vector3 cacheSize;
     Vector3 cacheCenter;
+    // MediatorConcrete<DinamicBoard, IntFlags> mediator = new MediatorConcrete<DinamicBoard, IntFlags>();
     #endregion //FIELDS
 
     #region -------- PROPERTIES
+    // public MediatorConcrete<DinamicBoard, IntFlags> Mediator { get => mediator; set => mediator = value; }
     #endregion //PROPERTIES
     [Flags]
     public enum IntFlags
@@ -26,17 +28,21 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard, Dinam
     }
     void Awake()
     {
-        SignOn(this);
+        SignOn();
         TryUpdateBoard();
     }
     void Update() => TryUpdateBoard();
 
     #region -------- METHODS
     #region ------------ MEDIATOR
-    public void SignOn(DinamicBoard sender)
+    public void SignOn()
         => ContextMediator.SignOn(this);
     public void Notify(IntFlags intFlag)
         => ContextMediator.Notify(this, intFlag);
+    // public void SignOn()
+    //     => Mediator.SignOn(this);
+    // public void Notify(IntFlags intFlag)
+    //     => Mediator.Notify(this, intFlag);
     #endregion //MEDIATOR
     [ContextMenu(nameof(SetPools))]
     void SetPools()

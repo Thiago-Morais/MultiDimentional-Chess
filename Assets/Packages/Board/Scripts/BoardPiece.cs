@@ -3,23 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardPiece : MonoBehaviour, IPoolable, ISelectable, IMediator<BoardPiece, BoardPiece.IntFlags>, IOnBoard
+public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorInstance<BoardPiece, BoardPiece.IntFlags>, */IMediator<BoardPiece.IntFlags>, IOnBoard
 {
     #region -------- FIELDS
     public SO_BoardSquare so_pieceData;
     public Highlight highlight;
     public Transform pieceTarget;
     [SerializeField] Vector3Int boardCoord;
-
+    public Piece currentPiece;
+    // MediatorConcrete<BoardPiece, IntFlags> mediator = new MediatorConcrete<BoardPiece, IntFlags>();
     #endregion //FIELDS
     #region -------- PROPERTIES
     public Vector3Int BoardCoord { get => boardCoord; set => boardCoord = value; }        //TODO setar posição do square no inicio
     public bool Selected { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    // public MediatorConcrete<BoardPiece, IntFlags> Mediator { get => mediator; set => mediator = value; }
     #endregion //PROPERTIES
     void Awake()
     {
         if (!highlight) highlight = GetComponentInChildren<Highlight>();
-        SignOn(this);
+        SignOn();
     }
     public enum IntFlags
     {
@@ -27,11 +29,12 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable, IMediator<Board
         Selected = 1 << 0,
         Deselected = 1 << 1,
     }
-
     #region -------- METHODS
     #region -------- MEDIATOR
-    public void SignOn(BoardPiece sender) => ContextMediator.SignOn(this);
+    public void SignOn() => ContextMediator.SignOn(this);
     public void Notify(IntFlags intFlag) => ContextMediator.Notify(this, intFlag);
+    // public void SignOn() => Mediator.SignOn(this);
+    // public void Notify(IntFlags intFlag) => Mediator.Notify(this, intFlag);
     #endregion //MEDIATOR
     public void OnSelected()
     {
