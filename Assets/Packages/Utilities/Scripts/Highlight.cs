@@ -10,19 +10,11 @@ public class Highlight : MonoBehaviour
     #region -------- FIELDS
     public bool lockHighlight;
     [SerializeField] bool m_IsHighlighted;
-    [SerializeField] HighlightType currentHighlight;
-    [SerializeField] List<SampleHighlight> highlightVariations = new List<SampleHighlight> { new SampleHighlight() };
-    [Serializable]
-    public class SampleHighlight
-    {
-        public HighlightType type = HighlightType.selected;
-        [ColorUsageAttribute(true, true)]
-        public Color highlightColor = (Color.green + Color.blue / 10) * 10;
-        public float highlightPulseSpeed = 3;
-        public Vector2 hightlightPulseAperture = new Vector2(3, 5);
-    }
+    [SerializeField] HighlightType m_CurrentHighlight;
+    [SerializeField] List<SampleHighlight> m_HighlightVariations = new List<SampleHighlight> { new SampleHighlight() };
     [SerializeField] List<Material> highlightMaterials = new List<Material>();
     [SerializeField] List<Renderer> m_Renderer;
+    HighlightType m_CacheHighlight;
     #endregion //FIELDS
 
     #region -------- PROPERTIES
@@ -32,21 +24,27 @@ public class Highlight : MonoBehaviour
     [ContextMenu(nameof(InitializeVariables))]
     void InitializeVariables()
     {
-        UpdateRenderers();
-        UpdateMaterials();
+        UpdateRenderersRef();
+        UpdateMaterialsRef();
     }
 
     #region -------- METHODS
     [ContextMenu(nameof(HighlightOn))]
     public void HighlightOn() => SetHighlightOn(true);
     [ContextMenu(nameof(HighlightOff))]
-    public void HighlightOff() => SetHighlightOn(false);
+    // public void HighlightOff() => SetHighlightOn(false);
+    public void HighlightOff()
+    {
+        SetHighlightOn(false);
+        m_CurrentHighlight = HighlightType.none;
+    }
     [ContextMenu(nameof(UpdateHighlightValues))]
-    public void UpdateHighlightValues() => TrySetHighlightValues(currentHighlight);
-    [ContextMenu(nameof(UpdateRenderers))]
-    public void UpdateRenderers() { if (m_Renderer.IsEmpty()) m_Renderer = GetComponentsInChildren<Renderer>().ToList(); }
-    [ContextMenu(nameof(UpdateMaterials))]
-    void UpdateMaterials()
+    public void UpdateHighlightValues() => TrySetHighlightValues(m_CurrentHighlight);
+    public void HighlightUndo() { if (!TrySetHighlightValues(m_CacheHighlight)) HighlightOff(); }
+    [ContextMenu(nameof(UpdateRenderersRef))]
+    public void UpdateRenderersRef() { if (m_Renderer.IsEmpty()) m_Renderer = GetComponentsInChildren<Renderer>().ToList(); }
+    [ContextMenu(nameof(UpdateMaterialsRef))]
+    void UpdateMaterialsRef()
     {
         highlightMaterials = new List<Material>();
         foreach (var renderer in m_Renderer)
@@ -70,12 +68,19 @@ public class Highlight : MonoBehaviour
     }
     public bool TrySetHighlightValues(HighlightType highlightType)
     {
-        SampleHighlight sampleHighlight = highlightVariations.FirstOrDefault(c => c.type == highlightType);
+        if (highlightType == HighlightType.none)
+        {
+            HighlightOff();
+            return true;
+        }
+
+        SampleHighlight sampleHighlight = m_HighlightVariations.FirstOrDefault(c => c.type == highlightType);
         if (sampleHighlight == null)
         {
             Debug.LogError($"Highlight type {highlightType} not found", gameObject);
             return false;
         }
+
         SetHighlightValues(sampleHighlight);
         return true;
     }
@@ -87,7 +92,8 @@ public class Highlight : MonoBehaviour
             material.SetVector("HIGHTLIGHT_PULSE_APERTURE", target.hightlightPulseAperture);
             material.SetColor("HIGHLIGHT_COLOR", target.highlightColor);
         }
-        currentHighlight = target.type;
+        m_CacheHighlight = m_CurrentHighlight;
+        m_CurrentHighlight = target.type;
     }
     #endregion //METHODS
 
@@ -103,4 +109,15 @@ public class Highlight : MonoBehaviour
         capturable = 1 << 5
     }
     #endregion //ENUM
+    #region -------- NESTED CLASSES
+    [Serializable]
+    public class SampleHighlight
+    {
+        public HighlightType type = HighlightType.selected;
+        [ColorUsageAttribute(true, true)]
+        public Color highlightColor = (Color.green + Color.blue / 10) * 10;
+        public float highlightPulseSpeed = 3;
+        public Vector2 hightlightPulseAperture = new Vector2(3, 5);
+    }
+    #endregion //NESTED CLASSES
 }

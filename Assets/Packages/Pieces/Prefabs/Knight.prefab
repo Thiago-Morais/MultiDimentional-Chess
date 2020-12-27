@@ -84,6 +84,14 @@ PrefabInstance:
       propertyPath: captureSet
       value: 
       objectReference: {fileID: 11400000, guid: 291b9255c0f387a49968f67ad55c63d2, type: 2}
+    - target: {fileID: 436512091913087403, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
+      propertyPath: m_Radius
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 3194823231978089270, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.45
+      objectReference: {fileID: 0}
     - target: {fileID: 3393157009651647071, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
       propertyPath: m_IsActive
       value: 0

@@ -15,6 +15,10 @@ PrefabInstance:
       propertyPath: captureSet
       value: 
       objectReference: {fileID: 11400000, guid: 348621540800f614aa23adee8af88b3f, type: 2}
+    - target: {fileID: 3194823231978089270, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.8
+      objectReference: {fileID: 0}
     - target: {fileID: 3393157009651647071, guid: fced590aaa4e9da43b261d49582857a6, type: 3}
       propertyPath: m_IsActive
       value: 0

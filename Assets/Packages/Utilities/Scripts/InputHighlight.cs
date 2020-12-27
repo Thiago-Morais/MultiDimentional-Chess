@@ -10,7 +10,7 @@ public class InputHighlight : MonoBehaviour
     public InputChess inputChess;
     public Camera mainCamera;
     Rigidbody m_CacheRigidBody;
-    Highlight m_CacheHighlight;
+    Highlight m_CachedHighlight;
     Vector2 m_MousePosition;
     #endregion //FIELDS
 
@@ -19,15 +19,16 @@ public class InputHighlight : MonoBehaviour
 
     #region -------- EXTERNAL CALL
     void Awake() { if (!mainCamera) mainCamera = Camera.main; }
-    // void Update()
-    // {
-    //     UpdateHighlight();
-    // }
     public void OnPointer(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
 
         m_MousePosition = context.ReadValue<Vector2>();
+        UpdateHighlight();
+    }
+
+    private void UpdateHighlight()
+    {
         UpdateHighlight(Highlight.HighlightType.hover);
     }
     #endregion //EXTERNAL CALL
@@ -35,20 +36,20 @@ public class InputHighlight : MonoBehaviour
     void UpdateHighlight(Highlight.HighlightType highlightType)
     {
         Rigidbody currentRigidbody = GetRigidbodyFromRaycast();
-        // if (!currentRigidbody) return;
-        if (IsCached(currentRigidbody)) return;
+        if (!IsNew(currentRigidbody)) return;
 
-        Highlight currentHighlight = ExtractHighlightFrom(currentRigidbody);
-        if (currentHighlight)
+        Highlight currentHighlightObj = ExtractHighlightFrom(currentRigidbody);
+        if (IsNew(currentHighlightObj)) m_CachedHighlight?.HighlightUndo();
+
+        if (currentHighlightObj)
         {
-            TrySetHighlightValues(currentHighlight, highlightType);
-            currentHighlight.HighlightOn();
+            TrySetHighlightValues(currentHighlightObj, highlightType);
+            currentHighlightObj.HighlightOn();
         }
 
-        CacheHighlight(ref m_CacheHighlight, currentHighlight);
+        Cache<Highlight>(ref m_CachedHighlight, currentHighlightObj);
         Cache<Rigidbody>(ref m_CacheRigidBody, currentRigidbody);
     }
-    // void TrySetHighlightValues(Highlight.HighlightType highlightType) => m_CacheHighlight?.TrySetHighlightValues(highlightType);
     void TrySetHighlightValues(Highlight highlight, Highlight.HighlightType highlightType) => highlight?.TrySetHighlightValues(highlightType);
     Rigidbody GetRigidbodyFromRaycast()
     {
@@ -57,23 +58,10 @@ public class InputHighlight : MonoBehaviour
         Rigidbody currentRigidbody = hit.collider?.attachedRigidbody;
         return currentRigidbody;
     }
-    Highlight ExtractHighlightFrom(Rigidbody currentRigidbody)
-    {
-        Highlight highlight = currentRigidbody?.GetComponentInChildren<Highlight>();
-        // if (!highlight) return;
-
-        if (!IsCached(highlight))
-        {
-            ToggleHighlights(highlight);
-        }
-
-        return highlight;
-        // Cache<Highlight>(ref m_CacheHighlight, highlight);
-    }
+    Highlight ExtractHighlightFrom(Rigidbody currentRigidbody) => currentRigidbody?.GetComponentInChildren<Highlight>();
     void ToggleHighlights(Highlight highlight)
     {
-        m_CacheHighlight?.HighlightOff();
-        // highlight?.HighlightOn();
+        m_CachedHighlight?.HighlightUndo();
     }
     RaycastHit MouseRayCast(Camera camera)
     {
@@ -85,10 +73,10 @@ public class InputHighlight : MonoBehaviour
     void Cache<T>(ref T last, T @new) where T : class => last = @new;
     void CacheHighlight(ref Highlight last, Highlight @new)
     {
-        m_CacheHighlight?.HighlightOff();
+        m_CachedHighlight?.HighlightUndo();
         last = @new;
     }
-    public bool IsCached(Rigidbody @new) => @new == m_CacheRigidBody;
-    public bool IsCached(Highlight @new) => @new == m_CacheHighlight;
+    public bool IsNew(Rigidbody @new) => @new != m_CacheRigidBody;
+    public bool IsNew(Highlight @new) => @new != m_CachedHighlight;
     #endregion //METHODS
 }
