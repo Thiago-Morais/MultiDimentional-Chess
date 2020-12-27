@@ -64,15 +64,15 @@ public class ContextMediator
                 foreach (BoardPiece square in squares)
                     if (sender.BoardCoord == square.BoardCoord)
                     {
-                        square.highlight.HighlightOn(Highlight.HighlightType.selected);
+                        square.highlight.HighlightOn(HighlightType.selected);
                     }
                     else if (sender.IsMovimentAvailable(square, sender.captureSet))
                     {
-                        square.highlight.HighlightOn(Highlight.HighlightType.capturable);
+                        square.highlight.HighlightOn(HighlightType.capturable);
                     }
                     else if (sender.IsMovimentAvailable(square, sender.moveSet))
                     {
-                        square.highlight.HighlightOn(Highlight.HighlightType.movable);
+                        square.highlight.HighlightOn(HighlightType.movable);
                     }
                     else
                     {

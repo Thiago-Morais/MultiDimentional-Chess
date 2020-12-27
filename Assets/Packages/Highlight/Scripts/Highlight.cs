@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using ExtensionMethods;
-using System;
 
 public class Highlight : MonoBehaviour
 {
@@ -15,6 +14,7 @@ public class Highlight : MonoBehaviour
     [SerializeField] List<Material> highlightMaterials = new List<Material>();
     [SerializeField] List<Renderer> m_Renderer;
     HighlightType m_CacheHighlight;
+    // public HighlightVariations defaultHighlights;
 
     #endregion //FIELDS
 
@@ -79,7 +79,8 @@ public class Highlight : MonoBehaviour
         SampleHighlight sampleHighlight = m_HighlightVariations.FirstOrDefault(c => c.type == highlightType);
         if (sampleHighlight == null)
         {
-            Debug.LogError($"Highlight type {highlightType} not found", gameObject);
+            // Debug.LogError($"Highlight type {highlightType} not found", gameObject);
+            // sampleHighlight = defaultHighlights.GetHighlightData(highlightType);
             return false;
         }
 
@@ -98,28 +99,14 @@ public class Highlight : MonoBehaviour
         m_CurrentHighlight = target.type;
     }
     #endregion //METHODS
-
-    #region -------- ENUM
-    public enum HighlightType
-    {
-        none = 0,
-        hover = 1 << 0,
-        selected = 1 << 1,
-        error = 1 << 2,
-        atention = 1 << 3,
-        movable = 1 << 4,
-        capturable = 1 << 5
-    }
-    #endregion //ENUM
-    #region -------- NESTED CLASSES
-    [Serializable]
-    public class SampleHighlight
-    {
-        public HighlightType type = HighlightType.selected;
-        [ColorUsageAttribute(true, true)]
-        public Color highlightColor = (Color.green + Color.blue / 10) * 10;
-        public float highlightPulseSpeed = 3;
-        public Vector2 hightlightPulseAperture = new Vector2(3, 5);
-    }
-    #endregion //NESTED CLASSES
+}
+public enum HighlightType
+{
+    none = 0,
+    hover = 1 << 0,
+    selected = 1 << 1,
+    error = 1 << 2,
+    atention = 1 << 3,
+    movable = 1 << 4,
+    capturable = 1 << 5
 }

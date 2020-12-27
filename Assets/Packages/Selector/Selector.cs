@@ -12,11 +12,9 @@ public class Selector : MonoBehaviour, /* IMediatorInstance<Selector, Selector.I
     [SerializeField] LayerMask selectionMask;
     Vector2 m_PointerPosition;
     ISelectable m_CachedSelected;
-    // MediatorConcrete<Selector, IntFlags> mediator = new MediatorConcrete<Selector, IntFlags>();
     #endregion //FIELDS
 
     #region -------- PROPERTIES
-    // public MediatorConcrete<Selector, IntFlags> Mediator { get => mediator; set => mediator = value; }
     #endregion //PROPERTIES
     [Flags]
     public enum IntFlags
@@ -27,7 +25,6 @@ public class Selector : MonoBehaviour, /* IMediatorInstance<Selector, Selector.I
     }
     void Awake()
     {
-        // SignOn(this);
         SignOn();
         if (!m_Camera) m_Camera = Camera.main;
     }
@@ -36,8 +33,6 @@ public class Selector : MonoBehaviour, /* IMediatorInstance<Selector, Selector.I
     #region -------- MEDIATOR
     public void SignOn() => ContextMediator.SignOn(this);
     public void Notify(IntFlags intFlag) => ContextMediator.Notify(this, intFlag);
-    // public void SignOn() => Mediator.SignOn(this);
-    // public void Notify(IntFlags intFlag) => Mediator.Notify(this, intFlag);
     #endregion //MEDIATOR
 
     public void OnPoint(InputAction.CallbackContext context) { if (context.performed) m_PointerPosition = context.ReadValue<Vector2>(); }
@@ -49,17 +44,9 @@ public class Selector : MonoBehaviour, /* IMediatorInstance<Selector, Selector.I
     private void UpdateSelect()
     {
         ISelectable newSelected = GetSelectableUsingRaycast();
-        // if (newSelected == null) return;
 
         ChangeSelection(newSelected);
     }
-    // void ChangeSelection(ISelectable newSelected)
-    // {
-    //     currentSelected?.OnDeselected();
-    //     newSelected?.OnSelected();
-    //     currentSelected = newSelected;
-    //     print(currentSelected);
-    // }
     public void ChangeSelection(ISelectable newSelected)
     {
         m_CachedSelected = currentSelected;
@@ -69,7 +56,7 @@ public class Selector : MonoBehaviour, /* IMediatorInstance<Selector, Selector.I
 
         ContextHandler();
         Notify(IntFlags.SelectionChanged);
-        print(currentSelected);
+        Debug.Log($"{nameof(currentSelected)} = {currentSelected}", gameObject);
     }
     void ContextHandler()
     {

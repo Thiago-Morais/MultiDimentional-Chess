@@ -1,6 +1,6 @@
 using UnityEngine;
 
-internal interface IHighlightable
+public interface IHighlightable
 {
     Highlight Highlight { get; set; }
 }

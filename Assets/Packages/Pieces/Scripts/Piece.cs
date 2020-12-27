@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using ExtensionMethods;
 using UnityEngine;
 
-public partial class Piece : MonoBehaviour, ISelectable/* , IMediatorInstance<Piece, Piece.IntFlags> */, IMediator<Piece.IntFlags>, IHighlightable, IOnBoard
+[RequireComponent(typeof(Highlight))]
+public class Piece : MonoBehaviour, ISelectable/* , IMediatorInstance<Piece, Piece.IntFlags> */, IMediator<Piece.IntFlags>, IHighlightable, IOnBoard
 {
     #region -------- FIELDS
     // public BoardPiece targetSquare;
     public BoardPiece currentSquare;
     public BoardPiece cachedSquare;
     public Transform targetTransform;
-    public Highlight highlight = new Highlight();
+    public Highlight highlight;
     public IntFlags intFlags;
     [SerializeField] Vector3Int boardCoord;
     public PlayerData playerData;
@@ -43,16 +44,17 @@ public partial class Piece : MonoBehaviour, ISelectable/* , IMediatorInstance<Pi
         UpdateTarget = 1 << 2,
         MoveToCoord = 1 << 3,
     }
-    void Awake()
+    public void Awake()
     {
         InitializeVariables();
         SignOn();
         playerData.ApplyPlayerData(this);
     }
-    void Start() => MoveToCoord();
-    void InitializeVariables()
+    public void Start() => MoveToCoord();
+    public void InitializeVariables()
     {
-        if (!highlight) highlight = GetComponent<Highlight>();
+        highlight = highlight.Initialized(this);
+        if (!playerData) playerData = ScriptableObject.CreateInstance<PlayerData>();
     }
 
     #region -------- METHODS
