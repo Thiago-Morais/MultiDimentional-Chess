@@ -11,13 +11,14 @@ public class Selector : MonoBehaviour, IMediator<Selector.IntFlags>, IHighlighte
     [SerializeField] Camera m_Camera;
     [SerializeField] LayerMask selectionMask;
     Vector2 m_PointerPosition;
-    ISelectable m_CachedSelected;
+    ISelectable cachedSelected;
     [SerializeField] HighlightType highlightType = HighlightType.selected;
 
     #endregion //FIELDS
 
     #region -------- PROPERTIES
     public HighlightType HighlightType { get => highlightType; set => highlightType = value; }
+    public ISelectable CachedSelected { get => cachedSelected; private set => cachedSelected = value; }
     #endregion //PROPERTIES
     [Flags]
     public enum IntFlags
@@ -52,20 +53,25 @@ public class Selector : MonoBehaviour, IMediator<Selector.IntFlags>, IHighlighte
     }
     public void ChangeSelection(ISelectable newSelected)
     {
-        m_CachedSelected = currentSelected;
+        CachedSelected = currentSelected;
         currentSelected = newSelected;
-        m_CachedSelected?.OnDeselected();
+        Deselect(CachedSelected);
         Select(currentSelected);
 
         ContextHandler();
         Notify(IntFlags.SelectionChanged);
         Debug.Log($"{nameof(currentSelected)} = {currentSelected}", gameObject);
     }
+    public void Deselect(ISelectable cachedSelected)
+    {
+        cachedSelected?.Highlight.HighlightOff();
+        cachedSelected?.OnDeselected();
+    }
     void Select(ISelectable currentSelected)
     {
+        currentSelected?.Highlight.HighlightOn(HighlightType);
+        currentSelected?.Highlight.HighlightOn(HighlightType);
         currentSelected?.OnSelected();
-        currentSelected.Highlight.HighlightOn(HighlightType);
-        currentSelected.Highlight.HighlightOn(HighlightType);
     }
     void ContextHandler()
     {
