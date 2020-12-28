@@ -31,7 +31,7 @@ namespace Tests
             Object.DestroyImmediate(hoverHighlight.gameObject);
         }
         [Test]
-        public void SelectPiece()
+        public void SelectPieceChangeHighlight()
         {
             //ACT
             selector.ChangeSelection(piece1 as ISelectable);
@@ -41,7 +41,7 @@ namespace Tests
             Assert.AreEqual(selector.HighlightType, piece1.highlight.CachedHighlightType);
         }
         [Test]
-        public void SelectPieceThenSelectOtherPiece()
+        public void SelectSecondPieceDisableFirstHighlight()
         {
             //ACT
             selector.ChangeSelection(piece1 as ISelectable);
@@ -50,6 +50,15 @@ namespace Tests
             //ASSERT
             Assert.IsFalse(piece1.highlight.IsHighlighted);
             Assert.IsTrue(piece2.highlight.IsHighlighted);
+        }
+        [Test]
+        public void SelectSecondPieceDisableResetFirstHighlightType()
+        {
+            //ACT
+            selector.ChangeSelection(piece1 as ISelectable);
+            selector.ChangeSelection(piece2 as ISelectable);
+
+            //ASSERT
             Assert.AreEqual(selector.HighlightType, piece2.highlight.CachedHighlightType);
         }
         [Test]
@@ -71,6 +80,14 @@ namespace Tests
             //ASSERT
             Assert.IsFalse(piece1.highlight.IsHighlighted);
             Assert.AreEqual(piece1.highlight.CachedHighlightType, piece1.highlight.HighlightType);
+        }
+        [Test]
+        public void SelectOwnPiece()
+        {
+            //ACT
+            selector.ChangeSelection(piece1 as ISelectable);
+
+            //ASSERT
         }
         [UnityTest]
         public IEnumerator NewTestScriptWithEnumeratorPasses()
