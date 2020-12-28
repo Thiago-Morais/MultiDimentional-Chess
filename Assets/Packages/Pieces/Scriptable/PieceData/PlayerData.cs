@@ -5,9 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = nameof(ScriptableObject) + "/" + nameof(PlayerData))]
 public class PlayerData : ScriptableObject
 {
-    public bool isWhite;
+    public bool isWhite = true;
     public Material piecesMaterial;
-    public Vector3 forward;
+    public Vector3 forward = Vector3.forward;
 
     public void ApplyPlayerData(Piece samplePiece)
     {

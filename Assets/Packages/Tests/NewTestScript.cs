@@ -31,14 +31,21 @@ namespace Tests
             Object.DestroyImmediate(hoverHighlight.gameObject);
         }
         [Test]
-        public void SelectPieceChangeHighlight()
+        public void IsSelectedPieceHighlighted()
         {
             //ACT
             selector.ChangeSelection(piece1 as ISelectable);
-
             //ASSERT
             Assert.IsTrue(piece1.highlight.IsHighlighted);
             Assert.AreEqual(selector.HighlightType, piece1.highlight.CachedHighlightType);
+        }
+        [Test]
+        public void SelectPieceChangeHighlightType()
+        {
+            //ACT
+            selector.ChangeSelection(piece2 as ISelectable);
+            //ASSERT
+            Assert.AreEqual(selector.HighlightType, piece2.highlight.CachedHighlightType);
         }
         [Test]
         public void SelectSecondPieceDisableFirstHighlight()
@@ -46,53 +53,51 @@ namespace Tests
             //ACT
             selector.ChangeSelection(piece1 as ISelectable);
             selector.ChangeSelection(piece2 as ISelectable);
-
             //ASSERT
             Assert.IsFalse(piece1.highlight.IsHighlighted);
-            Assert.IsTrue(piece2.highlight.IsHighlighted);
+            // Assert.IsTrue(piece2.highlight.IsHighlighted);
         }
         [Test]
-        public void SelectSecondPieceDisableResetFirstHighlightType()
+        public void SelectSecondPieceResetFirstHighlightType()
         {
             //ACT
             selector.ChangeSelection(piece1 as ISelectable);
             selector.ChangeSelection(piece2 as ISelectable);
-
             //ASSERT
             Assert.AreEqual(selector.HighlightType, piece2.highlight.CachedHighlightType);
         }
         [Test]
-        public void HoverOverPiece()
+        public void IsHoveredPieceHighlighted()
         {
             //ACT
             hoverHighlight.HoveredIn(piece1);
-
             //ASSERT
             Assert.IsTrue(piece1.highlight.IsHighlighted);
         }
         [Test]
-        public void HoverOutOfPieceAfterHoveringIn()
+        public void HoverOutOfPieceDisableHighlight()
+        {
+            //ACT
+            hoverHighlight.HoveredIn(piece2);
+            hoverHighlight.HoveredOut(piece2);
+            //ASSERT
+            Assert.IsFalse(piece2.highlight.IsHighlighted);
+        }
+        [Test]
+        public void HoverOutOfPieceResetHighlightType()
         {
             //ACT
             hoverHighlight.HoveredIn(piece1);
             hoverHighlight.HoveredOut(piece1);
-
             //ASSERT
-            Assert.IsFalse(piece1.highlight.IsHighlighted);
             Assert.AreEqual(piece1.highlight.CachedHighlightType, piece1.highlight.HighlightType);
         }
         [Test]
         public void SelectOwnPiece()
         {
             //ACT
-            selector.ChangeSelection(piece1 as ISelectable);
-
+            selector.ChangeSelection(piece2 as ISelectable);
             //ASSERT
-        }
-        [UnityTest]
-        public IEnumerator NewTestScriptWithEnumeratorPasses()
-        {
-            yield return null;
         }
     }
 }
