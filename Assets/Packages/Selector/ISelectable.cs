@@ -1,8 +1,7 @@
 using System;
 
-public interface ISelectable
+public interface ISelectable : IHighlightable
 {
-    bool Selected { get; set; }
     void OnSelected();
     void OnDeselected();
 }

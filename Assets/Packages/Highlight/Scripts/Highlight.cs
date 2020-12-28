@@ -9,17 +9,20 @@ public class Highlight : MonoBehaviour
     #region -------- FIELDS
     public bool lockHighlight;
     [SerializeField] bool isHighlighted;
-    [SerializeField] HighlightType m_CurrentHighlight;
-    [SerializeField] List<SampleHighlight> m_HighlightVariations = new List<SampleHighlight> { new SampleHighlight() };
+    [SerializeField] HighlightType highlightType;
+    // [SerializeField] List<SampleHighlight> m_HighlightVariations = new List<SampleHighlight> { new SampleHighlight() };
     [SerializeField] List<Material> highlightMaterials = new List<Material>();
     [SerializeField] List<Renderer> m_Renderer;
-    HighlightType m_CacheHighlight;
-    // public HighlightVariations defaultHighlights;
-
+    [SerializeField] HighlightVariations highlightVariations;
+    HighlightType cachedHighlightType;
     #endregion //FIELDS
 
     #region -------- PROPERTIES
     public bool IsHighlighted { get => isHighlighted; private set => isHighlighted = value; }
+    public HighlightVariations HighlightVariations { get => highlightVariations; private set => highlightVariations = value; }
+    public HighlightType HighlightType { get => highlightType; private set => highlightType = value; }
+    public HighlightType CachedHighlightType { get => cachedHighlightType; private set => cachedHighlightType = value; }
+
     #endregion //PROPERTIES
 
     void Awake() => InitializeVariables();
@@ -38,11 +41,11 @@ public class Highlight : MonoBehaviour
     public void HighlightOff()
     {
         SetHighlightOn(false);
-        m_CurrentHighlight = HighlightType.none;
+        HighlightType = HighlightType.none;
     }
     [ContextMenu(nameof(UpdateHighlightValues))]
-    public void UpdateHighlightValues() => TrySetHighlightValues(m_CurrentHighlight);
-    public void HighlightUndo() { if (!TrySetHighlightValues(m_CacheHighlight)) HighlightOff(); }
+    public void UpdateHighlightValues() => TrySetHighlightValues(HighlightType);
+    public void HighlightUndo() { if (!TrySetHighlightValues(cachedHighlightType)) HighlightOff(); }
     [ContextMenu(nameof(UpdateRenderersRef))]
     public void UpdateRenderersRef() { if (m_Renderer.IsEmpty()) m_Renderer = GetComponentsInChildren<Renderer>().ToList(); }
     [ContextMenu(nameof(UpdateMaterialsRef))]
@@ -76,18 +79,19 @@ public class Highlight : MonoBehaviour
             return true;
         }
 
-        SampleHighlight sampleHighlight = m_HighlightVariations.FirstOrDefault(c => c.type == highlightType);
-        if (sampleHighlight == null)
-        {
-            // Debug.LogError($"Highlight type {highlightType} not found", gameObject);
-            // sampleHighlight = defaultHighlights.GetHighlightData(highlightType);
-            return false;
-        }
+        // SampleHighlight sampleHighlight = m_HighlightVariations.FirstOrDefault(c => c.type == highlightType);
+        // if (sampleHighlight == null)
+        // {
+        //     // Debug.LogError($"Highlight type {highlightType} not found", gameObject);
+        //     sampleHighlight = HighlightVariations.GetHighlightData(highlightType);
+        //     return false;
+        // }
+        HighlightData highlightData = HighlightVariations.GetHighlightData(highlightType);
 
-        SetHighlightValues(sampleHighlight);
+        SetHighlightValues(highlightData);
         return true;
     }
-    void SetHighlightValues(SampleHighlight target)
+    void SetHighlightValues(HighlightData target)
     {
         foreach (Material material in highlightMaterials)
         {
@@ -95,8 +99,8 @@ public class Highlight : MonoBehaviour
             material.SetVector("HIGHTLIGHT_PULSE_APERTURE", target.hightlightPulseAperture);
             material.SetColor("HIGHLIGHT_COLOR", target.highlightColor);
         }
-        m_CacheHighlight = m_CurrentHighlight;
-        m_CurrentHighlight = target.type;
+        cachedHighlightType = HighlightType;
+        HighlightType = target.type;
     }
     #endregion //METHODS
 }

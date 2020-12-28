@@ -60,24 +60,24 @@ public class ContextMediator
         switch (action)
         {
             case Piece.IntFlags.Selected:
-                sender.highlight.SetHighlightOn(true);
-                foreach (BoardPiece square in squares)
-                    if (sender.BoardCoord == square.BoardCoord)
-                    {
-                        square.highlight.HighlightOn(HighlightType.selected);
-                    }
-                    else if (sender.IsMovimentAvailable(square, sender.captureSet))
-                    {
-                        square.highlight.HighlightOn(HighlightType.capturable);
-                    }
-                    else if (sender.IsMovimentAvailable(square, sender.moveSet))
-                    {
-                        square.highlight.HighlightOn(HighlightType.movable);
-                    }
-                    else
-                    {
-                        square.highlight.HighlightOff();
-                    }
+                // sender.highlight.SetHighlightOn(true);
+                // foreach (BoardPiece square in squares)
+                //     if (sender.BoardCoord == square.BoardCoord)
+                //     {
+                //         square.Highlight.HighlightOn(HighlightType.selected);
+                //     }
+                //     else if (sender.IsMovimentAvailable(square, sender.captureSet))
+                //     {
+                //         square.Highlight.HighlightOn(HighlightType.capturable);
+                //     }
+                //     else if (sender.IsMovimentAvailable(square, sender.moveSet))
+                //     {
+                //         square.Highlight.HighlightOn(HighlightType.movable);
+                //     }
+                //     else
+                //     {
+                //         square.Highlight.HighlightOff();
+                //     }
                 break;
             case Piece.IntFlags.UpdateTarget:
                 // Vector3Int boardCoord = sender.BoardCoord;

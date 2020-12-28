@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Selector : MonoBehaviour, /* IMediatorInstance<Selector, Selector.IntFlags> */ IMediator<Selector.IntFlags>
+public class Selector : MonoBehaviour, IMediator<Selector.IntFlags>, IHighlighter
 {
     #region -------- FIELDS
     public ISelectable currentSelected;
@@ -12,9 +12,12 @@ public class Selector : MonoBehaviour, /* IMediatorInstance<Selector, Selector.I
     [SerializeField] LayerMask selectionMask;
     Vector2 m_PointerPosition;
     ISelectable m_CachedSelected;
+    [SerializeField] HighlightType highlightType = HighlightType.selected;
+
     #endregion //FIELDS
 
     #region -------- PROPERTIES
+    public HighlightType HighlightType { get => highlightType; set => highlightType = value; }
     #endregion //PROPERTIES
     [Flags]
     public enum IntFlags
@@ -52,11 +55,17 @@ public class Selector : MonoBehaviour, /* IMediatorInstance<Selector, Selector.I
         m_CachedSelected = currentSelected;
         currentSelected = newSelected;
         m_CachedSelected?.OnDeselected();
-        currentSelected?.OnSelected();
+        Select(currentSelected);
 
         ContextHandler();
         Notify(IntFlags.SelectionChanged);
         Debug.Log($"{nameof(currentSelected)} = {currentSelected}", gameObject);
+    }
+    void Select(ISelectable currentSelected)
+    {
+        currentSelected?.OnSelected();
+        currentSelected.Highlight.HighlightOn(HighlightType);
+        currentSelected.Highlight.HighlightOn(HighlightType);
     }
     void ContextHandler()
     {
@@ -80,22 +89,22 @@ public class Selector : MonoBehaviour, /* IMediatorInstance<Selector, Selector.I
                     se essa peça é inimiga
                         nada
         */
-        DeselectAll();
-        if (currentSelected == null) return;
+        // DeselectAll();
+        // if (currentSelected == null) return;
 
-        Piece selectedPiece;
+        // Piece selectedPiece;
 
-        Type type = currentSelected.GetType();
-        if (type == typeof(BoardPiece))
-        {
-            Piece piece = (currentSelected as BoardPiece).currentPiece;
-            if (!piece) return;
-            else selectedPiece = piece;
-        }
-        else selectedPiece = currentSelected as Piece;
+        // Type type = currentSelected.GetType();
+        // if (type == typeof(BoardPiece))
+        // {
+        //     Piece piece = (currentSelected as BoardPiece).currentPiece;
+        //     if (!piece) return;
+        //     else selectedPiece = piece;
+        // }
+        // else selectedPiece = currentSelected as Piece;
 
-        // if (GameManager.Instance.IsTurn(selectedPiece.playerData))
-        selectedPiece.OnSelected();
+        // // if (GameManager.Instance.IsTurn(selectedPiece.playerData))
+        // selectedPiece.OnSelected();
     }
     internal void DeselectAll() => Notify(IntFlags.DeselectAll);
     ISelectable GetSelectableUsingRaycast()

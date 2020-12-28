@@ -23,15 +23,6 @@ public class Piece : MonoBehaviour, ISelectable/* , IMediatorInstance<Piece, Pie
     #endregion //FIELDS
     #region -------- PROPERTIES
     public Vector3Int BoardCoord { get => boardCoord; set => boardCoord = value; }
-    public bool Selected
-    {
-        get => intFlags.HasAny(IntFlags.Selected);
-        set
-        {
-            if (value) intFlags = intFlags.Include(IntFlags.Selected);
-            else intFlags = intFlags.Exclude(IntFlags.Selected);
-        }
-    }
     public Highlight Highlight { get => highlight; set => highlight = value; }
     // public MediatorConcrete<Piece, IntFlags> Mediator { get => mediator; set => mediator = value; }
     #endregion //PROPERTIES

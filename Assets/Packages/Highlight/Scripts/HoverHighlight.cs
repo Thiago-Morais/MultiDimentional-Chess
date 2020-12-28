@@ -4,16 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class HoverHighlight : MonoBehaviour
+public class HoverHighlight : MonoBehaviour, IHighlighter
 {
     #region -------- FIELDS
     public InputChess inputChess;
     public Camera mainCamera;
-    public HighlightType highlightType = HighlightType.hover;
+    [SerializeField] HighlightType highlightType = HighlightType.hover;
     Rigidbody m_CacheRigidBody;
     IHighlightable m_CachedHighlightable;
     Highlight m_CachedHighlight;
     Vector2 m_MousePosition;
+    public HighlightType HighlightType { get => highlightType; set => highlightType = value; }
     #endregion //FIELDS
 
     #region -------- PROPERTIES
@@ -33,17 +34,15 @@ public class HoverHighlight : MonoBehaviour
     void UpdateHighlight()
     {
         Rigidbody currentRigidbody = GetRigidbodyFromRaycast();
-        if (!IsNew(currentRigidbody)) return;
+        // if (!IsNew(currentRigidbody)) return;
 
-        // Highlight newHighlight = GetHighlightFrom(currentRigidbody);
-        // if (IsNew(newHighlight)) m_CachedHighlight?.HighlightUndo();
         IHighlightable highlightable = GetHighlightableFrom(currentRigidbody);
-        if (IsNew(highlightable)) m_CachedHighlight?.HighlightUndo();
+        if (!IsNew(highlightable) && IsHover(highlightable)) return;
+        // if (IsNew(highlightable)) HoveredOut(m_CachedHighlightable);
 
-        // newHighlight?.HighlightOn(highlightType);
-        HoveredOver(highlightable);
+        HoveredOut(m_CachedHighlightable);
+        HoveredIn(highlightable);
 
-        // Cache<Highlight>(ref m_CachedHighlight, newHighlight);
         Cache<IHighlightable>(ref m_CachedHighlightable, highlightable);
         Cache<Rigidbody>(ref m_CacheRigidBody, currentRigidbody);
     }
@@ -52,7 +51,9 @@ public class HoverHighlight : MonoBehaviour
         RaycastHit hit = MouseRayCast(mainCamera);
         return hit.collider?.attachedRigidbody;
     }
-    public void HoveredOver(IHighlightable hovered) => hovered.Highlight?.HighlightOn(HighlightType.hover);
+    bool IsHover(IHighlightable highlightable) => highlightable?.Highlight.HighlightType == HighlightType;
+    public void HoveredIn(IHighlightable hovered) => hovered?.Highlight?.HighlightOn(HighlightType.hover);
+    public void HoveredOut(IHighlightable hovered) => hovered?.Highlight?.HighlightUndo();
     RaycastHit MouseRayCast(Camera camera)
     {
         Ray ray = camera.ScreenPointToRay(m_MousePosition);

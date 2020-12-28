@@ -7,7 +7,7 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
 {
     #region -------- FIELDS
     public SO_BoardSquare so_pieceData;
-    public Highlight highlight;
+    [SerializeField] Highlight highlight;
     public Transform pieceTarget;
     [SerializeField] Vector3Int boardCoord;
     public Piece currentPiece;
@@ -15,12 +15,13 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     #endregion //FIELDS
     #region -------- PROPERTIES
     public Vector3Int BoardCoord { get => boardCoord; set => boardCoord = value; }        //TODO setar posição do square no inicio
-    public bool Selected { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public Highlight Highlight { get => highlight; set => highlight = value; }
+
     // public MediatorConcrete<BoardPiece, IntFlags> Mediator { get => mediator; set => mediator = value; }
     #endregion //PROPERTIES
     void Awake()
     {
-        if (!highlight) highlight = GetComponentInChildren<Highlight>();
+        if (!Highlight) Highlight = GetComponentInChildren<Highlight>();
         SignOn();
     }
     public enum IntFlags
@@ -45,7 +46,7 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     public void OnDeselected()
     {
         Notify(IntFlags.Deselected);
-        highlight.HighlightOff();
+        Highlight.HighlightOff();
         // highlight.UnlockHighlight();
     }
     [ContextMenu(nameof(UpdateSize))]

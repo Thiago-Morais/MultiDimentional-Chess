@@ -6,54 +6,59 @@ using UnityEngine.TestTools;
 
 namespace Tests
 {
-    public class NewTestScript
+    public class HighlightTests
     {
-        // A Test behaves as an ordinary method
-        [Test]
-        public void NewTestScriptSimplePasses()
+        Selector selector;
+        Piece piece;
+        HoverHighlight hoverHighlight;
+        [SetUp]
+        public void Setup()
         {
-            // Use the Assert class to test conditions
+            selector = new GameObject().AddComponent<Selector>();
+            piece = new GameObject().AddComponent<Piece>();
+            piece.Awake();
+            hoverHighlight = new GameObject().AddComponent<HoverHighlight>();
+        }
+        [TearDown]
+        public void TearDown()
+        {
+            Object.DestroyImmediate(selector.gameObject);
+            Object.DestroyImmediate(piece.gameObject);
+            Object.DestroyImmediate(hoverHighlight.gameObject);
         }
         [Test]
-        public void selected_piece_display_highlight()
+        public void SelectPiece()
         {
-            //ARRANGE
-            GameObject selectorObj = new GameObject();
-            GameObject pieceObj = new GameObject();
-            Selector selector = selectorObj.AddComponent<Selector>();
-            Piece piece = pieceObj.AddComponent<Piece>();
-            piece.Awake();
-            // Highlight highlight = pieceObj.AddComponent<Highlight>();
-            // piece.highlight = highlight;
-
             //ACT
             selector.ChangeSelection(piece as ISelectable);
-            bool isHighlighted = piece.highlight.IsHighlighted;
 
             //ASSERT
-            Assert.IsTrue(isHighlighted);
+            Assert.IsTrue(piece.highlight.IsHighlighted);
+            Assert.AreEqual(selector.HighlightType, piece.highlight.CachedHighlightType);
         }
         [Test]
-        public void hover_over_piece_highlight_it()
+        public void HoverOverPiece()
         {
-            //ARRANGE
-            Piece hoveredPiece = new GameObject().AddComponent<Piece>();
-            HoverHighlight hoverHighlight = new GameObject().AddComponent<HoverHighlight>();
-            hoveredPiece.Awake();
-
             //ACT
-            hoverHighlight.HoveredOver(hoveredPiece);
+            hoverHighlight.HoveredIn(piece);
 
             //ASSERT
-            Assert.IsTrue(hoveredPiece.highlight.IsHighlighted);
+            Assert.IsTrue(piece.highlight.IsHighlighted);
         }
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
+        [Test]
+        public void HoverOutOfPieceAfterHoveringIn()
+        {
+            //ACT
+            hoverHighlight.HoveredIn(piece);
+            hoverHighlight.HoveredOut(piece);
+
+            //ASSERT
+            Assert.IsFalse(piece.highlight.IsHighlighted);
+            Assert.AreEqual(piece.highlight.CachedHighlightType, piece.highlight.HighlightType);
+        }
         [UnityTest]
         public IEnumerator NewTestScriptWithEnumeratorPasses()
         {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
             yield return null;
         }
     }

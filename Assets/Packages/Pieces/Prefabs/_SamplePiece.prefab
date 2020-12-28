@@ -138,8 +138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cae11f03ca0b16b48bf043362398c9b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSquare: {fileID: 0}
   currentSquare: {fileID: 0}
+  cachedSquare: {fileID: 0}
   targetTransform: {fileID: 0}
   highlight: {fileID: 1121327800}
   intFlags: 0
@@ -160,16 +160,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lockHighlight: 0
-  m_IsHighlighted: 0
+  isHighlighted: 0
   m_CurrentHighlight: 0
-  m_HighlightVariations:
-  - type: 1
-    highlightColor: {r: 1.8196079, g: 3.9843137, b: 5.6784315, a: 11}
-    highlightPulseSpeed: 3
-    hightlightPulseAperture: {x: 3, y: 5}
-  - type: 2
-    highlightColor: {r: 0, g: 10, b: 1, a: 11}
-    highlightPulseSpeed: 3
-    hightlightPulseAperture: {x: 3, y: 5}
   highlightMaterials: []
   m_Renderer: []
+  highlightVariations: {fileID: 11400000, guid: 1ba2f7eb01513a54889bdfc1850c1268, type: 2}
