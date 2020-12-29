@@ -5,10 +5,9 @@ using ExtensionMethods;
 using UnityEngine;
 
 [RequireComponent(typeof(Highlight))]
-public class Piece : MonoBehaviour, ISelectable/* , IMediatorInstance<Piece, Piece.IntFlags> */, IMediator<Piece.IntFlags>, IHighlightable, IOnBoard
+public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHighlightable, IOnBoard
 {
     #region -------- FIELDS
-    // public BoardPiece targetSquare;
     public BoardPiece currentSquare;
     public BoardPiece cachedSquare;
     public Transform targetTransform;
@@ -16,15 +15,12 @@ public class Piece : MonoBehaviour, ISelectable/* , IMediatorInstance<Piece, Pie
     public IntFlags intFlags;
     [SerializeField] Vector3Int boardCoord;
     public PlayerData playerData;
-    // public bool isWhite = true;
     public PieceMoveSet moveSet;
     public PieceMoveSet captureSet;
-    // MediatorConcrete<Piece, Piece.IntFlags> mediator = new MediatorConcrete<Piece, Piece.IntFlags>();
     #endregion //FIELDS
     #region -------- PROPERTIES
     public Vector3Int BoardCoord { get => boardCoord; set => boardCoord = value; }
     public Highlight Highlight { get => highlight; set => highlight = value; }
-    // public MediatorConcrete<Piece, IntFlags> Mediator { get => mediator; set => mediator = value; }
     #endregion //PROPERTIES
     [Flags]
     public enum IntFlags
@@ -34,6 +30,7 @@ public class Piece : MonoBehaviour, ISelectable/* , IMediatorInstance<Piece, Pie
         Deselected = 1 << 1,
         UpdateTarget = 1 << 2,
         MoveToCoord = 1 << 3,
+        ShowPossibleMoves = 1 << 4,
     }
     public void Awake()
     {
@@ -46,6 +43,8 @@ public class Piece : MonoBehaviour, ISelectable/* , IMediatorInstance<Piece, Pie
     {
         highlight = highlight.Initialized(this);
         if (!playerData) playerData = ScriptableObject.CreateInstance<PlayerData>();
+        if (!moveSet) moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
+        if (!captureSet) captureSet = ScriptableObject.CreateInstance<PieceMoveSet>();
     }
 
     #region -------- METHODS
@@ -54,27 +53,18 @@ public class Piece : MonoBehaviour, ISelectable/* , IMediatorInstance<Piece, Pie
         => ContextMediator.SignOn(this);
     public void Notify(IntFlags intFlag)
         => ContextMediator.Notify(this, intFlag);
-    // public void SignOn()
-    //     => Mediator.SignOn(this);
-    // public void Notify(IntFlags intFlag)
-    //     => Mediator.Notify(this, intFlag);
     #endregion //MEDIATOR
 
+    public void MoveToCoord(Vector3Int boardCoord)
+    {
+        BoardCoord = boardCoord;
+        MoveToCoord();
+    }
     [ContextMenu(nameof(MoveToCoord))]
     public void MoveToCoord()
     {
         Notify(IntFlags.MoveToCoord);
-        // UpdateSquareTarget();
-        // MoveUsingTarget();
     }
-    // [ContextMenu(nameof(UpdateSquareTarget))]
-    // public void UpdateSquareTarget()
-    // {
-    //     Notify(IntFlags.UpdateTarget);
-    //     // Mediator.Notify(this, IntFlags.UpdateTarget);
-    // }
-    // [ContextMenu(nameof(MoveUsingTarget))]
-    // public void MoveUsingTarget() => MoveTo(targetSquare);
     public void MoveTo(BoardPiece target)
     {
         if (!target) return;
@@ -83,27 +73,30 @@ public class Piece : MonoBehaviour, ISelectable/* , IMediatorInstance<Piece, Pie
 
         target.currentPiece = this;
         transform.position = target.pieceTarget.position;
-        // targetSquare = target;
         BoardCoord = target.BoardCoord;
 
         currentSquare = target;
     }
     public void OnSelected()
     {
+        HighlightPossibleMoves();
         Notify(IntFlags.Selected);
-        // Mediator.Notify(this, IntFlags.Selected);
     }
     public void OnDeselected()
     {
     }
+    public void HighlightPossibleMoves()
+    {
+        Notify(IntFlags.ShowPossibleMoves);
+    }
     public bool IsAnyMovimentAvailable(BoardPiece square) => IsMovimentAvailable(square, moveSet) || IsMovimentAvailable(square, captureSet);
     public bool IsMoveAvailable(BoardPiece square) => IsMovimentAvailable(square, moveSet);
     public bool IsCaptureAvailable(BoardPiece square) => IsMovimentAvailable(square, captureSet);
+    public bool IsMovimentAvailable(BoardPiece square) => IsMovimentAvailable(square, moveSet);
     public bool IsMovimentAvailable(BoardPiece square, PieceMoveSet moveSet)
     {
         Vector3Int dif = square.BoardCoord - BoardCoord;
 
-        // return moveSet.IsMovimentAvailable(dif, isWhite);
         return moveSet.IsMovimentAvailable(dif, playerData.isWhite);
     }
     #endregion //METHODS

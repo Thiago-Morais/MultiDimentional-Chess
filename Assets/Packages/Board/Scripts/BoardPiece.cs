@@ -11,18 +11,31 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     public Transform pieceTarget;
     [SerializeField] Vector3Int boardCoord;
     public Piece currentPiece;
-    // MediatorConcrete<BoardPiece, IntFlags> mediator = new MediatorConcrete<BoardPiece, IntFlags>();
     #endregion //FIELDS
     #region -------- PROPERTIES
     public Vector3Int BoardCoord { get => boardCoord; set => boardCoord = value; }        //TODO setar posição do square no inicio
     public Highlight Highlight { get => highlight; set => highlight = value; }
 
-    // public MediatorConcrete<BoardPiece, IntFlags> Mediator { get => mediator; set => mediator = value; }
     #endregion //PROPERTIES
     void Awake()
     {
-        if (!Highlight) Highlight = GetComponentInChildren<Highlight>();
+        InitializeVariables();
         SignOn();
+    }
+    public void InitializeVariables()
+    {
+        if (!Highlight) Highlight = GetComponentInChildren<Highlight>();
+        // if (!so_pieceData)
+        // {
+        //     so_pieceData = ScriptableObject.CreateInstance<SO_BoardSquare>();
+        //     so_pieceData.boardPiece = this;
+        // }
+        if (!so_pieceData) so_pieceData = SO_BoardSquare.CreateInstance(this);
+        if (!pieceTarget)
+        {
+            GameObject gameObject1 = new GameObject();
+            pieceTarget = gameObject1.transform;
+        }
     }
     public enum IntFlags
     {
@@ -34,8 +47,6 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     #region -------- MEDIATOR
     public void SignOn() => ContextMediator.SignOn(this);
     public void Notify(IntFlags intFlag) => ContextMediator.Notify(this, intFlag);
-    // public void SignOn() => Mediator.SignOn(this);
-    // public void Notify(IntFlags intFlag) => Mediator.Notify(this, intFlag);
     #endregion //MEDIATOR
     public void OnSelected()
     {
@@ -61,6 +72,18 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
         gameObject.SetActive(true);
         return this;
     }
-    public IPoolable Instantiate(Transform poolParent) => Instantiate(so_pieceData.prefab, poolParent).GetComponent<BoardPiece>();
+    // public IPoolable Instantiate(Transform poolParent) => Instantiate(so_pieceData.prefab, poolParent).GetComponent<BoardPiece>();
+    public IPoolable Instantiate(Transform poolParent)
+    {
+        // if (!poolParent) return Instantiate(so_pieceData.boardPiece);
+        // else return Instantiate(so_pieceData.boardPiece, poolParent);
+
+        return Instantiate(so_pieceData.boardPiece);
+
+        // BoardPiece boardPiece = Instantiate(so_pieceData.boardPiece);
+
+        // boardPiece.gameObject.transform.parent = poolParent;
+        // return boardPiece;
+    }
     #endregion //METHODS
 }
