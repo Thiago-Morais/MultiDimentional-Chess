@@ -25,12 +25,8 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     public void InitializeVariables()
     {
         if (!Highlight) Highlight = GetComponentInChildren<Highlight>();
-        // if (!so_pieceData)
-        // {
-        //     so_pieceData = ScriptableObject.CreateInstance<SO_BoardSquare>();
-        //     so_pieceData.boardPiece = this;
-        // }
-        if (!so_pieceData) so_pieceData = SO_BoardSquare.CreateInstance(this);
+        // if (!so_pieceData) so_pieceData = SO_BoardSquare.CreateInstance(this);
+        if (!so_pieceData) so_pieceData = ScriptableObject.CreateInstance<SO_BoardSquare>();
         if (!pieceTarget)
         {
             GameObject gameObject1 = new GameObject();
@@ -51,17 +47,15 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     public void OnSelected()
     {
         Notify(IntFlags.Selected);
-        // highlight.LockHighlight();
-        // highlightSelected
     }
     public void OnDeselected()
     {
         Notify(IntFlags.Deselected);
         Highlight.HighlightOff();
-        // highlight.UnlockHighlight();
     }
     [ContextMenu(nameof(UpdateSize))]
-    public void UpdateSize() => so_pieceData.UpdateSize();
+    // public void UpdateSize() => so_pieceData.UpdateSize();
+    public void UpdateSize() => so_pieceData.UpdateSize(this);
     public IPoolable Deactivated()
     {
         gameObject.SetActive(false);
@@ -72,18 +66,6 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
         gameObject.SetActive(true);
         return this;
     }
-    // public IPoolable Instantiate(Transform poolParent) => Instantiate(so_pieceData.prefab, poolParent).GetComponent<BoardPiece>();
-    public IPoolable Instantiate(Transform poolParent)
-    {
-        // if (!poolParent) return Instantiate(so_pieceData.boardPiece);
-        // else return Instantiate(so_pieceData.boardPiece, poolParent);
-
-        return Instantiate(so_pieceData.boardPiece);
-
-        // BoardPiece boardPiece = Instantiate(so_pieceData.boardPiece);
-
-        // boardPiece.gameObject.transform.parent = poolParent;
-        // return boardPiece;
-    }
+    public IPoolable InstantiatePoolable() => Instantiate(this);
     #endregion //METHODS
 }

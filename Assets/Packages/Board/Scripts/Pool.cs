@@ -11,24 +11,17 @@ public class Pool<T> where T : Component, IPoolable
     public Transform poolParent;
     public Pool() { }
     public Pool(List<T> poolables) => objectPool = poolables;
-    public Pool(T sample, List<T> objectPool, Transform poolParent)
-    {
-        this.sample = sample;
-        this.objectPool = objectPool;
-        this.poolParent = poolParent;
-    }
     public void Awake() => Initialized();
     public Pool<T> Initialized()
     {
         if (!sample) sample = new GameObject().AddComponent<T>();
-        if (!poolParent) poolParent = new GameObject().transform;
         return this;
     }
     public T GetFromPool()
     {
         T poolableInstance;
         if (objectPool.IsEmpty())
-            poolableInstance = (T)UnityEngine.Object.Instantiate<T>(sample);
+            poolableInstance = (T)sample.InstantiatePoolable();
         else
             poolableInstance = (T)objectPool.Pop()?.Activated();
         return poolableInstance;

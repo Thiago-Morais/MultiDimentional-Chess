@@ -62,7 +62,6 @@ public class ContextMediator
             case Piece.IntFlags.ShowPossibleMoves:
                 foreach (BoardPiece square in dinamicBoard.board)
                 {
-                    Debug.Log($"{nameof(square)} = {square}", square.gameObject);
                     HighlightType highlightType = HighlightType.none;
                     if (sender.BoardCoord == square.BoardCoord)
                     {

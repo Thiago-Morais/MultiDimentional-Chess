@@ -7,7 +7,7 @@ using UnityEngine;
 public class SO_BoardSquare : ScriptableObject
 {
     public GameObject prefab;
-    public BoardPiece boardPiece;
+    // public BoardPiece boardPiece;
     public Bounds pieceBounds;
     public bool HavePrefab => prefab;
     public SO_BoardSquare() { }
@@ -23,14 +23,14 @@ public class SO_BoardSquare : ScriptableObject
         // if (!boardPiece) boardPiece = new GameObject().AddComponent<BoardPiece>();
         if (pieceBounds == default(Bounds)) pieceBounds = new Bounds();
     }
-    public static SO_BoardSquare CreateInstance(BoardPiece boardPiece)
-    {
-        SO_BoardSquare so_BoardSquare = ScriptableObject.CreateInstance<SO_BoardSquare>();
-        so_BoardSquare.boardPiece = boardPiece;
-        return so_BoardSquare;
-    }
+    // public static SO_BoardSquare CreateInstance(BoardPiece boardPiece)
+    // {
+    //     SO_BoardSquare so_BoardSquare = ScriptableObject.CreateInstance<SO_BoardSquare>();
+    //     so_BoardSquare.boardPiece = boardPiece;
+    //     return so_BoardSquare;
+    // }
     [ContextMenu(nameof(UpdateSize))]
-    public void UpdateSize()
+    public void UpdateSize(BoardPiece boardPiece)
     {
         // if (!HavePrefab)
         // {
