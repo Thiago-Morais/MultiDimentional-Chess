@@ -125,22 +125,11 @@ namespace Tests
             boardPiece1.InitializeVariables();
             GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
             board = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
-            // board = new GameObject(nameof(board)).AddComponent<DinamicBoard>();
-            // Pool<BoardPiece> whitePool = new Pool<BoardPiece>();
-            // Pool<BoardPiece> blackPool = new Pool<BoardPiece>();
-            // whitePool.sample = (Resources.Load("Board/Prefabs/WhiteSquare") as GameObject).GetComponent<BoardPiece>();
-            // blackPool.sample = (Resources.Load("Board/Prefabs/BlackSquare") as GameObject).GetComponent<BoardPiece>();
-            // board.whitePool = whitePool;
-            // board.blackPool = blackPool;
-            // board.whitePool.poolParent = new GameObject().transform;
-            // board.blackPool.poolParent = new GameObject().transform;
             board.ForceUpdateBoard();
         }
         [TearDown]
         public void TearDown()
         {
-            // Object.DestroyImmediate(piece1.gameObject);
-            // Object.DestroyImmediate(board.gameObject);
         }
         [Test]
         public void SelectedPawnDisplayPossibleMoves()
@@ -154,7 +143,7 @@ namespace Tests
             selector.ChangeSelection(piece1);
             //ASSERT
             foreach (BoardPiece square in board.board)
-                if (piece1.IsAnyMovimentAvailable(square))
+                if (piece1.IsAnyMovimentAvailable(square) || piece1.BoardCoord == square.BoardCoord)
                     Assert.IsTrue(square.Highlight.IsHighlighted);
                 else
                     Assert.IsFalse(square.Highlight.IsHighlighted);
@@ -181,7 +170,6 @@ namespace Tests
 
             //ACT
             board.size = new Vector3Int(3, 3, 3);
-            // board.TryUpdateBoard();
             board.ResetBoardSize(new Vector3Int(3, 3, 3));
             //ASSERT
             Assert.AreEqual(new BoardPiece[3, 3, 3].Length, board.board.Length);
@@ -214,6 +202,23 @@ namespace Tests
     }
     public class Pool
     {
+        class Poolable : Component, IPoolable
+        {
+            public IPoolable Activated() => throw new System.NotImplementedException();
+            public IPoolable Deactivated() => throw new System.NotImplementedException();
+            public IPoolable Instantiate(Transform poolParent) => throw new System.NotImplementedException();
+        }
+
+        [Test]
+        public void CantPushNullToPool()
+        {
+            //SETUP
+            Pool<Poolable> pool = new Pool<Poolable>();
+            //ACT
+            pool.PushToPool(null);
+            //ASSERT
+            Assert.AreEqual(0, pool.objectPool.Count);
+        }
         [Test]
         public void BoardPieceAddedToPoolGetsDeactivated()
         {
@@ -226,7 +231,7 @@ namespace Tests
             Assert.IsFalse(boardPiece1.gameObject.activeSelf);
         }
         [Test]
-        public void BoardPieceRemovedToPoolGetsActivated()
+        public void BoardPieceRemovedFromPoolGetsActivated()
         {
             //SETUP
             BoardPiece boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
@@ -241,7 +246,6 @@ namespace Tests
         {
             //SETUP
             Pool<BoardPiece> squarePool1 = new Pool<BoardPiece>().Initialized();
-            // squarePool1.InitializeVariables();
             //ACT
             BoardPiece boardPiece = squarePool1.GetFromPool();
             //ASSERT
@@ -253,8 +257,6 @@ namespace Tests
             //SETUP
             BoardPiece boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
             Pool<BoardPiece> squarePool1 = new Pool<BoardPiece>().Initialized();
-            // squarePool1.Awake();
-            // squarePool1.poolParent = new GameObject().transform;
             //ACT
             BoardPiece boardPiece = squarePool1.GetFromPoolGrouped();
             //ASSERT

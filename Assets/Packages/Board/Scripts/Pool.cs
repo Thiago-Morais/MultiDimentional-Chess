@@ -24,15 +24,10 @@ public class Pool<T> where T : Component, IPoolable
         if (!poolParent) poolParent = new GameObject().transform;
         return this;
     }
-    // public T GetFromPool(T poolable) =>
-    //     (objectPool.IsEmpty()) ?
-    //         (T)poolable.Instantiate(poolParent) :
-    //         (T)objectPool.Pop().Activated();
     public T GetFromPool()
     {
         T poolableInstance;
         if (objectPool.IsEmpty())
-            // poolableInstance = new GameObject().AddComponent<T>();
             poolableInstance = (T)UnityEngine.Object.Instantiate<T>(sample);
         else
             poolableInstance = (T)objectPool.Pop()?.Activated();
@@ -44,16 +39,6 @@ public class Pool<T> where T : Component, IPoolable
         poolableInstance.gameObject.transform.SetParent(poolParent);
         return poolableInstance;
     }
-    // public T GetFromPool(T poolable)
-    // {
-    //     T poolableInstance;
-    //     if (objectPool.IsEmpty())
-    //         // poolableInstance = (T)poolable.Instantiate(poolParent);
-    //         poolableInstance = UnityEngine.Object.Instantiate<T>(sample, poolParent);
-    //     else
-    //         poolableInstance = (T)objectPool.Pop()?.Activated();
-    //     return poolableInstance;
-    // }
     public void PushToPool(T obj)
     {
         if (obj == null) return;
