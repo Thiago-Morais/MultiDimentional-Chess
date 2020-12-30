@@ -53,24 +53,31 @@ public class Selector : MonoBehaviour, IMediator<Selector.IntFlags>, IHighlighte
     }
     public void ChangeSelection(ISelectable newSelected)
     {
-        CachedSelected = currentSelected;
-        currentSelected = newSelected;
-        Deselect(CachedSelected);
-        Select(currentSelected);
-
+        if (newSelected != currentSelected)
+        {
+            Deselect(currentSelected);
+            Select(newSelected);
+            CachedSelected = currentSelected;
+            currentSelected = newSelected;
+        }
+        else
+        {
+            Deselect(currentSelected);
+            currentSelected = null;
+        }
         ContextHandler();
         Notify(IntFlags.SelectionChanged);
         Debug.Log($"{nameof(currentSelected)} = {currentSelected}", gameObject);
     }
     public void Deselect(ISelectable cachedSelected)
     {
-        cachedSelected?.Highlight.HighlightOff();
+        // cachedSelected?.Highlight.HighlightOff();
         cachedSelected?.OnDeselected();
     }
     void Select(ISelectable currentSelected)
     {
         currentSelected?.Highlight.HighlightOn(HighlightType);
-        currentSelected?.Highlight.HighlightOn(HighlightType);
+        // currentSelected?.Highlight.HighlightOn(HighlightType);
         currentSelected?.OnSelected();
     }
     void ContextHandler()

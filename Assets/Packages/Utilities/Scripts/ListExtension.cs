@@ -14,5 +14,12 @@ namespace ExtensionMethods
             list.RemoveAt(list.Count - 1);
             return item;
         }
+        public static void Push<T>(this List<T> list, T item) => list.Add(item);
+        public static T Peek<T>(this List<T> list)
+        {
+            if (list.IsEmpty()) return default(T);
+
+            return list[list.Count - 1];
+        }
     }
 }

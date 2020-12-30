@@ -12,11 +12,12 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     [SerializeField] Vector3Int boardCoord;
     public Piece currentPiece;
     #endregion //FIELDS
+
     #region -------- PROPERTIES
     public Vector3Int BoardCoord { get => boardCoord; set => boardCoord = value; }        //TODO setar posição do square no inicio
     public Highlight Highlight { get => highlight; set => highlight = value; }
-
     #endregion //PROPERTIES
+
     void Awake()
     {
         InitializeVariables();
@@ -25,13 +26,8 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     public void InitializeVariables()
     {
         if (!Highlight) Highlight = GetComponentInChildren<Highlight>();
-        // if (!so_pieceData) so_pieceData = SO_BoardSquare.CreateInstance(this);
         if (!so_pieceData) so_pieceData = ScriptableObject.CreateInstance<SO_BoardSquare>();
-        if (!pieceTarget)
-        {
-            GameObject gameObject1 = new GameObject();
-            pieceTarget = gameObject1.transform;
-        }
+        if (!pieceTarget) pieceTarget = new GameObject().transform;
     }
     public enum IntFlags
     {
@@ -39,11 +35,13 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
         Selected = 1 << 0,
         Deselected = 1 << 1,
     }
+
     #region -------- METHODS
     #region -------- MEDIATOR
     public void SignOn() => ContextMediator.SignOn(this);
     public void Notify(IntFlags intFlag) => ContextMediator.Notify(this, intFlag);
     #endregion //MEDIATOR
+
     public void OnSelected()
     {
         Notify(IntFlags.Selected);
@@ -54,7 +52,6 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
         Highlight.HighlightOff();
     }
     [ContextMenu(nameof(UpdateSize))]
-    // public void UpdateSize() => so_pieceData.UpdateSize();
     public void UpdateSize() => so_pieceData.UpdateSize(this);
     public IPoolable Deactivated()
     {

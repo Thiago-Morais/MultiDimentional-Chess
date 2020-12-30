@@ -60,28 +60,29 @@ public class ContextMediator
         switch (action)
         {
             case Piece.IntFlags.ShowPossibleMoves:
-                foreach (BoardPiece square in dinamicBoard.board)
-                {
-                    HighlightType highlightType = HighlightType.none;
-                    if (sender.BoardCoord == square.BoardCoord)
+                if (dinamicBoard)
+                    foreach (BoardPiece square in dinamicBoard?.board)
                     {
-                        highlightType = HighlightType.selected;
+                        HighlightType highlightType = HighlightType.none;
+                        if (sender.BoardCoord == square.BoardCoord)
+                        {
+                            highlightType = HighlightType.selected;
+                        }
+                        else if (sender.IsCaptureAvailable(square))
+                        {
+                            highlightType = HighlightType.capturable;
+                        }
+                        else if (sender.IsMovimentAvailable(square))
+                        {
+                            highlightType = HighlightType.movable;
+                        }
+                        else
+                        {
+                            square.Highlight.HighlightOff();
+                            continue;
+                        }
+                        square.Highlight.HighlightOn(highlightType);
                     }
-                    else if (sender.IsMovimentAvailable(square, sender.captureSet))
-                    {
-                        highlightType = HighlightType.capturable;
-                    }
-                    else if (sender.IsMovimentAvailable(square, sender.moveSet))
-                    {
-                        highlightType = HighlightType.movable;
-                    }
-                    else
-                    {
-                        square.Highlight.HighlightOff();
-                        continue;
-                    }
-                    square.Highlight.HighlightOn(highlightType);
-                }
                 break;
             case Piece.IntFlags.Selected:
                 // sender.highlight.SetHighlightOn(true);

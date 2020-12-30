@@ -84,16 +84,14 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
     }
     public void OnDeselected()
     {
+        highlight.HighlightUndo();
     }
-    public void HighlightPossibleMoves()
-    {
-        Notify(IntFlags.ShowPossibleMoves);
-    }
-    public bool IsAnyMovimentAvailable(BoardPiece square) => IsMovimentAvailable(square, moveSet) || IsMovimentAvailable(square, captureSet);
-    public bool IsMoveAvailable(BoardPiece square) => IsMovimentAvailable(square, moveSet);
-    public bool IsCaptureAvailable(BoardPiece square) => IsMovimentAvailable(square, captureSet);
-    public bool IsMovimentAvailable(BoardPiece square) => IsMovimentAvailable(square, moveSet);
-    public bool IsMovimentAvailable(BoardPiece square, PieceMoveSet moveSet)
+    public void HighlightPossibleMoves() => Notify(IntFlags.ShowPossibleMoves);
+
+    public bool IsAnyMovimentAvailable(BoardPiece square) => IsMovimentAvailable(square) || IsCaptureAvailable(square);
+    public bool IsCaptureAvailable(BoardPiece square) => IsMovimentAvailableWith(square, captureSet);
+    public bool IsMovimentAvailable(BoardPiece square) => IsMovimentAvailableWith(square, moveSet);
+    bool IsMovimentAvailableWith(BoardPiece square, PieceMoveSet moveSet)
     {
         Vector3Int dif = square.BoardCoord - BoardCoord;
 

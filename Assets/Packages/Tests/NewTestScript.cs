@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
+using ExtensionMethods;
 using UnityEngine.TestTools;
 
 namespace Tests
@@ -13,19 +14,17 @@ namespace Tests
         Piece piece2;
         BoardPiece boardPiece1;
         BoardPiece boardPiece2;
-        HoverHighlight hoverHighlight;
 
         [SetUp]
         public void Setup()
         {
-            selector = new GameObject().AddComponent<Selector>();
+            selector = new GameObject(nameof(selector)).AddComponent<Selector>();
             piece1 = new GameObject(nameof(piece1)).AddComponent<Piece>();
             piece1.Awake();
             piece2 = new GameObject(nameof(piece2)).AddComponent<Piece>();
             piece2.Awake();
             boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
             boardPiece2 = new GameObject(nameof(boardPiece2)).AddComponent<BoardPiece>();
-            hoverHighlight = new GameObject(nameof(hoverHighlight)).AddComponent<HoverHighlight>();
         }
         [TearDown]
         public void TearDown()
@@ -35,24 +34,22 @@ namespace Tests
             Object.DestroyImmediate(piece2.gameObject);
             Object.DestroyImmediate(boardPiece1.gameObject);
             Object.DestroyImmediate(boardPiece2.gameObject);
-            Object.DestroyImmediate(hoverHighlight.gameObject);
         }
         [Test]
-        public void Is_Selected_Piece_Highlighted()
+        public void Select_Piece_Highlight_It()
         {
             //ACT
             selector.ChangeSelection(piece1 as ISelectable);
             //ASSERT
             Assert.IsTrue(piece1.highlight.IsHighlighted);
-            Assert.AreEqual(selector.HighlightType, piece1.highlight.CachedHighlightType);
         }
         [Test]
-        public void Select_Piece_Change_Highlight_Type()
+        public void Selected_Piece_Highlight_Type_As_Selector()
         {
             //ACT
-            selector.ChangeSelection(piece2 as ISelectable);
+            selector.ChangeSelection(piece1 as ISelectable);
             //ASSERT
-            Assert.AreEqual(selector.HighlightType, piece2.highlight.CachedHighlightType);
+            Assert.AreEqual(selector.HighlightType, piece1.highlight.HighlightType);
         }
         [Test]
         public void Select_Second_Piece_Disable_First_Highlight()
@@ -67,49 +64,130 @@ namespace Tests
         public void Select_Second_Piece_Reset_First_Highlight_Type()
         {
             //ACT
+            HighlightType cachedHighlightPiece1 = piece1.highlight.HighlightType;
             selector.ChangeSelection(piece1 as ISelectable);
             selector.ChangeSelection(piece2 as ISelectable);
             //ASSERT
-            Assert.AreEqual(selector.HighlightType, piece2.highlight.CachedHighlightType);
+            Assert.AreEqual(cachedHighlightPiece1, piece1.highlight.HighlightType);
         }
         [Test]
-        public void Is_Hovered_Piece_Highlighted()
+        public void Deselect_Piece_Turn_Highlight_Off()
         {
             //ACT
-            hoverHighlight.HoveredIn(piece1);
+            piece1.OnSelected();
+            piece1.OnDeselected();
             //ASSERT
-            Assert.IsTrue(piece1.highlight.IsHighlighted);
+            Assert.IsFalse(piece1.highlight.IsHighlighted);
         }
         [Test]
-        public void Hover_Out_Of_Piece_Disable_Highlight()
+        public void Select_Selected_Piece_Turn_Highlight_Off()
         {
             //ACT
-            hoverHighlight.HoveredIn(piece2);
-            hoverHighlight.HoveredOut(piece2);
+            selector.ChangeSelection(piece1 as ISelectable);
+            selector.ChangeSelection(piece1 as ISelectable);
             //ASSERT
-            Assert.IsFalse(piece2.highlight.IsHighlighted);
-        }
-        [Test]
-        public void Hover_Out_Of_Piece_Reset_Highlight_Type()
-        {
-            //ACT
-            hoverHighlight.HoveredIn(piece1);
-            hoverHighlight.HoveredOut(piece1);
-            //ASSERT
-            Assert.AreEqual(piece1.highlight.CachedHighlightType, piece1.highlight.HighlightType);
-        }
-        [Test]
-        public void Select_Own_Piece()
-        {
-            //ACT
-            selector.ChangeSelection(piece2 as ISelectable);
-            //ASSERT
+            Assert.IsFalse(piece1.highlight.IsHighlighted);
         }
         /*
         TODO testes a implementar
         peça selecionada mostra possibilidade de movimento
         troca de seleção desliga tabuleiro
         */
+        public class HoverHighlightTests
+        {
+            HoverHighlight hoverHighlight;
+            [SetUp]
+            public void SetUp()
+            {
+                hoverHighlight = new GameObject(nameof(hoverHighlight)).AddComponent<HoverHighlight>();
+            }
+            [Test]
+            public void Is_Hovered_Piece_Highlighted()
+            {
+                //SETUP
+                Piece piece1 = new GameObject(nameof(piece1)).AddComponent<Piece>();
+                piece1.Awake();
+                //ACT
+                hoverHighlight.HoveredIn(piece1);
+                //ASSERT
+                Assert.IsTrue(piece1.highlight.IsHighlighted);
+            }
+            [Test]
+            public void Hover_In_On_Piece_Store_Highlight_Type_On_Internal_Stack()
+            {
+                //SETUP
+                Piece piece1 = new GameObject(nameof(piece1)).AddComponent<Piece>();
+                piece1.Awake();
+                //ACT
+                HighlightType cachedPieceHighlightType = piece1.highlight.HighlightType;
+                hoverHighlight.HoveredIn(piece1);
+                //ASSERT
+                Assert.AreEqual(cachedPieceHighlightType, piece1.Highlight.HighlightStack.Peek());
+            }
+            [Test]
+            public void Hover_In_And_Out_Of_Selected_Piece_Keeps_Highlight_On()
+            {
+                //SETUP
+                Selector selector = new GameObject(nameof(selector)).AddComponent<Selector>();
+                Piece piece1 = new GameObject(nameof(piece1)).AddComponent<Piece>();
+                piece1.Awake();
+                //ACT
+                selector.ChangeSelection(piece1);
+                hoverHighlight.HoveredIn(piece1);
+                hoverHighlight.HoveredOut(piece1);
+                //ASSERT
+                Assert.IsTrue(piece1.highlight.IsHighlighted);
+            }
+            [Test]
+            public void Hover_In_Out_Of_Piece_Reset_Highlight_Type()
+            {
+                //SETUP
+                Piece piece1 = new GameObject(nameof(piece1)).AddComponent<Piece>();
+                piece1.Awake();
+                //ACT
+                hoverHighlight.HoveredIn(piece1);
+                hoverHighlight.HoveredOut(piece1);
+                //ASSERT
+                Assert.IsEmpty(piece1.highlight.HighlightStack);
+            }
+        }
+    }
+    public class SelectorTests
+    {
+        Piece piece1;
+        Selector selector;
+        [SetUp]
+        public void SetUp()
+        {
+            selector = new GameObject(nameof(selector)).AddComponent<Selector>();
+            piece1 = new GameObject(nameof(piece1)).AddComponent<Piece>();
+            piece1.Awake();
+        }
+        [Test]
+        public void Select_Selected_Piece_Deselect_It()
+        {
+            Selector selector = new GameObject(nameof(selector)).AddComponent<Selector>();
+            //ACT
+            selector.ChangeSelection(piece1 as ISelectable);
+            selector.ChangeSelection(piece1 as ISelectable);
+            //ASSERT
+            Assert.IsNull(selector.currentSelected);
+        }
+        [Test]
+        public void Select_Selected_Piece2_After_Selected_Piece1_Have_No_Selection()
+        {
+            Selector selector = new GameObject(nameof(selector)).AddComponent<Selector>();
+            Piece piece1 = new GameObject(nameof(piece1)).AddComponent<Piece>();
+            piece1.Awake();
+            Piece piece2 = new GameObject(nameof(piece2)).AddComponent<Piece>();
+            piece2.Awake();
+            //ACT
+            selector.ChangeSelection(piece1 as ISelectable);
+            selector.ChangeSelection(piece2 as ISelectable);
+            selector.ChangeSelection(piece2 as ISelectable);
+            //ASSERT
+            Assert.IsNull(selector.currentSelected);
+        }
     }
     public class BoardTests
     {
@@ -137,7 +215,7 @@ namespace Tests
             //SETUP
             PieceMoveSet pawnMoveSet = Resources.Load("Pieces/Scriptable/MoveSet/PawnMoveSet") as PieceMoveSet;
             piece1.moveSet = pawnMoveSet;
-            Selector selector = new GameObject().AddComponent<Selector>();
+            Selector selector = new GameObject(nameof(selector)).AddComponent<Selector>();
             board.SignOn();
             //ACT
             selector.ChangeSelection(piece1);
@@ -202,7 +280,7 @@ namespace Tests
     }
     public class PoolTests
     {
-        class Poolable : Component, IPoolable
+        public class Poolable : Component, IPoolable
         {
             public IPoolable Activated() => throw new System.NotImplementedException();
             public IPoolable Deactivated() => throw new System.NotImplementedException();

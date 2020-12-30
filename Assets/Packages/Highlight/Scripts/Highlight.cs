@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using ExtensionMethods;
+using System;
 
 public class Highlight : MonoBehaviour
 {
@@ -10,19 +11,27 @@ public class Highlight : MonoBehaviour
     public bool lockHighlight;
     [SerializeField] bool isHighlighted;
     [SerializeField] HighlightType highlightType;
-    // [SerializeField] List<SampleHighlight> m_HighlightVariations = new List<SampleHighlight> { new SampleHighlight() };
     [SerializeField] List<Material> highlightMaterials = new List<Material>();
     [SerializeField] List<Renderer> m_Renderer;
     [SerializeField] HighlightVariations highlightVariations;
     HighlightType cachedHighlightType;
+    [SerializeField] List<HighlightType> highlightStack = new List<HighlightType>();
     #endregion //FIELDS
 
     #region -------- PROPERTIES
     public bool IsHighlighted { get => isHighlighted; private set => isHighlighted = value; }
     public HighlightVariations HighlightVariations { get => highlightVariations; private set => highlightVariations = value; }
-    public HighlightType HighlightType { get => highlightType; private set => highlightType = value; }
+    public HighlightType HighlightType
+    {
+        get => highlightType;
+        private set
+        {
+            highlightType = value;
+            if (value == HighlightType.none) HighlightOff();
+        }
+    }
     public HighlightType CachedHighlightType { get => cachedHighlightType; private set => cachedHighlightType = value; }
-
+    public List<HighlightType> HighlightStack { get => highlightStack; set => highlightStack = value; }
     #endregion //PROPERTIES
 
     void Awake() => InitializeVariables();
@@ -37,17 +46,21 @@ public class Highlight : MonoBehaviour
     [ContextMenu(nameof(HighlightOn))]
     public void HighlightOn() => SetHighlightOn(true);
     [ContextMenu(nameof(HighlightOff))]
-    // public void HighlightOff() => SetHighlightOn(false);
     public void HighlightOff()
     {
         SetHighlightOn(false);
-        HighlightType = HighlightType.none;
     }
     [ContextMenu(nameof(UpdateHighlightValues))]
-    public void UpdateHighlightValues() => TrySetHighlightValues(HighlightType);
-    public void HighlightUndo() { if (!TrySetHighlightValues(cachedHighlightType)) HighlightOff(); }
-    [ContextMenu(nameof(UpdateRenderersRef))]
-    public void UpdateRenderersRef() { if (m_Renderer.IsEmpty()) m_Renderer = GetComponentsInChildren<Renderer>().ToList(); }
+    public void UpdateHighlightValues() => SetNewHighlightValues(HighlightType);
+    public void HighlightUndo()
+    {
+        SetHighlightValues(HighlightStack.Pop());
+    }
+    public void HighlightUndo(HighlightType highlightType)
+    {
+        HighlightStack.Remove(highlightType);
+        SetHighlightValues(HighlightStack.Peek());
+    }
     [ContextMenu(nameof(UpdateMaterialsRef))]
     void UpdateMaterialsRef()
     {
@@ -57,8 +70,14 @@ public class Highlight : MonoBehaviour
     }
     public void HighlightOn(HighlightType highlightType)
     {
-        TrySetHighlightValues(highlightType);
+        SetNewHighlightValues(highlightType);
         SetHighlightOn(true);
+    }
+    public void SetNewHighlightValues(HighlightType highlightType)
+    {
+        HighlightStack.Push(HighlightType);
+        SetHighlightValues(highlightType);
+        return;
     }
     public void SetHighlightOn(bool shouldHighlight)
     {
@@ -71,37 +90,24 @@ public class Highlight : MonoBehaviour
         }
         IsHighlighted = shouldHighlight;
     }
-    public bool TrySetHighlightValues(HighlightType highlightType)
+    void SetHighlightValues(HighlightType highlightType)
     {
-        if (highlightType == HighlightType.none)
-        {
-            HighlightOff();
-            return true;
-        }
-
-        // SampleHighlight sampleHighlight = m_HighlightVariations.FirstOrDefault(c => c.type == highlightType);
-        // if (sampleHighlight == null)
-        // {
-        //     // Debug.LogError($"Highlight type {highlightType} not found", gameObject);
-        //     sampleHighlight = HighlightVariations.GetHighlightData(highlightType);
-        //     return false;
-        // }
         HighlightData highlightData = HighlightVariations.GetHighlightData(highlightType);
-
         SetHighlightValues(highlightData);
-        return true;
+
+        HighlightType = highlightType;
     }
-    void SetHighlightValues(HighlightData target)
+    void SetHighlightValues(HighlightData highlightData)
     {
         foreach (Material material in highlightMaterials)
         {
-            material.SetFloat("HIGHLIGHT_PULSE_SPEED", target.highlightPulseSpeed);
-            material.SetVector("HIGHTLIGHT_PULSE_APERTURE", target.hightlightPulseAperture);
-            material.SetColor("HIGHLIGHT_COLOR", target.highlightColor);
+            material.SetFloat("HIGHLIGHT_PULSE_SPEED", highlightData.highlightPulseSpeed);
+            material.SetVector("HIGHTLIGHT_PULSE_APERTURE", highlightData.hightlightPulseAperture);
+            material.SetColor("HIGHLIGHT_COLOR", highlightData.highlightColor);
         }
-        cachedHighlightType = HighlightType;
-        HighlightType = target.type;
     }
+    [ContextMenu(nameof(UpdateRenderersRef))]
+    public void UpdateRenderersRef() { if (m_Renderer.IsEmpty()) m_Renderer = GetComponentsInChildren<Renderer>().ToList(); }
     #endregion //METHODS
 }
 public enum HighlightType

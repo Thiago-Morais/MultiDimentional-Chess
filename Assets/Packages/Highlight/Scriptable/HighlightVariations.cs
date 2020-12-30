@@ -12,7 +12,7 @@ public class HighlightVariations : ScriptableObject
         HighlightData highlightData = highlightVariations.FirstOrDefault(h => h.type == highlightType);
         if (highlightData == default(HighlightData))
         {
-            highlightData = new HighlightData();
+            highlightData = new HighlightData(highlightType);
             highlightVariations.Add(highlightData);
         }
         return highlightData;

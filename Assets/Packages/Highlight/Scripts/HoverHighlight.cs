@@ -14,10 +14,10 @@ public class HoverHighlight : MonoBehaviour, IHighlighter
     IHighlightable m_CachedHighlightable;
     Highlight m_CachedHighlight;
     Vector2 m_MousePosition;
-    public HighlightType HighlightType { get => highlightType; set => highlightType = value; }
     #endregion //FIELDS
 
     #region -------- PROPERTIES
+    public HighlightType HighlightType { get => highlightType; set => highlightType = value; }
     #endregion //PROPERTIES
 
     #region -------- EXTERNAL CALL
@@ -30,18 +30,17 @@ public class HoverHighlight : MonoBehaviour, IHighlighter
         UpdateHighlight();
     }
     #endregion //EXTERNAL CALL
+
     #region -------- METHODS
     void UpdateHighlight()
     {
         Rigidbody currentRigidbody = GetRigidbodyFromRaycast();
-        // if (!IsNew(currentRigidbody)) return;
 
         IHighlightable highlightable = GetHighlightableFrom(currentRigidbody);
         if (!IsNew(highlightable) && IsHover(highlightable)) return;
-        // if (IsNew(highlightable)) HoveredOut(m_CachedHighlightable);
 
-        HoveredOut(m_CachedHighlightable);
         HoveredIn(highlightable);
+        HoveredOut(m_CachedHighlightable);
 
         Cache<IHighlightable>(ref m_CachedHighlightable, highlightable);
         Cache<Rigidbody>(ref m_CacheRigidBody, currentRigidbody);
