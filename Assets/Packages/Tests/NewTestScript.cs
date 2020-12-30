@@ -215,7 +215,7 @@ namespace Tests
     {
         Piece piece1;
         BoardPiece boardPiece1;
-        DinamicBoard board;
+        // DinamicBoard dinamicBoard;
         [SetUp]
         public void Setup()
         {
@@ -223,9 +223,15 @@ namespace Tests
             piece1.Awake();
             boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
             boardPiece1.InitializeVariables();
+            // GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+            // dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            // dinamicBoard.Awake();
+        }
+        static DinamicBoard LoadDinamicBoardPrefab()
+        {
             GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
-            board = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
-            board.Awake();
+            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            return dinamicBoard;
         }
         [TearDown]
         public void TearDown()
@@ -238,11 +244,14 @@ namespace Tests
             PieceMoveSet pawnMoveSet = Resources.Load("Pieces/Scriptable/MoveSet/PawnMoveSet") as PieceMoveSet;
             piece1.moveSet = pawnMoveSet;
             Selector selector = new GameObject(nameof(selector)).AddComponent<Selector>();
+            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            dinamicBoard.Awake();
             // board.SignOn();
             //ACT
             selector.ChangeSelection(piece1);
             //ASSERT
-            foreach (BoardPiece square in board.board)
+            foreach (BoardPiece square in dinamicBoard.board)
                 if (piece1.IsAnyMovimentAvailable(square) || piece1.BoardCoord == square.BoardCoord)
                     Assert.IsTrue(square.Highlight.IsHighlighted);
                 else
@@ -255,35 +264,156 @@ namespace Tests
             //SETUP
             PieceMoveSet pawnMoveSet = Resources.Load("Pieces/Scriptable/MoveSet/PawnMoveSet") as PieceMoveSet;
             piece1.moveSet = pawnMoveSet;
-            board.ForceUpdateBoard(Vector3Int.RoundToInt(Vector3.forward + Vector3.one), Vector3.zero);
-            BoardPiece boardPiece = board.GetSquareAt(new Vector3Int(0, 0, 0));
+            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            dinamicBoard.Awake();
+            // dinamicBoard.ForceUpdateBoard(Vector3Int.RoundToInt(Vector3.forward + Vector3.one), Vector3.zero);
+            BoardPiece boardPiece = dinamicBoard.GetSquareAt(new Vector3Int(0, 0, 0));
             piece1.MoveTo(boardPiece);
             //ACT
-            bool? canMove = board.IsMovimentAvailable(piece1, new Vector3Int(0, 0, 1));
+            bool? canMove = dinamicBoard.IsMovimentAvailable(piece1, new Vector3Int(0, 0, 1));
             //ASSERT
             Assert.IsTrue(canMove);
         }
         [Test]
-        public void Board_Can_Be_3x3()
+        public void Board_Can_Be_3x3x3()
         {
             //SETUP
-
+            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            dinamicBoard.Awake();
             //ACT
-            board.size = new Vector3Int(3, 3, 3);
-            board.ResetBoardSize(new Vector3Int(3, 3, 3));
+            dinamicBoard.size = new Vector3Int(3, 3, 3);
+            dinamicBoard.ResetBoardSize(new Vector3Int(3, 3, 3));
             //ASSERT
-            Assert.AreEqual(new BoardPiece[3, 3, 3].Length, board.board.Length);
+            Assert.AreEqual(new BoardPiece[3, 3, 3].Length, dinamicBoard.board.Length);
         }
         [Test]
         public void Select_Selected_Piece_Turn_Board_Highlight_Off()
         {
             //SETUP
+            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            dinamicBoard.Awake();
             //ACT
             piece1.OnSelected();
             piece1.OnDeselected();
             //ASSERT
-            foreach (BoardPiece square in board.board)
+            foreach (BoardPiece square in dinamicBoard.board)
                 Assert.IsFalse(square.Highlight.IsHighlighted);
+        }
+        [Test]
+        public void InstantiateABoard_3x3x3_Empty3x3x3Board()
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            //ACT
+            BoardPiece[,,] board = DinamicBoard.InstantiateABoard(new Vector3Int(3, 3, 3));
+            //ASSERT
+            Assert.AreEqual(new BoardPiece[3, 3, 3], board);
+        }
+        [Test]
+        public void InstantiateABoard_NegativeValue_EmptyBoardWithZeroOnTheNegative()
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            //ACT
+            BoardPiece[,,] board = DinamicBoard.InstantiateABoard(new Vector3Int(-1, 0, 1));
+            //ASSERT
+            Assert.AreEqual(new BoardPiece[0, 0, 1], board);
+        }
+        [Test]
+        public void GenerateSquareUsing_PairIndex_WhiteBoardPiece()
+        {
+            //SETUP
+            BoardPiece whiteBoardPiece = (Resources.Load("Board/Prefabs/WhiteSquare") as GameObject).GetComponent<BoardPiece>();
+            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            dinamicBoard.Awake();
+            //ACT
+            BoardPiece boardPiece = dinamicBoard.GenerateSquareUsing(2);
+            //ASSERT
+            Assert.AreEqual(whiteBoardPiece.so_pieceData, boardPiece.so_pieceData);
+        }
+        [Test]
+        public void GenerateSquareUsing_OddIndex_BlackBoardPiece()
+        {
+            //SETUP
+            BoardPiece whiteBoardPiece = (Resources.Load("Board/Prefabs/BlackSquare") as GameObject).GetComponent<BoardPiece>();
+            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            dinamicBoard.Awake();
+            //ACT
+            BoardPiece boardPiece = dinamicBoard.GenerateSquareUsing(1);
+            //ASSERT
+            Assert.AreEqual(whiteBoardPiece.so_pieceData, boardPiece.so_pieceData);
+        }
+        [Test]
+        public void GetPool_PairIndex_WhitePool()
+        {
+            //SETUP
+            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            dinamicBoard.Awake();
+            //ACT
+            Pool<BoardPiece> pool = dinamicBoard.GetPool(0);
+            //ASSERT
+            Assert.AreSame(dinamicBoard.WhitePool, pool);
+        }
+        [Test]
+        public void GetPool_OddIndex_BlackPool()
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = LoadDinamicBoardPrefab();
+            dinamicBoard.Awake();
+            //ACT
+            Pool<BoardPiece> pool = dinamicBoard.GetPool(1);
+            //ASSERT
+            Assert.AreSame(dinamicBoard.BlackPool, pool);
+        }
+        [Test]
+        public void GetSquareAt_OutOfBounds_Null()
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            dinamicBoard.board = DinamicBoard.InstantiateABoard(new Vector3Int(3, 3, 3));
+            //ACT
+            BoardPiece boardPiece = dinamicBoard.GetSquareAt(new Vector3Int(2, 2, 3));
+            //ASSERT
+            Assert.IsNull(boardPiece);
+        }
+        [Test]
+        public void GetSquareAt_InBounds_ValueAtCoordenate()
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            dinamicBoard.board = DinamicBoard.InstantiateABoard(new Vector3Int(3, 3, 3));
+            //ACT
+            BoardPiece boardPiece = dinamicBoard.GetSquareAt(new Vector3Int(2, 2, 2));
+            //ASSERT
+            Assert.AreSame(dinamicBoard.board[2, 2, 2], boardPiece);
+        }
+        [Test]
+        public void UpdateBoardCoordAt_0x0x0_BoardPieceCoord0x0x0()
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = LoadDinamicBoardPrefab();
+            dinamicBoard.board = dinamicBoard.GenerateBoard(new Vector3Int(1, 1, 1));
+            //ACT
+            dinamicBoard.UpdateBoardCoordAt(0, 0, 0);
+            //ASSERT
+            Assert.AreEqual(new Vector3Int(0, 0, 0), dinamicBoard.board[0, 0, 0].BoardCoord);
+        }
+        [Test]
+        public void GenerateBoard_1x1x1_PieceIsNotNull()
+        {
+            //SETUP
+            // DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            DinamicBoard dinamicBoard = LoadDinamicBoardPrefab();
+            //ACT
+            dinamicBoard.board = dinamicBoard.GenerateBoard(new Vector3Int(1, 1, 1));
+            //ASSERT
+            Assert.NotNull(dinamicBoard.board[0, 0, 0]);
         }
     }
     public class PieceMoviment

@@ -108,15 +108,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 3, y: 3, z: 3}
   padding: {x: 0.1, y: 1, z: 0.1}
-  center: {fileID: 4580007426327838810}
+  center: {fileID: 0}
   whitePool:
     sample: {fileID: 1544231113136393672, guid: 4765b74d31fd528458d87e41ee66a2da, type: 3}
     objectPool: []
-    poolParent: {fileID: 7358931587352030086}
+    poolParent: {fileID: 0}
   blackPool:
     sample: {fileID: 4485176923743949740, guid: ab76eb2ad4725b444b01e4c3b3129c49, type: 3}
     objectPool: []
-    poolParent: {fileID: 7358931588557992042}
+    poolParent: {fileID: 0}
   offset: {x: 0, y: 0, z: 0}
 --- !u!1 &7358931588557992043
 GameObject:
