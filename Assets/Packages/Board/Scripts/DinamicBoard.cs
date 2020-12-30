@@ -24,7 +24,7 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
     public enum IntFlags
     {
     }
-    void Awake()
+    public void Awake()
     {
         SignOn();
         TryUpdateBoard();

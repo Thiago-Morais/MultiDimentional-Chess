@@ -78,38 +78,18 @@ public class ContextMediator
                         }
                         else
                         {
-                            square.Highlight.HighlightOff();
+                            square.Highlight.ClearHighlight();
+                            // square.Highlight.HighlightOff();
                             continue;
                         }
                         square.Highlight.HighlightOn(highlightType);
                     }
                 break;
-            case Piece.IntFlags.Selected:
-                // sender.highlight.SetHighlightOn(true);
-                // foreach (BoardPiece square in squares)
-                //     if (sender.BoardCoord == square.BoardCoord)
-                //     {
-                //         square.Highlight.HighlightOn(HighlightType.selected);
-                //     }
-                //     else if (sender.IsMovimentAvailable(square, sender.captureSet))
-                //     {
-                //         square.Highlight.HighlightOn(HighlightType.capturable);
-                //     }
-                //     else if (sender.IsMovimentAvailable(square, sender.moveSet))
-                //     {
-                //         square.Highlight.HighlightOn(HighlightType.movable);
-                //     }
-                //     else
-                //     {
-                //         square.Highlight.HighlightOff();
-                //     }
-                break;
-            case Piece.IntFlags.UpdateTarget:
-                // Vector3Int boardCoord = sender.BoardCoord;
-                // BoardPiece boardPiece = dinamicBoard.GetSquareAt(boardCoord);
-                // if (!boardPiece) { Debug.LogError($"Tryed to get Square at {boardCoord} but it was out of bounds.", sender); break; }
-
-                // sender.targetSquare = boardPiece;
+            case Piece.IntFlags.HidePossibleMoves:
+                if (dinamicBoard)
+                    foreach (BoardPiece square in dinamicBoard?.board)
+                        square.Highlight.ClearHighlight();
+                // square.Highlight.HighlightOff();
                 break;
             case Piece.IntFlags.MoveToCoord:
                 BoardPiece boardPiece = dinamicBoard.GetSquareAt(sender.BoardCoord);

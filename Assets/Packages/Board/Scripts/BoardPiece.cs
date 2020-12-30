@@ -49,7 +49,7 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     public void OnDeselected()
     {
         Notify(IntFlags.Deselected);
-        Highlight.HighlightOff();
+        Highlight.ClearHighlight();
     }
     [ContextMenu(nameof(UpdateSize))]
     public void UpdateSize() => so_pieceData.UpdateSize(this);

@@ -150,6 +150,28 @@ namespace Tests
                 //ASSERT
                 Assert.IsEmpty(piece1.highlight.HighlightStack);
             }
+            [Test]
+            public void Hover_In_And_Out_Of_Board_Piece_After_Deselect_Selected_Piece_Have_Highligt_Off()
+            {
+                //SETUP
+                GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+                DinamicBoard board = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+                board.Awake();
+                Selector selector = new GameObject(nameof(selector)).AddComponent<Selector>();
+                Piece piece1 = new GameObject(nameof(piece1)).AddComponent<Piece>();
+                piece1.Awake();
+                //ACT
+                selector.ChangeSelection(piece1);
+                selector.ChangeSelection(piece1);
+                foreach (BoardPiece square in board.board)
+                {
+                    hoverHighlight.HoveredIn(square);
+                    hoverHighlight.HoveredOut(square);
+                }
+                //ASSERT
+                foreach (BoardPiece square in board.board)
+                    Assert.IsFalse(square.Highlight.IsHighlighted);
+            }
         }
     }
     public class SelectorTests
@@ -203,7 +225,7 @@ namespace Tests
             boardPiece1.InitializeVariables();
             GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
             board = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
-            board.ForceUpdateBoard();
+            board.Awake();
         }
         [TearDown]
         public void TearDown()
@@ -216,7 +238,7 @@ namespace Tests
             PieceMoveSet pawnMoveSet = Resources.Load("Pieces/Scriptable/MoveSet/PawnMoveSet") as PieceMoveSet;
             piece1.moveSet = pawnMoveSet;
             Selector selector = new GameObject(nameof(selector)).AddComponent<Selector>();
-            board.SignOn();
+            // board.SignOn();
             //ACT
             selector.ChangeSelection(piece1);
             //ASSERT
@@ -251,6 +273,17 @@ namespace Tests
             board.ResetBoardSize(new Vector3Int(3, 3, 3));
             //ASSERT
             Assert.AreEqual(new BoardPiece[3, 3, 3].Length, board.board.Length);
+        }
+        [Test]
+        public void Select_Selected_Piece_Turn_Board_Highlight_Off()
+        {
+            //SETUP
+            //ACT
+            piece1.OnSelected();
+            piece1.OnDeselected();
+            //ASSERT
+            foreach (BoardPiece square in board.board)
+                Assert.IsFalse(square.Highlight.IsHighlighted);
         }
     }
     public class PieceMoviment

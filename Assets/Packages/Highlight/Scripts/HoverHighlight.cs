@@ -56,6 +56,7 @@ public class HoverHighlight : MonoBehaviour, IHighlighter
     RaycastHit MouseRayCast(Camera camera)
     {
         Ray ray = camera.ScreenPointToRay(m_MousePosition);
+        Debug.DrawRay(ray.origin, ray.direction * 50, Color.red);
         RaycastHit[] raycastHits = Physics.RaycastAll(ray);
         return raycastHits.Length > 0 ? raycastHits[0] : default(RaycastHit);
     }

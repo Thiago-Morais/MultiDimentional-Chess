@@ -27,7 +27,8 @@ public class Highlight : MonoBehaviour
         private set
         {
             highlightType = value;
-            if (value == HighlightType.none) HighlightOff();
+            // if (value == HighlightType.none) HighlightOff();
+            // if (value == HighlightType.none) ClearHighlight();
         }
     }
     public HighlightType CachedHighlightType { get => cachedHighlightType; private set => cachedHighlightType = value; }
@@ -41,17 +42,47 @@ public class Highlight : MonoBehaviour
         UpdateRenderersRef();
         UpdateMaterialsRef();
     }
-
     #region -------- METHODS
-    [ContextMenu(nameof(HighlightOn))]
-    public void HighlightOn() => SetHighlightOn(true);
-    [ContextMenu(nameof(HighlightOff))]
-    public void HighlightOff()
+    // [ContextMenu(nameof(HighlightOn))]
+    // public void HighlightOn() => SetHighlight(true);
+    // void SetHighlight(bool shouldHighlight)
+    // {
+    //     foreach (Material material in highlightMaterials)
+    //     {
+    //         if (shouldHighlight)
+    //             material.EnableKeyword("HIGHLIGHT_ON");
+    //         else
+    //             material.DisableKeyword("HIGHLIGHT_ON");
+    //     }
+    //     IsHighlighted = shouldHighlight;
+    // }
+    // [ContextMenu(nameof(HighlightOff))]
+    // public void HighlightOff()
+    // {
+    //     SetHighlight(false);
+    //     HighlightStack.Clear();
+    // }
+    [ContextMenu(nameof(ClearHighlight))]
+    public void ClearHighlight()
     {
-        SetHighlightOn(false);
+        // SetHighlightValues(HighlightType.none);
+        highlightStack.Clear();
+        HighlightOff();
+        HighlightType = HighlightType.none;
+    }
+    public void HighlightOn(HighlightType highlightType)
+    {
+        SetNewHighlightValues(highlightType);
+        HighlightOn();
     }
     [ContextMenu(nameof(UpdateHighlightValues))]
-    public void UpdateHighlightValues() => SetNewHighlightValues(HighlightType);
+    void UpdateHighlightValues() => SetNewHighlightValues(HighlightType);
+    public void SetNewHighlightValues(HighlightType highlightType)
+    {
+        HighlightStack.Push(HighlightType);
+        SetHighlightValues(highlightType);
+        return;
+    }
     public void HighlightUndo()
     {
         SetHighlightValues(HighlightStack.Pop());
@@ -68,33 +99,12 @@ public class Highlight : MonoBehaviour
         foreach (var renderer in m_Renderer)
             highlightMaterials.AddRange(renderer.materials);
     }
-    public void HighlightOn(HighlightType highlightType)
-    {
-        SetNewHighlightValues(highlightType);
-        SetHighlightOn(true);
-    }
-    public void SetNewHighlightValues(HighlightType highlightType)
-    {
-        HighlightStack.Push(HighlightType);
-        SetHighlightValues(highlightType);
-        return;
-    }
-    public void SetHighlightOn(bool shouldHighlight)
-    {
-        foreach (Material material in highlightMaterials)
-        {
-            if (shouldHighlight)
-                material.EnableKeyword("HIGHLIGHT_ON");
-            else
-                material.DisableKeyword("HIGHLIGHT_ON");
-        }
-        IsHighlighted = shouldHighlight;
-    }
+
     void SetHighlightValues(HighlightType highlightType)
     {
         HighlightData highlightData = HighlightVariations.GetHighlightData(highlightType);
         SetHighlightValues(highlightData);
-
+        if (highlightType == HighlightType.none) ClearHighlight();
         HighlightType = highlightType;
     }
     void SetHighlightValues(HighlightData highlightData)
@@ -105,6 +115,18 @@ public class Highlight : MonoBehaviour
             material.SetVector("HIGHTLIGHT_PULSE_APERTURE", highlightData.hightlightPulseAperture);
             material.SetColor("HIGHLIGHT_COLOR", highlightData.highlightColor);
         }
+    }
+    [ContextMenu(nameof(HighlightOn))]
+    public void HighlightOn()
+    {
+        foreach (Material material in highlightMaterials) material.EnableKeyword("HIGHLIGHT_ON");
+        IsHighlighted = true;
+    }
+    [ContextMenu(nameof(HighlightOff))]
+    public void HighlightOff()
+    {
+        foreach (Material material in highlightMaterials) material.DisableKeyword("HIGHLIGHT_ON");
+        IsHighlighted = false;
     }
     [ContextMenu(nameof(UpdateRenderersRef))]
     public void UpdateRenderersRef() { if (m_Renderer.IsEmpty()) m_Renderer = GetComponentsInChildren<Renderer>().ToList(); }

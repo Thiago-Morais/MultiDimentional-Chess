@@ -26,11 +26,9 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
     public enum IntFlags
     {
         none = 0,
-        Selected = 1 << 0,
-        Deselected = 1 << 1,
-        UpdateTarget = 1 << 2,
-        MoveToCoord = 1 << 3,
-        ShowPossibleMoves = 1 << 4,
+        MoveToCoord = 1 << 1,
+        ShowPossibleMoves = 1 << 2,
+        HidePossibleMoves = 1 << 3,
     }
     public void Awake()
     {
@@ -80,14 +78,14 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
     public void OnSelected()
     {
         HighlightPossibleMoves();
-        Notify(IntFlags.Selected);
     }
     public void OnDeselected()
     {
         highlight.HighlightUndo();
+        UnHighlightPossibleMoves();
     }
+    public void UnHighlightPossibleMoves() => Notify(IntFlags.HidePossibleMoves);
     public void HighlightPossibleMoves() => Notify(IntFlags.ShowPossibleMoves);
-
     public bool IsAnyMovimentAvailable(BoardPiece square) => IsMovimentAvailable(square) || IsCaptureAvailable(square);
     public bool IsCaptureAvailable(BoardPiece square) => IsMovimentAvailableWith(square, captureSet);
     public bool IsMovimentAvailable(BoardPiece square) => IsMovimentAvailableWith(square, moveSet);
