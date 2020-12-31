@@ -16,7 +16,6 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
     [SerializeField] Pool blackPool;
     Vector3 cachePadding = new Vector3();
     Vector3 cacheSize = new Vector3();
-    Vector3 cacheCenter = new Vector3();
     #endregion //FIELDS
 
     #region -------- PROPERTIES
@@ -186,7 +185,7 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
         BoardPiece boardPiece = GetSquareAt(boardCoord);
         return piece.IsMovimentAvailable(boardPiece);
     }
-    public Pool GetPool(int index) => index.IsPair() ? WhitePool : BlackPool;
+    public Pool GetPool(int index) => index.IsEven() ? WhitePool : BlackPool;
     public BoardPiece[,,] GenerateBoard(Vector3Int boardSize)
     {
         BoardPiece[,,] boardPieces = InstantiateABoard(boardSize);

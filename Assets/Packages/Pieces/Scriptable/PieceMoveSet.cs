@@ -16,7 +16,7 @@ public class PieceMoveSet : ScriptableObject
     public List<int> movimentLimits = new List<int>();
     public Axis axisBlocker = Axis.None;
     public Axis backwardsBlocker = Axis.None;
-    public bool IsMovimentAvailable(Vector3Int dif, bool isWhite)
+    public bool IsMovimentAvailable(Vector3Int dif, bool isWhite)       //TODO test it
     {
         if (HasBlockedAxis(dif)
             || HasBlockedBackwards(dif, isWhite)
@@ -27,7 +27,7 @@ public class PieceMoveSet : ScriptableObject
             return false;
         return true;
     }
-    public bool HasBlockedAxis(Vector3Int dif)
+    public bool HasBlockedAxis(Vector3Int dif)      //TODO test it
     {
         if (axisBlocker == Axis.None) return false;
 
@@ -36,7 +36,7 @@ public class PieceMoveSet : ScriptableObject
         if (axisBlocker.HasAny(Axis.Z) && (dif.z != 0)) return true;
         return false;
     }
-    public bool HasBlockedBackwards(Vector3Int dif, bool isWhite)
+    public bool HasBlockedBackwards(Vector3Int dif, bool isWhite)       //TODO test it
     {
         if (backwardsBlocker == Axis.None) return false;
 
@@ -55,8 +55,8 @@ public class PieceMoveSet : ScriptableObject
         return false;
     }
     #region -------- DIMENTIONAL LIMITS
-    public bool IsWithinDimentionalLimits(Vector3Int dif) => dimentionalLimits.HasAny(DimentionalLimits(dif));
-    public static Dimentions DimentionalLimits(Vector3Int dif)
+    public bool IsWithinDimentionalLimits(Vector3Int dif) => dimentionalLimits.HasAny(DimentionalLimits(dif));      //TODO test it
+    public static Dimentions DimentionalLimits(Vector3Int dif)      //TODO test it
     {
         byte rank = DimentionalRank(dif);
         return RankAsDimentions(rank);
@@ -82,7 +82,7 @@ public class PieceMoveSet : ScriptableObject
     #endregion //DIMENTIONAL LIMITS
 
     #region -------- DIMENTIONAL BINDINGS 
-    public bool IsWithinDimentionalBinding(Vector3Int dif)
+    public bool IsWithinDimentionalBinding(Vector3Int dif)      //TODO test it
     {
         //TODO 
         List<int> binds = DimentionalBinds();
@@ -96,8 +96,8 @@ public class PieceMoveSet : ScriptableObject
         if (dimentionalLimits == Dimentions.three) return HasBindedLimits(limits, 3);
         return true;
     }
-    public List<int> DimentionalBinds() => DimentionalBinds(dimentionalBinding);
-    public static List<int> DimentionalBinds(Dimentions dimentionalBinding)
+    public List<int> DimentionalBinds() => DimentionalBinds(dimentionalBinding);        //TODO test it
+    public static List<int> DimentionalBinds(Dimentions dimentionalBinding)     //TODO test it
     {
         List<int> bind = new List<int>();
         if (dimentionalBinding.HasAny(Dimentions.one)) bind.Add(1);
@@ -105,7 +105,7 @@ public class PieceMoveSet : ScriptableObject
         if (dimentionalBinding.HasAny(Dimentions.three)) bind.Add(3);
         return bind;
     }
-    public static bool HasBindedLimits(List<int> limits, int bindingAmount)
+    public static bool HasBindedLimits(List<int> limits, int bindingAmount)     //TODO test it
     {
         var groupedLimits = limits.GroupBy(limit => Mathf.Abs(limit));
         var binded = groupedLimits.Where(group => group.Key != 0 && group.Count() >= bindingAmount);
@@ -114,13 +114,13 @@ public class PieceMoveSet : ScriptableObject
     #endregion //DIMENTIONAL BINDINGS 
 
     #region -------- MOVIMENT LIMITS
-    public bool IsWithinMovimentLimits(Vector3Int dif)
+    public bool IsWithinMovimentLimits(Vector3Int dif)      //TODO test it
     {
         if (movimentLimits.Count == 0) return true;
         List<int> difVectors = dif.AbsolutesOverZero();
         return IsWithinMovimentLimits(difVectors);
     }
-    public bool IsWithinMovimentLimits(List<int> _difVectors)
+    public bool IsWithinMovimentLimits(List<int> _difVectors)       //TODO test it
     {
         List<int> limitsCache = new List<int>(movimentLimits);
         List<int> difVectorsCahe = new List<int>(_difVectors);
@@ -134,7 +134,7 @@ public class PieceMoveSet : ScriptableObject
             default: return true;
         }
     }
-    public static void RemoveMatchingElements(List<int> limits, List<int> difVectors)
+    public static void RemoveMatchingElements(List<int> limits, List<int> difVectors)       //TODO test it
     {
         int i = 0;
         while (i < limits.Count)
@@ -152,7 +152,7 @@ public class PieceMoveSet : ScriptableObject
         }
     }
     #endregion //MOVIMENT LIMITS
-    public static bool IsOwnPosition(Vector3Int dif) => dif == Vector3Int.zero;
+    public static bool IsOwnPosition(Vector3Int dif) => dif == Vector3Int.zero;     //TODO test it
 }
 [Flags]
 public enum Dimentions

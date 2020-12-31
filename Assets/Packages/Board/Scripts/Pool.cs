@@ -4,7 +4,6 @@ using UnityEngine;
 using ExtensionMethods;
 
 [Serializable]
-// public class Pool<T> where T : Component, IPoolable
 public class Pool : MonoBehaviour
 {
     #region -------- FIELDS

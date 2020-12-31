@@ -64,17 +64,6 @@ public class BoardPiece : MonoBehaviour, IInitializable, IPoolable, IHighlightab
     }
     [ContextMenu(nameof(UpdateSize))]
     public void UpdateSize() => so_pieceData.UpdateSize(this);
-    // public IPoolable Deactivated()
-    // {
-    //     gameObject.SetActive(false);
-    //     return this;
-    // }
-    // public IPoolable Activated()
-    // {
-    //     gameObject.SetActive(true);
-    //     return this;
-    // }
-    // public IPoolable InstantiatePoolable() => Instantiate(this);
     public Component Deactivated()
     {
         gameObject.SetActive(false);

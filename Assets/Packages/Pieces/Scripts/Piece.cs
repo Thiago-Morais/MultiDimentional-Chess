@@ -37,7 +37,7 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
         playerData.ApplyPlayerData(this);
     }
     public void Start() => MoveToCoord();
-    public void InitializeVariables()
+    public void InitializeVariables()       //TODO test it
     {
         highlight = highlight.Initialized(this);
         if (!playerData) playerData = ScriptableObject.CreateInstance<PlayerData>();
@@ -53,17 +53,17 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
         => ContextMediator.Notify(this, intFlag);
     #endregion //MEDIATOR
 
-    public void MoveToCoord(Vector3Int boardCoord)
+    public void MoveToCoord(Vector3Int boardCoord)      //TODO test it
     {
         BoardCoord = boardCoord;
         MoveToCoord();
     }
     [ContextMenu(nameof(MoveToCoord))]
-    public void MoveToCoord()
+    public void MoveToCoord()       //TODO test it
     {
         Notify(IntFlags.MoveToCoord);
     }
-    public void MoveTo(BoardPiece target)
+    public void MoveTo(BoardPiece target)       //TODO test it
     {
         if (!target) return;
 
@@ -75,21 +75,21 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
 
         currentSquare = target;
     }
-    public void OnSelected()
+    public void OnSelected()        //TODO test it
     {
         HighlightPossibleMoves();
     }
-    public void OnDeselected()
+    public void OnDeselected()      //TODO test it
     {
         highlight.HighlightUndo();
         UnHighlightPossibleMoves();
     }
-    public void UnHighlightPossibleMoves() => Notify(IntFlags.HidePossibleMoves);
-    public void HighlightPossibleMoves() => Notify(IntFlags.ShowPossibleMoves);
-    public bool IsAnyMovimentAvailable(BoardPiece square) => IsMovimentAvailable(square) || IsCaptureAvailable(square);
-    public bool IsCaptureAvailable(BoardPiece square) => IsMovimentAvailableWith(square, captureSet);
-    public bool IsMovimentAvailable(BoardPiece square) => IsMovimentAvailableWith(square, moveSet);
-    bool IsMovimentAvailableWith(BoardPiece square, PieceMoveSet moveSet)
+    public void UnHighlightPossibleMoves() => Notify(IntFlags.HidePossibleMoves);       //TODO test it
+    public void HighlightPossibleMoves() => Notify(IntFlags.ShowPossibleMoves);     //TODO test it
+    public bool IsAnyMovimentAvailable(BoardPiece square) => IsMovimentAvailable(square) || IsCaptureAvailable(square);     //TODO test it
+    public bool IsCaptureAvailable(BoardPiece square) => IsMovimentAvailableWith(square, captureSet);       //TODO test it
+    public bool IsMovimentAvailable(BoardPiece square) => IsMovimentAvailableWith(square, moveSet);     //TODO test it
+    bool IsMovimentAvailableWith(BoardPiece square, PieceMoveSet moveSet)       //TODO test it
     {
         Vector3Int dif = square.BoardCoord - BoardCoord;
 
