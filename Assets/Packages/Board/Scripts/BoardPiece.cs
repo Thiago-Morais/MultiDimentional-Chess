@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorInstance<BoardPiece, BoardPiece.IntFlags>, */IMediator<BoardPiece.IntFlags>, IOnBoard
+public class BoardPiece : MonoBehaviour, IInitializable, IPoolable, IHighlightable, ISelectable,/*  IMediatorInstance<BoardPiece, BoardPiece.IntFlags>, */IMediator<BoardPiece.IntFlags>, IOnBoard
 {
     #region -------- FIELDS
     public SO_BoardSquare so_pieceData;
@@ -25,9 +25,20 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     }
     public void InitializeVariables()
     {
-        if (!Highlight) Highlight = GetComponentInChildren<Highlight>();
+        if (!Highlight)
+        {
+            Highlight = GetComponentInChildren<Highlight>();
+            if (!Highlight)
+            {
+                Highlight = gameObject.AddComponent<Highlight>().Initialized() as Highlight;
+            }
+        }
         if (!so_pieceData) so_pieceData = ScriptableObject.CreateInstance<SO_BoardSquare>();
-        if (!pieceTarget) pieceTarget = new GameObject().transform;
+        if (!pieceTarget)
+        {
+            pieceTarget = new GameObject(nameof(pieceTarget)).transform;
+            pieceTarget.SetParent(transform);
+        }
     }
     public enum IntFlags
     {
@@ -53,16 +64,33 @@ public class BoardPiece : MonoBehaviour, IPoolable, ISelectable,/*  IMediatorIns
     }
     [ContextMenu(nameof(UpdateSize))]
     public void UpdateSize() => so_pieceData.UpdateSize(this);
-    public IPoolable Deactivated()
+    // public IPoolable Deactivated()
+    // {
+    //     gameObject.SetActive(false);
+    //     return this;
+    // }
+    // public IPoolable Activated()
+    // {
+    //     gameObject.SetActive(true);
+    //     return this;
+    // }
+    // public IPoolable InstantiatePoolable() => Instantiate(this);
+    public Component Deactivated()
     {
         gameObject.SetActive(false);
         return this;
     }
-    public IPoolable Activated()
+    public Component Activated()
     {
         gameObject.SetActive(true);
         return this;
     }
-    public IPoolable InstantiatePoolable() => Instantiate(this);
+    public Component InstantiatePoolable() => Instantiate(this);
+    public IInitializable Initialized(Transform parent = null)
+    {
+        InitializeVariables();
+        transform.parent = parent;
+        return this;
+    }
     #endregion //METHODS
 }

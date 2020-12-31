@@ -215,7 +215,6 @@ namespace Tests
     {
         Piece piece1;
         BoardPiece boardPiece1;
-        // DinamicBoard dinamicBoard;
         [SetUp]
         public void Setup()
         {
@@ -223,9 +222,6 @@ namespace Tests
             piece1.Awake();
             boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
             boardPiece1.InitializeVariables();
-            // GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
-            // dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
-            // dinamicBoard.Awake();
         }
         static DinamicBoard LoadDinamicBoardPrefab()
         {
@@ -247,7 +243,6 @@ namespace Tests
             GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
             DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
             dinamicBoard.Awake();
-            // board.SignOn();
             //ACT
             selector.ChangeSelection(piece1);
             //ASSERT
@@ -259,34 +254,26 @@ namespace Tests
 
         }
         [Test]
-        public void Pawn_Can_Move_To_The_Square_In_Front_Of_It()
+        public void ResetBoardSize_1x1x1_BoardSizeIs1()
         {
             //SETUP
-            PieceMoveSet pawnMoveSet = Resources.Load("Pieces/Scriptable/MoveSet/PawnMoveSet") as PieceMoveSet;
-            piece1.moveSet = pawnMoveSet;
-            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
-            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
-            dinamicBoard.Awake();
-            // dinamicBoard.ForceUpdateBoard(Vector3Int.RoundToInt(Vector3.forward + Vector3.one), Vector3.zero);
-            BoardPiece boardPiece = dinamicBoard.GetSquareAt(new Vector3Int(0, 0, 0));
-            piece1.MoveTo(boardPiece);
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            dinamicBoard.InitializeVariables();
             //ACT
-            bool? canMove = dinamicBoard.IsMovimentAvailable(piece1, new Vector3Int(0, 0, 1));
+            dinamicBoard.ResetBoardSize(new Vector3Int(1, 1, 1));
             //ASSERT
-            Assert.IsTrue(canMove);
+            Assert.AreEqual(1, dinamicBoard.board.Length);
         }
         [Test]
-        public void Board_Can_Be_3x3x3()
+        public void ResetBoardSize_2x2x2_BoardSizeIs8()
         {
             //SETUP
-            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
-            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
-            dinamicBoard.Awake();
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            dinamicBoard.InitializeVariables();
             //ACT
-            dinamicBoard.size = new Vector3Int(3, 3, 3);
-            dinamicBoard.ResetBoardSize(new Vector3Int(3, 3, 3));
+            dinamicBoard.ResetBoardSize(new Vector3Int(2, 2, 2));
             //ASSERT
-            Assert.AreEqual(new BoardPiece[3, 3, 3].Length, dinamicBoard.board.Length);
+            Assert.AreEqual(8, dinamicBoard.board.Length);
         }
         [Test]
         public void Select_Selected_Piece_Turn_Board_Highlight_Off()
@@ -326,27 +313,23 @@ namespace Tests
         public void GenerateSquareUsing_PairIndex_WhiteBoardPiece()
         {
             //SETUP
-            BoardPiece whiteBoardPiece = (Resources.Load("Board/Prefabs/WhiteSquare") as GameObject).GetComponent<BoardPiece>();
-            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
-            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
-            dinamicBoard.Awake();
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            dinamicBoard.InitializeVariables();
             //ACT
-            BoardPiece boardPiece = dinamicBoard.GenerateSquareUsing(2);
+            BoardPiece boardPiece = dinamicBoard.GenerateBoardPieceUsing(0);
             //ASSERT
-            Assert.AreEqual(whiteBoardPiece.so_pieceData, boardPiece.so_pieceData);
+            Assert.AreSame(((BoardPiece)dinamicBoard.WhitePool.sample).so_pieceData, boardPiece.so_pieceData);
         }
         [Test]
-        public void GenerateSquareUsing_OddIndex_BlackBoardPiece()
+        public void GenerateSquareUsing_OddIndex_PieceDataIsTheSameAs()
         {
             //SETUP
-            BoardPiece whiteBoardPiece = (Resources.Load("Board/Prefabs/BlackSquare") as GameObject).GetComponent<BoardPiece>();
-            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
-            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
-            dinamicBoard.Awake();
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            dinamicBoard.InitializeVariables();
             //ACT
-            BoardPiece boardPiece = dinamicBoard.GenerateSquareUsing(1);
+            BoardPiece boardPiece = dinamicBoard.GenerateBoardPieceUsing(1);
             //ASSERT
-            Assert.AreEqual(whiteBoardPiece.so_pieceData, boardPiece.so_pieceData);
+            Assert.AreSame(((BoardPiece)dinamicBoard.BlackPool.sample).so_pieceData, boardPiece.so_pieceData);
         }
         [Test]
         public void GetPool_PairIndex_WhitePool()
@@ -356,7 +339,7 @@ namespace Tests
             DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
             dinamicBoard.Awake();
             //ACT
-            Pool<BoardPiece> pool = dinamicBoard.GetPool(0);
+            Pool pool = dinamicBoard.GetPool(0);
             //ASSERT
             Assert.AreSame(dinamicBoard.WhitePool, pool);
         }
@@ -367,7 +350,7 @@ namespace Tests
             DinamicBoard dinamicBoard = LoadDinamicBoardPrefab();
             dinamicBoard.Awake();
             //ACT
-            Pool<BoardPiece> pool = dinamicBoard.GetPool(1);
+            Pool pool = dinamicBoard.GetPool(1);
             //ASSERT
             Assert.AreSame(dinamicBoard.BlackPool, pool);
         }
@@ -394,13 +377,14 @@ namespace Tests
             Assert.AreSame(dinamicBoard.board[2, 2, 2], boardPiece);
         }
         [Test]
-        public void UpdateBoardCoordAt_0x0x0_BoardPieceCoord0x0x0()
+        public void UpdateBoardPieceCoordAt_0x0x0_BoardPieceCoord0x0x0()
         {
             //SETUP
-            DinamicBoard dinamicBoard = LoadDinamicBoardPrefab();
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            dinamicBoard.InitializeVariables();
             dinamicBoard.board = dinamicBoard.GenerateBoard(new Vector3Int(1, 1, 1));
             //ACT
-            dinamicBoard.UpdateBoardCoordAt(0, 0, 0);
+            dinamicBoard.UpdateBoardPieceCoordAt(0, 0, 0);
             //ASSERT
             Assert.AreEqual(new Vector3Int(0, 0, 0), dinamicBoard.board[0, 0, 0].BoardCoord);
         }
@@ -408,12 +392,27 @@ namespace Tests
         public void GenerateBoard_1x1x1_PieceIsNotNull()
         {
             //SETUP
-            // DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
-            DinamicBoard dinamicBoard = LoadDinamicBoardPrefab();
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            dinamicBoard.InitializeVariables();
             //ACT
             dinamicBoard.board = dinamicBoard.GenerateBoard(new Vector3Int(1, 1, 1));
             //ASSERT
             Assert.NotNull(dinamicBoard.board[0, 0, 0]);
+        }
+        [Test]
+        public void InitializeVariables_VariablesAreNotNull()
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>();
+            //ACT
+            dinamicBoard.InitializeVariables();
+            //ASSERT
+            Assert.NotNull(dinamicBoard.size);
+            Assert.NotNull(dinamicBoard.padding);
+            Assert.NotNull(dinamicBoard.center);
+            Assert.NotNull(dinamicBoard.board);
+            Assert.NotNull(dinamicBoard.WhitePool);
+            Assert.NotNull(dinamicBoard.BlackPool);
         }
     }
     public class PieceMoviment
@@ -440,6 +439,22 @@ namespace Tests
             Object.DestroyImmediate(boardPiece1.gameObject);
             Object.DestroyImmediate(boardPiece2.gameObject);
         }
+        [Test]
+        public void Pawn_Can_Move_To_The_Square_In_Front_Of_It()
+        {
+            //SETUP
+            PieceMoveSet pawnMoveSet = Resources.Load("Pieces/Scriptable/MoveSet/PawnMoveSet") as PieceMoveSet;
+            piece1.moveSet = pawnMoveSet;
+            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            dinamicBoard.Awake();
+            BoardPiece boardPiece = dinamicBoard.GetSquareAt(new Vector3Int(0, 0, 0));
+            piece1.MoveTo(boardPiece);
+            //ACT
+            bool? canMove = dinamicBoard.IsMovimentAvailable(piece1, new Vector3Int(0, 0, 1));
+            //ASSERT
+            Assert.IsTrue(canMove);
+        }
     }
     public class PoolTests
     {
@@ -447,26 +462,50 @@ namespace Tests
         {
             public IPoolable Activated() => throw new System.NotImplementedException();
             public IPoolable Deactivated() => throw new System.NotImplementedException();
-            public IPoolable InstantiatePoolable(Transform poolParent) => throw new System.NotImplementedException();
-
+            public IInitializable Initialized(Transform parent = null) => throw new System.NotImplementedException();
             public IPoolable InstantiatePoolable() => throw new System.NotImplementedException();
+            Component IPoolable.Activated() => throw new System.NotImplementedException();
+            Component IPoolable.Deactivated() => throw new System.NotImplementedException();
+            Component IPoolable.InstantiatePoolable() => throw new System.NotImplementedException();
         }
-
         [Test]
-        public void Cant_Push_Null_To_Pool()
+        public void InitializedAs_BoardPieceWithNoPrefab_SampleIsInstanceOfBoardPiece()
         {
             //SETUP
-            Pool<Poolable> pool = new Pool<Poolable>();
+            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
             //ACT
-            pool.PushToPool(null);
+            squarePool1.InitializedAs<BoardPiece>();
+            //ASSERT
+            Assert.IsInstanceOf<BoardPiece>(squarePool1.sample);
+        }
+        [Test]
+        public void InitializedAs_BoardPieceWithPrefab_SampleIsSameAsPrefabComponent()
+        {
+            //SETUP
+            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
+            GameObject boardPieceObj = new GameObject(nameof(boardPieceObj));
+            BoardPiece boardPieceComp = boardPieceObj.AddComponent<BoardPiece>();
+            squarePool1.prefab = boardPieceObj;
+            //ACT
+            squarePool1.InitializedAs<BoardPiece>();
+            //ASSERT
+            Assert.AreSame(boardPieceComp, squarePool1.sample);
+        }
+        [Test]
+        public void PushToPool_Null_KeepPoolCount()
+        {
+            //SETUP
+            Pool pool = new GameObject(nameof(pool)).AddComponent<Pool>().InitializedAs<BoardPiece>();
+            //ACT
+            pool.PushToPool<BoardPiece>(null);
             //ASSERT
             Assert.AreEqual(0, pool.objectPool.Count);
         }
         [Test]
-        public void Push_Board_Piece_To_Pool_Gets_Deactivated()
+        public void PushToPool_BoardPiece_GetsDeactivated()
         {
             //SETUP
-            Pool<BoardPiece> squarePool1 = new Pool<BoardPiece>();
+            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
             BoardPiece boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
             //ACT
             squarePool1.PushToPool(boardPiece1);
@@ -478,9 +517,9 @@ namespace Tests
         {
             //SETUP
             BoardPiece boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
-            Pool<BoardPiece> squarePool1 = new Pool<BoardPiece>(new List<BoardPiece> { boardPiece1 });
+            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
             //ACT
-            BoardPiece boardPiece2 = squarePool1.GetFromPool();
+            BoardPiece boardPiece2 = squarePool1.GetFromPool<BoardPiece>();
             //ASSERT
             Assert.IsTrue(boardPiece2.gameObject.activeSelf);
         }
@@ -488,9 +527,9 @@ namespace Tests
         public void Get_Board_Piece_From_Empty_Pool_Creates_An_Board_Piece()
         {
             //SETUP
-            Pool<BoardPiece> squarePool1 = new Pool<BoardPiece>().Initialized();
+            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
             //ACT
-            BoardPiece boardPiece = squarePool1.GetFromPool();
+            BoardPiece boardPiece = squarePool1.GetFromPool<BoardPiece>();
             //ASSERT
             Assert.IsNotNull(boardPiece);
         }
@@ -499,9 +538,9 @@ namespace Tests
         {
             //SETUP
             BoardPiece boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
-            Pool<BoardPiece> squarePool1 = new Pool<BoardPiece>(new List<BoardPiece> { boardPiece1 });
+            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
             //ACT
-            BoardPiece boardPiece2 = squarePool1.GetFromPoolGrouped();
+            BoardPiece boardPiece2 = squarePool1.GetFromPoolGrouped<BoardPiece>();
             //ASSERT
             Assert.IsTrue(boardPiece2.gameObject.activeSelf);
         }
@@ -509,23 +548,33 @@ namespace Tests
         public void Get_Grouped_Board_Piece_From_Empty_Pool_Creates_An_Board_Piece()
         {
             //SETUP
-            Pool<BoardPiece> squarePool1 = new Pool<BoardPiece>().Initialized();
+            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
             //ACT
-            BoardPiece boardPiece = squarePool1.GetFromPoolGrouped();
+            BoardPiece boardPiece = squarePool1.GetFromPoolGrouped<BoardPiece>();
             //ASSERT
             Assert.IsNotNull(boardPiece);
         }
         [Test]
-        public void Get_Grouped_Board_Piece_From_Pool_Put_Board_Piece_As_Transform_Child()
+        public void GetFromPoolGrouped__BoardPieceParentIsPool()
         {
             //SETUP
             BoardPiece boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
-            Pool<BoardPiece> squarePool1 = new Pool<BoardPiece>().Initialized();
-            squarePool1.poolParent = new GameObject().transform;
+            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
             //ACT
-            BoardPiece boardPiece = squarePool1.GetFromPoolGrouped();
+            BoardPiece boardPiece = squarePool1.GetFromPoolGrouped<BoardPiece>();
             //ASSERT
-            Assert.AreEqual(squarePool1.poolParent, boardPiece.transform.parent);
+            Assert.AreEqual(squarePool1.transform, boardPiece.transform.parent);
+        }
+        [Test]
+        public void SetSampleWithPrefab_BoardPieceType_SampleIsThePrefabComponentBoardPiece()
+        {
+            //SETUP
+            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
+            squarePool1.prefab = new GameObject("boardPiece1").AddComponent<BoardPiece>().gameObject;
+            //ACT
+            squarePool1.SetSampleWithPrefab<BoardPiece>();
+            //ASSERT
+            Assert.IsInstanceOf<BoardPiece>(squarePool1.sample);
         }
     }
     public class BoardPieceTests

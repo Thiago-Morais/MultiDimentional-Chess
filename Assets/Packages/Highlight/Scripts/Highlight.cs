@@ -5,7 +5,7 @@ using UnityEngine;
 using ExtensionMethods;
 using System;
 
-public class Highlight : MonoBehaviour
+public class Highlight : MonoBehaviour, IInitializable
 {
     #region -------- FIELDS
     public bool lockHighlight;
@@ -21,16 +21,7 @@ public class Highlight : MonoBehaviour
     #region -------- PROPERTIES
     public bool IsHighlighted { get => isHighlighted; private set => isHighlighted = value; }
     public HighlightVariations HighlightVariations { get => highlightVariations; private set => highlightVariations = value; }
-    public HighlightType HighlightType
-    {
-        get => highlightType;
-        private set
-        {
-            highlightType = value;
-            // if (value == HighlightType.none) HighlightOff();
-            // if (value == HighlightType.none) ClearHighlight();
-        }
-    }
+    public HighlightType HighlightType { get => highlightType; private set => highlightType = value; }
     public HighlightType CachedHighlightType { get => cachedHighlightType; private set => cachedHighlightType = value; }
     public List<HighlightType> HighlightStack { get => highlightStack; set => highlightStack = value; }
     #endregion //PROPERTIES
@@ -130,6 +121,13 @@ public class Highlight : MonoBehaviour
     }
     [ContextMenu(nameof(UpdateRenderersRef))]
     public void UpdateRenderersRef() { if (m_Renderer.IsEmpty()) m_Renderer = GetComponentsInChildren<Renderer>().ToList(); }
+
+    public IInitializable Initialized(Transform parent = null)
+    {
+        InitializeVariables();
+        transform.parent = parent;
+        return this;
+    }
     #endregion //METHODS
 }
 public enum HighlightType

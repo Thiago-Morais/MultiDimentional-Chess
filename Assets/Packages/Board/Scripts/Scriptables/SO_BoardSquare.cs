@@ -7,13 +7,13 @@ using UnityEngine;
 public class SO_BoardSquare : ScriptableObject
 {
     public GameObject prefab;
-    public Bounds pieceBounds;
+    public Bounds pieceBounds = new Bounds(Vector3.zero, Vector3.one);
     public bool HavePrefab => prefab;
     void Awake() => InitializeVariables();
     [ContextMenu(nameof(InitializeVariables))]
     public void InitializeVariables()
     {
-        if (!prefab) prefab = new GameObject();
+        // if (!prefab) prefab = new GameObject("Prefab");
         if (pieceBounds == default(Bounds)) pieceBounds = new Bounds();
     }
     [ContextMenu(nameof(UpdateSize))]
