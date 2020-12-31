@@ -458,38 +458,27 @@ namespace Tests
     }
     public class PoolTests
     {
-        public class Poolable : Component, IPoolable
-        {
-            public IPoolable Activated() => throw new System.NotImplementedException();
-            public IPoolable Deactivated() => throw new System.NotImplementedException();
-            public IInitializable Initialized(Transform parent = null) => throw new System.NotImplementedException();
-            public IPoolable InstantiatePoolable() => throw new System.NotImplementedException();
-            Component IPoolable.Activated() => throw new System.NotImplementedException();
-            Component IPoolable.Deactivated() => throw new System.NotImplementedException();
-            Component IPoolable.InstantiatePoolable() => throw new System.NotImplementedException();
-        }
         [Test]
         public void InitializedAs_BoardPieceWithNoPrefab_SampleIsInstanceOfBoardPiece()
         {
             //SETUP
-            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
+            Pool pool = new GameObject(nameof(pool)).AddComponent<Pool>();
             //ACT
-            squarePool1.InitializedAs<BoardPiece>();
+            pool.InitializedAs<BoardPiece>();
             //ASSERT
-            Assert.IsInstanceOf<BoardPiece>(squarePool1.sample);
+            Assert.IsInstanceOf<BoardPiece>(pool.sample);
         }
         [Test]
         public void InitializedAs_BoardPieceWithPrefab_SampleIsSameAsPrefabComponent()
         {
             //SETUP
-            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
-            GameObject boardPieceObj = new GameObject(nameof(boardPieceObj));
-            BoardPiece boardPieceComp = boardPieceObj.AddComponent<BoardPiece>();
-            squarePool1.prefab = boardPieceObj;
+            BoardPiece boardPiece = new GameObject(nameof(boardPiece)).AddComponent<BoardPiece>();
+            Pool pool = new GameObject(nameof(pool)).AddComponent<Pool>();
+            pool.prefab = boardPiece.gameObject;
             //ACT
-            squarePool1.InitializedAs<BoardPiece>();
+            pool.InitializedAs<BoardPiece>();
             //ASSERT
-            Assert.AreSame(boardPieceComp, squarePool1.sample);
+            Assert.AreSame(boardPiece, pool.sample);
         }
         [Test]
         public void PushToPool_Null_KeepPoolCount()
@@ -505,76 +494,74 @@ namespace Tests
         public void PushToPool_BoardPiece_GetsDeactivated()
         {
             //SETUP
-            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
-            BoardPiece boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
+            Pool pool = new GameObject(nameof(pool)).AddComponent<Pool>();
+            BoardPiece boardPiece = new GameObject(nameof(boardPiece)).AddComponent<BoardPiece>();
             //ACT
-            squarePool1.PushToPool(boardPiece1);
+            pool.PushToPool(boardPiece);
             //ASSERT
-            Assert.IsFalse(boardPiece1.gameObject.activeSelf);
+            Assert.IsFalse(boardPiece.gameObject.activeSelf);
         }
         [Test]
-        public void Get_Board_Piece_From_Pool_Gets_Activated()
+        public void GetFromPool_WithBoardPieceType_ActiveBoardPiece()
         {
             //SETUP
-            BoardPiece boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
-            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
+            Pool pool = new GameObject(nameof(pool)).AddComponent<Pool>();
             //ACT
-            BoardPiece boardPiece2 = squarePool1.GetFromPool<BoardPiece>();
+            BoardPiece boardPiece = pool.GetFromPool<BoardPiece>();
             //ASSERT
-            Assert.IsTrue(boardPiece2.gameObject.activeSelf);
+            Assert.IsTrue(boardPiece.gameObject.activeSelf);
         }
         [Test]
-        public void Get_Board_Piece_From_Empty_Pool_Creates_An_Board_Piece()
+        public void GetFromPool_WithBoardPieceType_NotNullBoardPiece()
         {
             //SETUP
-            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
+            Pool pool = new GameObject(nameof(pool)).AddComponent<Pool>();
             //ACT
-            BoardPiece boardPiece = squarePool1.GetFromPool<BoardPiece>();
+            BoardPiece boardPiece = pool.GetFromPool<BoardPiece>();
             //ASSERT
             Assert.IsNotNull(boardPiece);
         }
         [Test]
-        public void Get_Grouped_Board_Piece_From_Pool_Gets_Activated()
+        public void GetFromPoolGrouped_WithBoardPieceType_ActiveBoardPiece()
         {
             //SETUP
-            BoardPiece boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
-            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
+            Pool pool = new GameObject(nameof(pool)).AddComponent<Pool>();
             //ACT
-            BoardPiece boardPiece2 = squarePool1.GetFromPoolGrouped<BoardPiece>();
+            BoardPiece boardPiece = pool.GetFromPoolGrouped<BoardPiece>();
             //ASSERT
-            Assert.IsTrue(boardPiece2.gameObject.activeSelf);
+            Assert.IsTrue(boardPiece.gameObject.activeSelf);
         }
         [Test]
-        public void Get_Grouped_Board_Piece_From_Empty_Pool_Creates_An_Board_Piece()
+        public void GetFromPoolGrouped_WithBoardPieceType_NotNullBoardPiece()
         {
             //SETUP
-            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
+            Pool pool = new GameObject(nameof(pool)).AddComponent<Pool>();
             //ACT
-            BoardPiece boardPiece = squarePool1.GetFromPoolGrouped<BoardPiece>();
+            BoardPiece boardPiece = pool.GetFromPoolGrouped<BoardPiece>();
             //ASSERT
             Assert.IsNotNull(boardPiece);
         }
         [Test]
-        public void GetFromPoolGrouped__BoardPieceParentIsPool()
+        public void GetFromPoolGrouped_WithBoardPieceType_BoardPieceParentIsPool()
         {
             //SETUP
-            BoardPiece boardPiece1 = new GameObject(nameof(boardPiece1)).AddComponent<BoardPiece>();
-            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
+            Pool pool = new GameObject(nameof(pool)).AddComponent<Pool>();
             //ACT
-            BoardPiece boardPiece = squarePool1.GetFromPoolGrouped<BoardPiece>();
+            BoardPiece boardPiece = pool.GetFromPoolGrouped<BoardPiece>();
             //ASSERT
-            Assert.AreEqual(squarePool1.transform, boardPiece.transform.parent);
+            Assert.AreSame(pool.transform, boardPiece.transform.parent);
         }
         [Test]
         public void SetSampleWithPrefab_BoardPieceType_SampleIsThePrefabComponentBoardPiece()
         {
             //SETUP
-            Pool squarePool1 = new GameObject(nameof(squarePool1)).AddComponent<Pool>();
-            squarePool1.prefab = new GameObject("boardPiece1").AddComponent<BoardPiece>().gameObject;
+            Pool pool = new GameObject(nameof(pool)).AddComponent<Pool>();
+            BoardPiece prefabComp = new GameObject(nameof(BoardPiece)).AddComponent<BoardPiece>();
+            pool.prefab = prefabComp.gameObject;
             //ACT
-            squarePool1.SetSampleWithPrefab<BoardPiece>();
+            pool.SetSampleWithPrefab<BoardPiece>();
             //ASSERT
-            Assert.IsInstanceOf<BoardPiece>(squarePool1.sample);
+            Assert.AreSame(prefabComp, pool.sample);
         }
     }
     public class BoardPieceTests
