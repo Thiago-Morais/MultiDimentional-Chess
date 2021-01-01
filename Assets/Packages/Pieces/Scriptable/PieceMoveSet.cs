@@ -18,8 +18,8 @@ public class PieceMoveSet : ScriptableObject
     public Dimentions backwardsBlocker = Dimentions.none;
     public bool IsMovimentAvailable(Vector3Int direction, bool isWhite)       //TODO test it
     {
-        if (IsDimentionBlocked(direction)
-            || IsBackwardsBlocked(direction, !isWhite)
+        if (HasBlockedDirection(direction)
+            || HasBlockedBackwards(direction, !isWhite)
             || !IsWithinMaxDimentionsAmount(direction)
             || !IsWithinDimentionalBinding(direction)
             || !IsWithinMovimentLimits(direction)
@@ -27,7 +27,7 @@ public class PieceMoveSet : ScriptableObject
             return false;
         return true;
     }
-    public bool IsDimentionBlocked(Vector3Int direction)
+    public bool HasBlockedDirection(Vector3Int direction)
     {
         if (blockedDimentions == Dimentions.none) return false;
         if (blockedDimentions.HasAny(Dimentions.one) && direction.x != 0) return true;
@@ -35,7 +35,7 @@ public class PieceMoveSet : ScriptableObject
         if (blockedDimentions.HasAny(Dimentions.three) && direction.y != 0) return true;
         return false;
     }
-    public bool IsBackwardsBlocked(Vector3Int direction, bool inversed)
+    public bool HasBlockedBackwards(Vector3Int direction, bool inversed)
     {
         if (inversed) direction = -direction;
         if (backwardsBlocker.HasAny(Dimentions.one) && direction.x < 0) return true;
@@ -44,21 +44,13 @@ public class PieceMoveSet : ScriptableObject
         return false;
     }
     #region -------- DIMENTIONAL LIMITS
-    public bool IsWithinMaxDimentionsAmount(Vector3Int direction) => maxDimentionsAmount.HasAny(DimentionalLimits(direction));      //TODO test it
-    public static Dimentions DimentionalLimits(Vector3Int direction)      //TODO test it
+    public bool IsWithinMaxDimentionsAmount(Vector3Int direction) => maxDimentionsAmount.HasAny(ToDimentionsFlags(direction));      //TODO test it
+    public static Dimentions ToDimentionsFlags(Vector3Int direction)      //TODO test it
     {
-        byte rank = DimentionalRank(direction);
+        byte rank = direction.Rank();
         return RankAsDimentions(rank);
     }
-    static byte DimentionalRank(Vector3Int direction)
-    {
-        byte rank = 0;
-        if (direction.x != 0) rank++;
-        if (direction.y != 0) rank++;
-        if (direction.z != 0) rank++;
-        return rank;
-    }
-    static Dimentions RankAsDimentions(byte rank)
+    public static Dimentions RankAsDimentions(byte rank)       //TODO test it
     {
         switch (rank)
         {
@@ -73,11 +65,10 @@ public class PieceMoveSet : ScriptableObject
     #region -------- DIMENTIONAL BINDINGS 
     public bool IsWithinDimentionalBinding(Vector3Int direction)      //TODO test it
     {
-        //TODO 
         List<int> binds = DimentionalBinds();
         if (binds.Count == 0) return true;
 
-        Dimentions dimentionalLimits = DimentionalLimits(direction);
+        Dimentions dimentionalLimits = ToDimentionsFlags(direction);
         if (!dimentionalBinding.HasAny(dimentionalLimits)) return false;
 
         List<int> limits = direction.AsList();
