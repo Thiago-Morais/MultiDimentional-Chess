@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highlightVariations:
   - type: 16
-    highlightColor: {r: 0, g: 0.7490196, b: 0.078431375, a: 35.2}
+    highlightColor: {r: 0, g: 23.968628, b: 2.509804, a: 35.2}
     highlightPulseSpeed: 3
     hightlightPulseAperture: {x: 3, y: 5}
   - type: 2

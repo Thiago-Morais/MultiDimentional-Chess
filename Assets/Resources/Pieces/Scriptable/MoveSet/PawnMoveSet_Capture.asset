@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9102a93036e6bec4394cff69e97b5267, type: 3}
   m_Name: PawnMoveSet_Capture
   m_EditorClassIdentifier: 
-  dimentionalLimits: 2
+  maxDimentionsAmount: 2
   dimentionalBinding: 0
-  limitType: 1
-  movimentLimits: 010000000100000001000000
-  axisBlocker: 0
+  distanceLimitType: 1
+  distanceLimitPerDimention: 010000000100000001000000
+  blockedDimentions: 0
   backwardsBlocker: 6

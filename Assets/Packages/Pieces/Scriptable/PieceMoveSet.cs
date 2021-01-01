@@ -9,7 +9,7 @@ using UnityEngine.Animations;
 [CreateAssetMenu(menuName = nameof(ScriptableObject) + "/" + nameof(PieceMoveSet))]
 public class PieceMoveSet : ScriptableObject
 {
-    public Dimentions maxDimentions = Dimentions.all;
+    public Dimentions maxDimentionsAmount = Dimentions.all;
     public Dimentions dimentionalBinding = Dimentions.none;
     [Tooltip("Number of squares this piece can move on this dimention.\n" + "0 means no limit.")]
     public LimitType distanceLimitType = LimitType.atMostAll;
@@ -20,7 +20,7 @@ public class PieceMoveSet : ScriptableObject
     {
         if (IsDimentionBlocked(direction)
             || IsBackwardsBlocked(direction, !isWhite)
-            || !IsWithinDimentionalLimits(direction)
+            || !IsWithinMaxDimentionsAmount(direction)
             || !IsWithinDimentionalBinding(direction)
             || !IsWithinMovimentLimits(direction)
             || IsOwnPosition(direction))
@@ -44,7 +44,7 @@ public class PieceMoveSet : ScriptableObject
         return false;
     }
     #region -------- DIMENTIONAL LIMITS
-    public bool IsWithinDimentionalLimits(Vector3Int direction) => maxDimentions.HasAny(DimentionalLimits(direction));      //TODO test it
+    public bool IsWithinMaxDimentionsAmount(Vector3Int direction) => maxDimentionsAmount.HasAny(DimentionalLimits(direction));      //TODO test it
     public static Dimentions DimentionalLimits(Vector3Int direction)      //TODO test it
     {
         byte rank = DimentionalRank(direction);

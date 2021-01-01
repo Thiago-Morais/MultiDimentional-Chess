@@ -7,6 +7,7 @@ namespace Tests
     #region -------- PIECE MOVE SET TESTS
     public class PieceMoveSetTests
     {
+        #region -------- IS OWN POSITION TESTS
         [Test]
         public void IsOwnPosition_0x0x0_True()
         {
@@ -23,6 +24,8 @@ namespace Tests
             //ASSERT
             Assert.IsFalse(b);
         }
+        #endregion //IS OWN POSITION TESTS
+        #region -------- IS DIMENTION BLOCKED TESTS
         [Test]
         [TestCase(Dimentions.none, 0, 0, 0, false)]
         [TestCase(Dimentions.none, 1, 1, 1, false)]
@@ -48,6 +51,8 @@ namespace Tests
             //ASSERT
             Assert.AreEqual(expected, b);
         }
+        #endregion //IS DIMENTION BLOCKED TESTS
+        #region -------- IS BACKWARDS BLOCKED TESTS
         [Test]
         [TestCase(Dimentions.none, 0, 0, 0, false)]
         [TestCase(Dimentions.all, 1, 0, 0, false)]
@@ -142,6 +147,14 @@ namespace Tests
             bool b = moveSet.IsBackwardsBlocked(direction, inversed);
             //ASSERT
             Assert.False(b);
+        }
+        #endregion //IS BACKWARDS BLOCKED TESTS
+        [Test]
+        public void IsWithinDimentionalLimits()
+        {
+            //SETUP
+            //ACT
+            //ASSERT
         }
     }
     #endregion //PIECE MOVE SET TESTS

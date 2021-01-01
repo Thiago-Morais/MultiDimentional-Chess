@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9102a93036e6bec4394cff69e97b5267, type: 3}
   m_Name: Test Move Set
   m_EditorClassIdentifier: 
-  dimentionalLimits: 3
+  maxDimentionsAmount: -1
   dimentionalBinding: 2
-  limitType: 0
-  movimentLimits: 0100000002000000
-  axisBlocker: 0
+  distanceLimitType: 1
+  distanceLimitPerDimention: 
+  blockedDimentions: 0
   backwardsBlocker: 0

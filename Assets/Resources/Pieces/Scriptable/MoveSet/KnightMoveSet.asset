@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9102a93036e6bec4394cff69e97b5267, type: 3}
   m_Name: KnightMoveSet
   m_EditorClassIdentifier: 
-  dimentionalLimits: -1
+  maxDimentionsAmount: -1
   dimentionalBinding: 0
-  limitType: 3
-  movimentLimits: 0200000001000000
-  axisBlocker: 0
+  distanceLimitType: 3
+  distanceLimitPerDimention: 0100000002000000
+  blockedDimentions: 0
   backwardsBlocker: 0
