@@ -23,5 +23,6 @@ namespace ExtensionMethods
             aux.Scale(scale);
             return aux;
         }
+        public static Vector3Int AsInt(this Vector3 vector) => Vector3Int.RoundToInt(vector);
     }
 }

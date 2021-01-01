@@ -21,7 +21,7 @@ namespace ExtensionMethods
 
             return list[list.Count - 1];
         }
-        public static void RemoveMatchingElements<T>(List<T> listA, List<T> listB)
+        public static void RemoveMatchingElements<T>(this List<T> listA, List<T> listB)
         {
             int i = 0;
             while (i < listA.Count)
