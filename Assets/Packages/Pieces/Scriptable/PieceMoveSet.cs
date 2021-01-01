@@ -9,18 +9,17 @@ using UnityEngine.Animations;
 [CreateAssetMenu(menuName = nameof(ScriptableObject) + "/" + nameof(PieceMoveSet))]
 public class PieceMoveSet : ScriptableObject
 {
-    public Dimentions dimentionalLimits = Dimentions.all;
+    public Dimentions maxDimentions = Dimentions.all;
     public Dimentions dimentionalBinding = Dimentions.none;
     [Tooltip("Number of squares this piece can move on this dimention.\n" + "0 means no limit.")]
-    public LimitType limitType = LimitType.atMostAll;
-    public List<int> movimentLimits = new List<int>();
+    public LimitType distanceLimitType = LimitType.atMostAll;
+    public List<int> distanceLimitPerDimention = new List<int>();
     public Dimentions blockedDimentions = Dimentions.none;
-    public Axis backwardsBlocker = Axis.None;
-
+    public Dimentions backwardsBlocker = Dimentions.none;
     public bool IsMovimentAvailable(Vector3Int direction, bool isWhite)       //TODO test it
     {
         if (IsDimentionBlocked(direction)
-            || IsBackwardsBlocked(direction, isWhite)
+            || IsBackwardsBlocked(direction, !isWhite)
             || !IsWithinDimentionalLimits(direction)
             || !IsWithinDimentionalBinding(direction)
             || !IsWithinMovimentLimits(direction)
@@ -36,26 +35,16 @@ public class PieceMoveSet : ScriptableObject
         if (blockedDimentions.HasAny(Dimentions.three) && direction.y != 0) return true;
         return false;
     }
-    public bool IsBackwardsBlocked(Vector3Int direction, bool isWhite)       //TODO test it
+    public bool IsBackwardsBlocked(Vector3Int direction, bool inversed)
     {
-        if (backwardsBlocker == Axis.None) return false;
-
-        if (isWhite)
-        {
-            if (backwardsBlocker.HasAny(Axis.X) && (direction.x < 0)) return true;
-            if (backwardsBlocker.HasAny(Axis.Y) && (direction.y < 0)) return true;
-            if (backwardsBlocker.HasAny(Axis.Z) && (direction.z < 0)) return true;
-        }
-        else
-        {
-            if (backwardsBlocker.HasAny(Axis.X) && (direction.x > 0)) return true;
-            if (backwardsBlocker.HasAny(Axis.Y) && (direction.y > 0)) return true;
-            if (backwardsBlocker.HasAny(Axis.Z) && (direction.z > 0)) return true;
-        }
+        if (inversed) direction = -direction;
+        if (backwardsBlocker.HasAny(Dimentions.one) && direction.x < 0) return true;
+        if (backwardsBlocker.HasAny(Dimentions.two) && direction.z < 0) return true;
+        if (backwardsBlocker.HasAny(Dimentions.three) && direction.y < 0) return true;
         return false;
     }
     #region -------- DIMENTIONAL LIMITS
-    public bool IsWithinDimentionalLimits(Vector3Int direction) => dimentionalLimits.HasAny(DimentionalLimits(direction));      //TODO test it
+    public bool IsWithinDimentionalLimits(Vector3Int direction) => maxDimentions.HasAny(DimentionalLimits(direction));      //TODO test it
     public static Dimentions DimentionalLimits(Vector3Int direction)      //TODO test it
     {
         byte rank = DimentionalRank(direction);
@@ -116,17 +105,17 @@ public class PieceMoveSet : ScriptableObject
     #region -------- MOVIMENT LIMITS
     public bool IsWithinMovimentLimits(Vector3Int direction)      //TODO test it
     {
-        if (movimentLimits.Count == 0) return true;
-        List<int> difVectors = direction.AbsolutesOverZero();
-        return IsWithinMovimentLimits(difVectors);
+        if (distanceLimitPerDimention.Count == 0) return true;
+        List<int> _direction = direction.AbsolutesOverZero();
+        return IsWithinMovimentLimits(_direction);
     }
     public bool IsWithinMovimentLimits(List<int> direction)       //TODO test it
     {
-        List<int> limitsCache = new List<int>(movimentLimits);
+        List<int> limitsCache = new List<int>(distanceLimitPerDimention);
         List<int> directionCache = new List<int>(direction);
         //TODO otimizar essa verificação (só precisa retornar a quantidade de elementos que não deram match)
         limitsCache.RemoveMatchingElements(directionCache);
-        switch (limitType)
+        switch (distanceLimitType)
         {
             case LimitType.atMostAll: return directionCache.Count == 0;
             case LimitType.atLeastAll: return limitsCache.Count == 0;
@@ -135,7 +124,7 @@ public class PieceMoveSet : ScriptableObject
         }
     }
     #endregion //MOVIMENT LIMITS
-    public static bool IsOwnPosition(Vector3Int direction) => direction == Vector3Int.zero;     //TODO test it
+    public static bool IsOwnPosition(Vector3Int direction) => direction == Vector3Int.zero;
 }
 [Flags]
 public enum Dimentions
