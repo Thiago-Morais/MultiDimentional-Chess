@@ -23,7 +23,7 @@ namespace Tests
                 //SETUP
                 Vector3Int vector = new Vector3Int(0, 0, 0);
                 //ACT
-                byte rank = vector.Rank();
+                int rank = vector.Rank();
                 //ASSERT
                 Assert.Zero(rank);
             }
@@ -39,7 +39,7 @@ namespace Tests
                 //SETUP
                 Vector3Int vector = new Vector3Int(vectorX, vectorY, vectorZ);
                 //ACT
-                byte rank = vector.Rank();
+                int rank = vector.Rank();
                 //ASSERT
                 Assert.AreEqual(1, rank);
             }
@@ -55,7 +55,7 @@ namespace Tests
                 //SETUP
                 Vector3Int vector = new Vector3Int(vectorX, vectorY, vectorZ);
                 //ACT
-                byte rank = vector.Rank();
+                int rank = vector.Rank();
                 //ASSERT
                 Assert.AreEqual(2, rank);
             }
@@ -67,7 +67,7 @@ namespace Tests
                 //SETUP
                 Vector3Int vector = new Vector3Int(vectorX, vectorY, vectorZ);
                 //ACT
-                byte rank = vector.Rank();
+                int rank = vector.Rank();
                 //ASSERT
                 Assert.AreEqual(3, rank);
             }

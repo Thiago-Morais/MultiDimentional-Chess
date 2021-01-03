@@ -24,9 +24,9 @@ namespace ExtensionMethods
             return aux;
         }
         public static Vector3Int AsInt(this Vector3 vector) => Vector3Int.RoundToInt(vector);
-        public static byte Rank(this Vector3Int vector)
+        public static int Rank(this Vector3Int vector)
         {
-            byte rank = 0;
+            int rank = 0;
             if (vector.x != 0) rank++;
             if (vector.y != 0) rank++;
             if (vector.z != 0) rank++;

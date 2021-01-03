@@ -24,10 +24,10 @@ namespace Tests
                 ten = 1 << 9,
             }
             [Test, Sequential]
-            public void RankAsFlags_NonNegativeRank_FlagWithOnlyTheRankOn([Range(0, 10)] int rank, [Values] SampleFlags expected)
+            public void RankAs_NonNegativeRank_FlagWithOnlyTheRankOn([Range(0, 10)] int rank, [Values] SampleFlags expected)
             {
                 //ACT
-                SampleFlags flags = rank.RankAsFlags<SampleFlags>();
+                SampleFlags flags = rank.RankAs<SampleFlags>();
                 //ASSERT
                 Assert.AreEqual(expected, flags);
             }

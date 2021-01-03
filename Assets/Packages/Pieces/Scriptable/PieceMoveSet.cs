@@ -44,22 +44,17 @@ public class PieceMoveSet : ScriptableObject
         return false;
     }
     #region -------- DIMENTIONAL LIMITS
-    public bool IsWithinMaxDimentionsAmount(Vector3Int direction) => maxDimentionsAmount.HasAny(ToDimentionsFlags(direction));      //TODO test it
-    public static Dimentions ToDimentionsFlags(Vector3Int direction)      //TODO test it
+    // public bool IsWithinMaxDimentionsAmount(Vector3Int direction) => maxDimentionsAmount.HasAny(ToDimentionsFlags(direction));      //TODO test it
+    public bool IsWithinMaxDimentionsAmount(Vector3Int direction)
     {
-        byte rank = direction.Rank();
-        return RankAsDimentions(rank);
-    }
-    public static Dimentions RankAsDimentions(byte rank)       //TODO test it
-    {
-        switch (rank)
-        {
-            case 1: return Dimentions.one;
-            case 2: return Dimentions.two;
-            case 3: return Dimentions.three;
-            default: return Dimentions.none;
-        }
-    }
+        Dimentions directions = direction.Rank().RankAs<Dimentions>();
+        return maxDimentionsAmount.HasAny(directions);
+    }      //TODO test it
+    // public static Dimentions ToDimentionsFlags(Vector3Int direction)      //TODO test it
+    // {
+    //     int rank = direction.Rank();
+    //     return ((int)rank).RankAsFlags<Dimentions>();
+    // }
     #endregion //DIMENTIONAL LIMITS
 
     #region -------- DIMENTIONAL BINDINGS 
@@ -68,7 +63,8 @@ public class PieceMoveSet : ScriptableObject
         List<int> binds = DimentionalBinds();
         if (binds.Count == 0) return true;
 
-        Dimentions dimentionalLimits = ToDimentionsFlags(direction);
+        // Dimentions dimentionalLimits = ToDimentionsFlags(direction);
+        Dimentions dimentionalLimits = direction.Rank().RankAs<Dimentions>();
         if (!dimentionalBinding.HasAny(dimentionalLimits)) return false;
 
         List<int> limits = direction.AsList();
