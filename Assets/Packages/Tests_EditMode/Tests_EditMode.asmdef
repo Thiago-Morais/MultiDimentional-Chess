@@ -1,11 +1,14 @@
 {
-    "name": "PlayModeTests",
+    "name": "Tests_EditMode",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Scripts"
+        "Scripts",
+        "Cinemachine"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

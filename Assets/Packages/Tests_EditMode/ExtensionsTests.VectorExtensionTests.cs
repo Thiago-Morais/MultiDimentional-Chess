@@ -2,7 +2,7 @@ using NUnit.Framework;
 using ExtensionMethods;
 using UnityEngine;
 
-namespace Tests
+namespace Tests_EditMode
 {
     public partial class ExtensionsTests
     {

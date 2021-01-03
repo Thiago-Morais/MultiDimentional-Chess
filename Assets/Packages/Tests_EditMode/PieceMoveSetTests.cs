@@ -2,7 +2,7 @@ using ExtensionMethods;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Tests
+namespace Tests_EditMode
 {
     #region -------- PIECE MOVE SET TESTS
     public class PieceMoveSetTests

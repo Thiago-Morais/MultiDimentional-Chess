@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Tests
+namespace Tests_EditMode
 {
     #region ------- POOL TESTS
     public class PoolTests

@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Tests
+namespace Tests_EditMode
 {
 
     #region ------- BOARDPIECE TESTS

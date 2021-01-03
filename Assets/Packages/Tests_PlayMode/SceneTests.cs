@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace PlayModeTests
+namespace Tests_PlayMode
 {
     public class SceneTests
     {

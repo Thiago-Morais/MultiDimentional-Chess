@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Tests
+namespace Tests_EditMode
 {
     #region ------- SELECTOR TESTS
     public class SelectorTests

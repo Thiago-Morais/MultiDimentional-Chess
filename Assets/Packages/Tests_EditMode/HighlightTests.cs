@@ -2,7 +2,7 @@ using NUnit.Framework;
 using UnityEngine;
 using ExtensionMethods;
 
-namespace Tests
+namespace Tests_EditMode
 {
     #region ------- HIGHLIGHT TESTS
     public class HighlightTests
