@@ -161,7 +161,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lockHighlight: 0
   isHighlighted: 0
-  m_CurrentHighlight: 0
+  highlightType: 0
   highlightMaterials: []
   m_Renderer: []
-  highlightVariations: {fileID: 11400000, guid: 1ba2f7eb01513a54889bdfc1850c1268, type: 2}
+  highlightVariations: {fileID: 11400000, guid: bd8abc84458243048934d07cd73d9f5b, type: 2}
+  highlightStack: 

@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: WhitePiece
   m_Shader: {fileID: -6465566751694194690, guid: 0154a31a1e75be74184ee5b2f52756bf, type: 3}
-  m_ShaderKeywords: ALPHA_SOURCE_METALLIC SMOOTHNESS_SOURCE_ALBEDO _NORMALMAP
+  m_ShaderKeywords: ALPHA_SOURCE_METALLIC FRESNEL_ON SMOOTHNESS_SOURCE_ALBEDO _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -45,6 +45,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - ALPHA_SOURCE: 0
+    - FRESNEL: 1
     - HIGHLIGHT: 0
     - HIGHLIGHT_PULSE_SPEED: 3
     - METALLIC_MULTIPLIER: 0

@@ -177,10 +177,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lockHighlight: 0
   isHighlighted: 0
-  m_CurrentHighlight: 0
+  highlightType: 0
   highlightMaterials: []
   m_Renderer: []
-  highlightVariations: {fileID: 11400000, guid: 1ba2f7eb01513a54889bdfc1850c1268, type: 2}
+  highlightVariations: {fileID: 11400000, guid: 34f42563b3152d4448277755e4ce9272, type: 2}
+  highlightStack: 
 --- !u!1 &3834919326004120634
 GameObject:
   m_ObjectHideFlags: 0

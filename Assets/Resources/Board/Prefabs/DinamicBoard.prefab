@@ -74,6 +74,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 3978231055418502224, guid: 4765b74d31fd528458d87e41ee66a2da, type: 3}
+  objectPool: []
 --- !u!1 &7358931588202527251
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,8 +121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7dbf9614e0afbb47b171ec33bc03ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: {x: 3, y: 3, z: 3}
-  padding: {x: 0.1, y: 1, z: 0.1}
+  size: {x: 8, y: 1, z: 8}
+  padding: {x: 0, y: 2, z: 0}
   center: {fileID: 4580007426327838810}
   whitePool: {fileID: 873396854000828467}
   blackPool: {fileID: 4375177267583778769}
@@ -169,3 +170,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 2046110545164497460, guid: ab76eb2ad4725b444b01e4c3b3129c49, type: 3}
+  objectPool: []

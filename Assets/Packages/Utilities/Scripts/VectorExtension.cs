@@ -5,6 +5,16 @@ using UnityEngine;
 
 namespace ExtensionMethods
 {
+    public static class MaterialExtension
+    {
+        public static void SetKeyword(this Material material, string name, bool value)
+        {
+            if (value)
+                material.EnableKeyword(name);
+            else
+                material.DisableKeyword(name);
+        }
+    }
     public static class VectorExtension
     {
         public static List<float> AsList(this Vector2 vector) => new List<float> { vector.x, vector.y };        //TODO test it

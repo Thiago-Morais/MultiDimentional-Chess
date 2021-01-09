@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class HoverHighlight : MonoBehaviour, IHighlighter
 {
     #region -------- FIELDS
-    public InputChess inputChess;
+    public MultiChess inputChess;
     public Camera mainCamera;
     [SerializeField] HighlightType highlightType = HighlightType.hover;
     Rigidbody m_CacheRigidBody;

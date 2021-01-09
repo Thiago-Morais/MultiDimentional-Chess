@@ -105,6 +105,7 @@ public class Highlight : MonoBehaviour, IInitializable
             material.SetFloat("HIGHLIGHT_PULSE_SPEED", highlightData.highlightPulseSpeed);
             material.SetVector("HIGHTLIGHT_PULSE_APERTURE", highlightData.hightlightPulseAperture);
             material.SetColor("HIGHLIGHT_COLOR", highlightData.highlightColor);
+            material.SetKeyword("FRESNEL_ON", highlightData.useFresnel);
         }
     }
     [ContextMenu(nameof(HighlightOn))]

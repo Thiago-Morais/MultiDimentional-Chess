@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6def67c4557fc5749a0b152ef85662d4, type: 3}
+  m_Name: BoardPiece_HighlightVariation
+  m_EditorClassIdentifier: 
+  highlightVariations:
+  - type: 16
+    highlightColor: {r: 0, g: 0.7490196, b: 0.078431375, a: 35.2}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 0.1, y: 5}
+    useFresnel: 0
+  - type: 2
+    highlightColor: {r: 0, g: 0.011764706, b: 0.7490196, a: 35.2}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 0.1, y: 5}
+    useFresnel: 0
+  - type: 1
+    highlightColor: {r: 0.003921569, g: 0.47843137, b: 0.7490196, a: 35.2}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 0.1, y: 5}
+    useFresnel: 0
+  - type: 32
+    highlightColor: {r: 0.7490196, g: 0.003921569, b: 0, a: 35.2}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 0.1, y: 5}
+    useFresnel: 0
+  - type: 0
+    highlightColor: {r: 0, g: 0.7490196, b: 0.078431375, a: 35.2}
+    highlightPulseSpeed: 3
+    hightlightPulseAperture: {x: 0.1, y: 5}
+    useFresnel: 0
