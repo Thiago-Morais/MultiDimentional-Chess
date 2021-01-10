@@ -134,61 +134,149 @@ namespace Tests_EditMode
             //ASSERT
             Assert.AreEqual(0, hoverControll.hoverCamera.m_YAxis.m_InputAxisValue);
         }
+        // [Test]
+        // public void SetZoom_ResultantHeightIsNegative_SetHegihtToZero([Values(0, 1, 2)] int orbit, [NUnit.Framework.Range(0, 1, 0.2f)] float zoom)
+        // {
+        //     //SETUP
+        //     HoverControll hoverControll = new GameObject().AddComponent<HoverControll>();
+
+        //     CinemachineFreeLook freeLook = new GameObject(nameof(freeLook)).AddComponent<CinemachineFreeLook>();
+        //     freeLook.transform.SetParent(hoverControll.transform);
+
+        //     hoverControll.Initialized();
+        //     hoverControll.cachedHeights = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Height).ToArray();
+        //     hoverControll.cachedRadiuses = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Radius).ToArray();
+
+        //     for (int i = 0; i < freeLook.m_Orbits.Length; i++)
+        //         freeLook.m_Orbits[i].m_Height = hoverControll.minZoom;
+        //     //ACT
+        //     hoverControll.SetZoom(zoom);
+        //     //ASSERT
+        //     Assert.AreEqual(hoverControll.minZoom, hoverControll.hoverCamera.m_Orbits[orbit].m_Height);
+        // }
+        // [Test]
+        // public void SetZoom_Number_AddTheNumberDampedToTheHeightOfTheOrbit([Values(0, 1, 2)] int orbit, [NUnit.Framework.Range(-2, 2, 0.3f)] float zoom)
+        // {
+        //     //SETUP
+        //     CinemachineFreeLook freeLook = new GameObject(nameof(freeLook)).AddComponent<CinemachineFreeLook>();
+        //     float m_CachedOrbitHeight = freeLook.m_Orbits[orbit].m_Height;
+
+        //     GameObject gameObject = new GameObject();
+        //     freeLook.transform.SetParent(gameObject.transform);
+
+        //     HoverControll hoverControll = gameObject.AddComponent<HoverControll>().Initialized() as HoverControll;
+        //     hoverControll.cachedHeights = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Height).ToArray();
+        //     hoverControll.cachedRadiuses = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Radius).ToArray();
+        //     //ACT
+        //     hoverControll.SetZoom(zoom);
+        //     //ASSERT
+        //     Assert.AreEqual(m_CachedOrbitHeight - (zoom * hoverControll.zoomMultiplier), hoverControll.hoverCamera.m_Orbits[orbit].m_Height);
+        // }
+        // [Test]
+        // public void SetZoom_Number_AddTheNumberDampedToTheRadiusOfTheOrbit([Values(0, 1, 2)] int orbit, [NUnit.Framework.Range(-2, 2, 0.3f)] float zoom)
+        // {
+        //     //SETUP
+        //     CinemachineFreeLook freeLook = new GameObject(nameof(freeLook)).AddComponent<CinemachineFreeLook>();
+        //     float m_CachedOrbitRadius = freeLook.m_Orbits[orbit].m_Radius;
+
+        //     GameObject gameObject = new GameObject();
+        //     freeLook.transform.SetParent(gameObject.transform);
+
+        //     HoverControll hoverControll = gameObject.AddComponent<HoverControll>().Initialized() as HoverControll;
+        //     hoverControll.cachedHeights = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Height).ToArray();
+        //     hoverControll.cachedRadiuses = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Radius).ToArray();
+        //     //ACT
+        //     hoverControll.SetZoom(zoom);
+        //     //ASSERT
+        //     Assert.AreEqual(m_CachedOrbitRadius - (zoom * hoverControll.zoomMultiplier), hoverControll.hoverCamera.m_Orbits[orbit].m_Radius);
+        // }
+        /*
+        quando passa um valor positivo e a altura é positiva, aumenta altura
+        quando passa um valor negativo e a altura é positiva, diminue altura
+        quando passa um valor positivo e a altura é negativa, diminue altura
+        quando passa um valor negativo e a altura é negativa, aumenta altura
+        */
         [Test]
-        public void SetZoom_ResultantHeightIsNegative_SetHegihtToZero([Values(0, 1, 2)] int orbit, [NUnit.Framework.Range(0, 1, 0.2f)] float zoom)
+        public void SetZoom_Minus3WithHeight2AndRadius2WhenMinZoomIs1_SetHeightTo1([Values(0, 1, 2)] int orbit)
         {
             //SETUP
-            HoverControll hoverControll = new GameObject().AddComponent<HoverControll>();
-
+            HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>();
             CinemachineFreeLook freeLook = new GameObject(nameof(freeLook)).AddComponent<CinemachineFreeLook>();
-            freeLook.transform.SetParent(hoverControll.transform);
 
-            hoverControll.Initialized();
-            hoverControll.cachedHeights = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Height).ToArray();
-            hoverControll.cachedRadiuses = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Radius).ToArray();
+            hoverControll.hoverCamera = freeLook;
 
-            for (int i = 0; i < freeLook.m_Orbits.Length; i++)
-                freeLook.m_Orbits[i].m_Height = hoverControll.minZoom;
+            freeLook.m_Orbits[orbit].m_Height = 2;
+            freeLook.m_Orbits[orbit].m_Radius = 2;
+            hoverControll.minZoom = 1;
+            Vector2 normalizedOrbit = new Vector2(freeLook.m_Orbits[orbit].m_Height, freeLook.m_Orbits[orbit].m_Radius).normalized;
             //ACT
-            hoverControll.SetZoom(zoom);
+            hoverControll.SetZoom(-3);
             //ASSERT
-            Assert.AreEqual(hoverControll.minZoom, hoverControll.hoverCamera.m_Orbits[orbit].m_Height);
+            Assert.AreEqual(normalizedOrbit.x, hoverControll.hoverCamera.m_Orbits[orbit].m_Height);
         }
         [Test]
-        public void SetZoom_Number_AddTheNumberDampedToTheHeightOfTheOrbit([Values(0, 1, 2)] int orbit, [NUnit.Framework.Range(-2, 2, 0.3f)] float zoom)
+        public void SetZoom_PositiveWithPositiveHeight_IncreaseHeight([Values(0, 1, 2)] int orbit, [Values(1, 2, 3)] float positiveZoom)
         {
             //SETUP
+            HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>();
             CinemachineFreeLook freeLook = new GameObject(nameof(freeLook)).AddComponent<CinemachineFreeLook>();
-            float m_CachedOrbitHeight = freeLook.m_Orbits[orbit].m_Height;
 
-            GameObject gameObject = new GameObject();
-            freeLook.transform.SetParent(gameObject.transform);
+            for (int i = 0; i < freeLook.m_Orbits.Length; i++) freeLook.m_Orbits[i].m_Height = 1;
+            float m_CachedHeight = freeLook.m_Orbits[orbit].m_Height;
 
-            HoverControll hoverControll = gameObject.AddComponent<HoverControll>().Initialized() as HoverControll;
-            hoverControll.cachedHeights = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Height).ToArray();
-            hoverControll.cachedRadiuses = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Radius).ToArray();
+            hoverControll.hoverCamera = freeLook;
             //ACT
-            hoverControll.SetZoom(zoom);
+            hoverControll.SetZoom(positiveZoom);
             //ASSERT
-            Assert.AreEqual(m_CachedOrbitHeight - (zoom * hoverControll.zoomMultiplier), hoverControll.hoverCamera.m_Orbits[orbit].m_Height);
+            Assert.Greater(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }
         [Test]
-        public void SetZoom_Number_AddTheNumberDampedToTheRadiusOfTheOrbit([Values(0, 1, 2)] int orbit, [NUnit.Framework.Range(-2, 2, 0.3f)] float zoom)
+        public void SetZoom_NegativeWithPositiveHeight_DecreaseHeight([Values(0, 1, 2)] int orbit, [Values(-1, -2, -3)] float positiveZoom)
         {
             //SETUP
+            HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>();
             CinemachineFreeLook freeLook = new GameObject(nameof(freeLook)).AddComponent<CinemachineFreeLook>();
-            float m_CachedOrbitRadius = freeLook.m_Orbits[orbit].m_Radius;
 
-            GameObject gameObject = new GameObject();
-            freeLook.transform.SetParent(gameObject.transform);
+            for (int i = 0; i < freeLook.m_Orbits.Length; i++) freeLook.m_Orbits[i].m_Height = 1;
+            float m_CachedHeight = freeLook.m_Orbits[orbit].m_Height;
 
-            HoverControll hoverControll = gameObject.AddComponent<HoverControll>().Initialized() as HoverControll;
-            hoverControll.cachedHeights = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Height).ToArray();
-            hoverControll.cachedRadiuses = hoverControll.hoverCamera.m_Orbits.Select(c => c.m_Radius).ToArray();
+            hoverControll.hoverCamera = freeLook;
             //ACT
-            hoverControll.SetZoom(zoom);
+            hoverControll.SetZoom(positiveZoom);
             //ASSERT
-            Assert.AreEqual(m_CachedOrbitRadius - (zoom * hoverControll.zoomMultiplier), hoverControll.hoverCamera.m_Orbits[orbit].m_Radius);
+            Assert.Less(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
+        }
+        [Test]
+        public void SetZoom_PositiveWithNegativeHeight_DecreaseHeight([Values(0, 1, 2)] int orbit, [Values(1, 2, 3)] float positiveZoom)
+        {
+            //SETUP
+            HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>();
+            CinemachineFreeLook freeLook = new GameObject(nameof(freeLook)).AddComponent<CinemachineFreeLook>();
+
+            for (int i = 0; i < freeLook.m_Orbits.Length; i++) freeLook.m_Orbits[i].m_Height = -1;
+            float m_CachedHeight = freeLook.m_Orbits[orbit].m_Height;
+
+            hoverControll.hoverCamera = freeLook;
+            //ACT
+            hoverControll.SetZoom(positiveZoom);
+            //ASSERT
+            Assert.Less(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
+        }
+        [Test]
+        public void SetZoom_NegativeWithNegativeHeight_IncreaseHeight([Values(0, 1, 2)] int orbit, [Values(-1, -2, -3)] float positiveZoom)
+        {
+            //SETUP
+            HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>();
+            CinemachineFreeLook freeLook = new GameObject(nameof(freeLook)).AddComponent<CinemachineFreeLook>();
+
+            for (int i = 0; i < freeLook.m_Orbits.Length; i++) freeLook.m_Orbits[i].m_Height = -1;
+            float m_CachedHeight = freeLook.m_Orbits[orbit].m_Height;
+
+            hoverControll.hoverCamera = freeLook;
+            //ACT
+            hoverControll.SetZoom(positiveZoom);
+            //ASSERT
+            Assert.Greater(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }
     }
 }
