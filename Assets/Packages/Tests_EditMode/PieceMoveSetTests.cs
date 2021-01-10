@@ -41,13 +41,13 @@ namespace Tests_EditMode
         [TestCase(Dimentions.all, 1, 0, 0, true)]
         [TestCase(Dimentions.all, 0, 1, 0, true)]
         [TestCase(Dimentions.all, 0, 0, 1, true)]
-        public void HasBlockedDirection(Dimentions dimentions, int direction1, int direction2, int direction3, bool expected)
+        public void HasLockedDirection(Dimentions dimentions, int direction1, int direction2, int direction3, bool expected)
         {
             //SETUP
             PieceMoveSet moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
-            moveSet.blockedDimentions = dimentions;
+            moveSet.lockedDimentions = dimentions;
             //ACT
-            bool hasBlockedDirection = moveSet.HasBlockedDirection(new Vector3Int(direction1, direction2, direction3));
+            bool hasBlockedDirection = moveSet.HasLockedDirection(new Vector3Int(direction1, direction2, direction3));
             //ASSERT
             Assert.AreEqual(expected, hasBlockedDirection);
         }
@@ -58,14 +58,14 @@ namespace Tests_EditMode
         [TestCase(Dimentions.all, 1, 0, 0, false)]
         [TestCase(Dimentions.one, 1, 1, 1, false)]
         [TestCase(Dimentions.two, 0, 1, 0, false)]
-        public void HasBlockedBackwards_NonNegativeNotInversed_False(Dimentions backwards, int direction1, int direction2, int direction3, bool inversed)
+        public void HasLockedBackwards_NonNegativeNotInversed_False(Dimentions backwards, int direction1, int direction2, int direction3, bool inversed)
         {
             //SETUP
             Vector3Int direction = new Vector3Int(direction1, direction2, direction3);
             PieceMoveSet moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
-            moveSet.backwardsBlocker = backwards;
+            moveSet.lockedBackwards = backwards;
             //ACT
-            bool hasBlockedBackwards = moveSet.HasBlockedBackwards(direction, inversed);
+            bool hasBlockedBackwards = moveSet.HasLockedBackwards(direction, inversed);
             //ASSERT
             Assert.False(hasBlockedBackwards);
         }
@@ -74,14 +74,14 @@ namespace Tests_EditMode
         [TestCase(Dimentions.two, -1, 0, -1, false)]
         [TestCase(Dimentions.one | Dimentions.three, -1, -1, -1, false)]
         [TestCase(Dimentions.all, 0, 0, -1, false)]
-        public void HasBlockedBackwards_NegativeNotInversedDimentionBlocked_True(Dimentions backwards, int direction1, int direction2, int direction3, bool inversed)
+        public void HasLockedBackwards_NegativeNotInversedDimentionBlocked_True(Dimentions backwards, int direction1, int direction2, int direction3, bool inversed)
         {
             //SETUP
             Vector3Int direction = new Vector3Int(direction1, direction2, direction3);
             PieceMoveSet moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
-            moveSet.backwardsBlocker = backwards;
+            moveSet.lockedBackwards = backwards;
             //ACT
-            bool hasBlockedBackwards = moveSet.HasBlockedBackwards(direction, inversed);
+            bool hasBlockedBackwards = moveSet.HasLockedBackwards(direction, inversed);
             //ASSERT
             Assert.True(hasBlockedBackwards);
         }
@@ -89,14 +89,14 @@ namespace Tests_EditMode
         [TestCase(Dimentions.one, 0, 0, -1, false)]
         [TestCase(Dimentions.two, -1, -1, 0, false)]
         [TestCase(Dimentions.one | Dimentions.three, 0, 0, -1, false)]
-        public void HasBlockedBackwards_NegativeNotInversedDimentionNotBlocked_False(Dimentions backwards, int direction1, int direction2, int direction3, bool inversed)
+        public void HasLockedBackwards_NegativeNotInversedDimentionNotBlocked_False(Dimentions backwards, int direction1, int direction2, int direction3, bool inversed)
         {
             //SETUP
             Vector3Int direction = new Vector3Int(direction1, direction2, direction3);
             PieceMoveSet moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
-            moveSet.backwardsBlocker = backwards;
+            moveSet.lockedBackwards = backwards;
             //ACT
-            bool hasBlockedBackwards = moveSet.HasBlockedBackwards(direction, inversed);
+            bool hasBlockedBackwards = moveSet.HasLockedBackwards(direction, inversed);
             //ASSERT
             Assert.False(hasBlockedBackwards);
         }
@@ -105,14 +105,14 @@ namespace Tests_EditMode
         [TestCase(Dimentions.two, -1, 0, -1, true)]
         [TestCase(Dimentions.one | Dimentions.three, -1, -1, -1, true)]
         [TestCase(Dimentions.all, 0, 0, -1, true)]
-        public void HasBlockedBackwards_NegativeInversedDimentionBlocked_False(Dimentions backwards, int direction1, int direction2, int direction3, bool inversed)
+        public void HasLockedBackwards_NegativeInversedDimentionBlocked_False(Dimentions backwards, int direction1, int direction2, int direction3, bool inversed)
         {
             //SETUP
             Vector3Int direction = new Vector3Int(direction1, direction2, direction3);
             PieceMoveSet moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
-            moveSet.backwardsBlocker = backwards;
+            moveSet.lockedBackwards = backwards;
             //ACT
-            bool hasBlockedBackwards = moveSet.HasBlockedBackwards(direction, inversed);
+            bool hasBlockedBackwards = moveSet.HasLockedBackwards(direction, inversed);
             //ASSERT
             Assert.False(hasBlockedBackwards);
         }
@@ -121,19 +121,19 @@ namespace Tests_EditMode
         [TestCase(Dimentions.one, 0, 1, 0, true)]
         [TestCase(Dimentions.two, 1, 1, 0, true)]
         [TestCase(Dimentions.one | Dimentions.three, 0, 0, 1, true)]
-        public void HasBlockedBackwards_PositiveInversedDimentionNotBlocked_False(Dimentions backwards, int direction1, int direction2, int direction3, bool inversed)
+        public void HasLockedBackwards_PositiveInversedDimentionNotBlocked_False(Dimentions backwards, int direction1, int direction2, int direction3, bool inversed)
         {
             //SETUP
             Vector3Int direction = new Vector3Int(direction1, direction2, direction3);
             PieceMoveSet moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
-            moveSet.backwardsBlocker = backwards;
+            moveSet.lockedBackwards = backwards;
             //ACT
-            bool hasBlockedBackwards = moveSet.HasBlockedBackwards(direction, inversed);
+            bool hasBlockedBackwards = moveSet.HasLockedBackwards(direction, inversed);
             //ASSERT
             Assert.False(hasBlockedBackwards);
         }
         [Test]
-        public void HasBlockedBackwards_AnyInversionAnyVectorNoneDimentionBlocked_False(
+        public void HasLockedBackwards_AnyInversionAnyVectorNoneDimentionBlocked_False(
             [Values] bool inversed,
             [Values(-1, 0, 1)] int direction1,
             [Values(-1, 0, 1)] int direction2,
@@ -142,9 +142,9 @@ namespace Tests_EditMode
             //SETUP
             Vector3Int direction = new Vector3Int(direction1, direction2, direction3);
             PieceMoveSet moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
-            moveSet.backwardsBlocker = Dimentions.none;
+            moveSet.lockedBackwards = Dimentions.none;
             //ACT
-            bool hasBlockedBackwards = moveSet.HasBlockedBackwards(direction, inversed);
+            bool hasBlockedBackwards = moveSet.HasLockedBackwards(direction, inversed);
             //ASSERT
             Assert.False(hasBlockedBackwards);
         }

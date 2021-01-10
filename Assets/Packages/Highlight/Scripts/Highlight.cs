@@ -27,36 +27,19 @@ public class Highlight : MonoBehaviour, IInitializable
     #endregion //PROPERTIES
 
     void Awake() => InitializeVariables();
+    void Start() => InitializeVariables();
+    void OnEnable() => InitializeVariables();
     [ContextMenu(nameof(InitializeVariables))]
     void InitializeVariables()
     {
         UpdateRenderersRef();
         UpdateMaterialsRef();
+        if (!HighlightVariations) HighlightVariations = ScriptableObject.CreateInstance<HighlightVariations>();
     }
     #region -------- METHODS
-    // [ContextMenu(nameof(HighlightOn))]
-    // public void HighlightOn() => SetHighlight(true);
-    // void SetHighlight(bool shouldHighlight)
-    // {
-    //     foreach (Material material in highlightMaterials)
-    //     {
-    //         if (shouldHighlight)
-    //             material.EnableKeyword("HIGHLIGHT_ON");
-    //         else
-    //             material.DisableKeyword("HIGHLIGHT_ON");
-    //     }
-    //     IsHighlighted = shouldHighlight;
-    // }
-    // [ContextMenu(nameof(HighlightOff))]
-    // public void HighlightOff()
-    // {
-    //     SetHighlight(false);
-    //     HighlightStack.Clear();
-    // }
     [ContextMenu(nameof(ClearHighlight))]
     public void ClearHighlight()
     {
-        // SetHighlightValues(HighlightType.none);
         highlightStack.Clear();
         HighlightOff();
         HighlightType = HighlightType.none;
@@ -122,7 +105,6 @@ public class Highlight : MonoBehaviour, IInitializable
     }
     [ContextMenu(nameof(UpdateRenderersRef))]
     public void UpdateRenderersRef() { if (m_Renderer.IsEmpty()) m_Renderer = GetComponentsInChildren<Renderer>().ToList(); }
-
     public IInitializable Initialized(Transform parent = null)
     {
         InitializeVariables();

@@ -14,12 +14,12 @@ public class PieceMoveSet : ScriptableObject
     [Tooltip("Number of squares this piece can move on this dimention.\n" + "0 means no limit.")]
     public LimitType distanceLimitType = LimitType.atMostAll;
     public List<int> distanceLimitPerDimention = new List<int>();
-    public Dimentions blockedDimentions = Dimentions.none;
-    public Dimentions backwardsBlocker = Dimentions.none;
+    public Dimentions lockedDimentions = Dimentions.none;
+    public Dimentions lockedBackwards = Dimentions.none;
     public bool IsMovimentAvailable(Vector3Int direction, bool isWhite)       //TODO test it
     {
-        if (HasBlockedDirection(direction)
-            || HasBlockedBackwards(direction, !isWhite)
+        if (HasLockedDirection(direction)
+            || HasLockedBackwards(direction, !isWhite)
             || !IsWithinMaxDimentionsAmount(direction)
             || !IsWithinDimentionalBinding(direction)
             || !IsWithinMovimentLimits(direction)
@@ -27,34 +27,28 @@ public class PieceMoveSet : ScriptableObject
             return false;
         return true;
     }
-    public bool HasBlockedDirection(Vector3Int direction)
+    public bool HasLockedDirection(Vector3Int direction)
     {
-        if (blockedDimentions == Dimentions.none) return false;
-        if (blockedDimentions.HasAny(Dimentions.one) && direction.x != 0) return true;
-        if (blockedDimentions.HasAny(Dimentions.two) && direction.z != 0) return true;
-        if (blockedDimentions.HasAny(Dimentions.three) && direction.y != 0) return true;
+        if (lockedDimentions == Dimentions.none) return false;
+        if (lockedDimentions.HasAny(Dimentions.one) && direction.x != 0) return true;
+        if (lockedDimentions.HasAny(Dimentions.two) && direction.z != 0) return true;
+        if (lockedDimentions.HasAny(Dimentions.three) && direction.y != 0) return true;
         return false;
     }
-    public bool HasBlockedBackwards(Vector3Int direction, bool inversed)
+    public bool HasLockedBackwards(Vector3Int direction, bool inversed)
     {
         if (inversed) direction = -direction;
-        if (backwardsBlocker.HasAny(Dimentions.one) && direction.x < 0) return true;
-        if (backwardsBlocker.HasAny(Dimentions.two) && direction.z < 0) return true;
-        if (backwardsBlocker.HasAny(Dimentions.three) && direction.y < 0) return true;
+        if (lockedBackwards.HasAny(Dimentions.one) && direction.x < 0) return true;
+        if (lockedBackwards.HasAny(Dimentions.two) && direction.z < 0) return true;
+        if (lockedBackwards.HasAny(Dimentions.three) && direction.y < 0) return true;
         return false;
     }
     #region -------- DIMENTIONAL LIMITS
-    // public bool IsWithinMaxDimentionsAmount(Vector3Int direction) => maxDimentionsAmount.HasAny(ToDimentionsFlags(direction));      //TODO test it
     public bool IsWithinMaxDimentionsAmount(Vector3Int direction)
     {
         Dimentions directions = direction.Rank().RankAs<Dimentions>();
         return maxDimentionsAmount.HasAny(directions);
     }      //TODO test it
-    // public static Dimentions ToDimentionsFlags(Vector3Int direction)      //TODO test it
-    // {
-    //     int rank = direction.Rank();
-    //     return ((int)rank).RankAsFlags<Dimentions>();
-    // }
     #endregion //DIMENTIONAL LIMITS
 
     #region -------- DIMENTIONAL BINDINGS 

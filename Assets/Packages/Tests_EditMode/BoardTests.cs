@@ -69,20 +69,6 @@ namespace Tests_EditMode
             Assert.AreEqual(8, dinamicBoard.board.Length);
         }
         [Test]
-        public void Select_Selected_Piece_Turn_Board_Highlight_Off()
-        {
-            //SETUP
-            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
-            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
-            dinamicBoard.Awake();
-            //ACT
-            piece1.OnSelected();
-            piece1.OnDeselected();
-            //ASSERT
-            foreach (BoardPiece square in dinamicBoard.board)
-                Assert.IsFalse(square.Highlight.IsHighlighted);
-        }
-        [Test]
         public void InstantiateABoard_3x3x3_Empty3x3x3Board()
         {
             //SETUP

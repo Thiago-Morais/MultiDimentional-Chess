@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using ExtensionMethods;
 using UnityEngine;
 
-[RequireComponent(typeof(Highlight))]
 public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHighlightable, IOnBoard
 {
     #region -------- FIELDS
@@ -39,7 +38,8 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
     public void Start() => MoveToCoord();
     public void InitializeVariables()       //TODO test it
     {
-        highlight = highlight.Initialized(this);
+        if (!highlight) highlight = highlight.Initialized(this);
+        if (!highlight) highlight = gameObject.AddComponent<Highlight>().Initialized(transform) as Highlight;
         if (!playerData) playerData = ScriptableObject.CreateInstance<PlayerData>();
         if (!moveSet) moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
         if (!captureSet) captureSet = ScriptableObject.CreateInstance<PieceMoveSet>();

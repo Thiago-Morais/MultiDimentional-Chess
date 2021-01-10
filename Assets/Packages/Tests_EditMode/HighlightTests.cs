@@ -34,12 +34,28 @@ namespace Tests_EditMode
             Object.DestroyImmediate(boardPiece2.gameObject);
         }
         [Test]
-        public void Select_Piece_Highlight_It()
+        public void ChangeSelection_Piece_PieceHighlightOn()
         {
+            //SETUP
+            Selector selector = new GameObject(nameof(selector)).AddComponent<Selector>();
             //ACT
             selector.ChangeSelection(piece1 as ISelectable);
             //ASSERT
             Assert.IsTrue(piece1.highlight.IsHighlighted);
+        }
+        [Test]
+        public void OnDeselected_SelectedPiece_TurnBoardHighlightOff()
+        {
+            //SETUP
+            GameObject boardPrefab = (Resources.Load("Board/Prefabs/DinamicBoard") as GameObject);
+            DinamicBoard dinamicBoard = UnityEngine.Object.Instantiate(boardPrefab).GetComponent<DinamicBoard>();
+            dinamicBoard.Awake();
+            //ACT
+            piece1.OnSelected();
+            piece1.OnDeselected();
+            //ASSERT
+            foreach (BoardPiece square in dinamicBoard.board)
+                Assert.IsFalse(square.Highlight.IsHighlighted);
         }
         [Test]
         public void Selected_Piece_Highlight_Type_As_Selector()
