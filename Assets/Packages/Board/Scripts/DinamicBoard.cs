@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using ExtensionMethods;
 using UnityEngine;
 
@@ -23,10 +22,7 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
     public Pool WhitePool { get => whitePool; private set => whitePool = value; }
     #endregion //PROPERTIES
 
-    [Flags]
-    public enum IntFlags
-    {
-    }
+    #region -------- OUTSIDE CALL
     public void Awake()
     {
         SignOn();
@@ -34,6 +30,9 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
         TryUpdateBoard();
     }
     void Update() => TryUpdateBoard();
+    #endregion //OUTSIDE CALL
+
+    #region -------- METHODS
     public void InitializeVariables()
     {
         if (size == null) size = new Vector3Int();
@@ -55,8 +54,6 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
             BlackPool.transform.SetParent(transform);
         }
     }
-
-    #region -------- METHODS
     #region ------------ MEDIATOR
     public void SignOn()
         => ContextMediator.SignOn(this);
@@ -66,8 +63,6 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
     [ContextMenu(nameof(TryUpdateBoard))] public void TryUpdateBoard() => TryUpdateBoard(size, padding);        //TODO test it
     public void TryUpdateBoard(Vector3Int size, Vector3 padding)        //TODO test it
     {
-        // if (!DidValuesChange(size, padding)) return;
-
         if (DidSizeChanged(size))
         {
             ResetBoardSize(size);
@@ -193,4 +188,8 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
         return boardPieces;
     }
     #endregion //METHODS
+
+    #region -------- ENUM
+    [Flags] public enum IntFlags { }
+    #endregion //ENUM
 }

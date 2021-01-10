@@ -1,6 +1,5 @@
 using UnityEngine;
 using Cinemachine;
-using System;
 using UnityEngine.InputSystem;
 
 public class HoverControll : MonoBehaviour, IInitializable
@@ -19,6 +18,7 @@ public class HoverControll : MonoBehaviour, IInitializable
     #region -------- PROPERTIES
     #endregion //PROPERTIES
 
+    #region -------- OUTSIDE CALL
     void Awake()
     {
         InitializeVariables();
@@ -26,6 +26,8 @@ public class HoverControll : MonoBehaviour, IInitializable
         CacheFreeLookOrbits();
     }
     void Start() => DeactivateHoverCamera();
+    #endregion //OUTSIDE CALL
+
     #region -------- METHODS
     #region -------- INPUTS
     public void OnHover(InputAction.CallbackContext context)
@@ -88,24 +90,6 @@ public class HoverControll : MonoBehaviour, IInitializable
         hoverCamera.m_XAxis.m_InputAxisValue = 0;
         hoverCamera.m_YAxis.m_InputAxisValue = 0;
     }
-    // public void SetZoom(float scroll)
-    // {
-    //     for (int i = 0; i < hoverCamera.m_Orbits.Length; i++)
-    //     {
-    //         hoverCamera.m_Orbits[i].m_Height = Mathf.Clamp(hoverCamera.m_Orbits[i].m_Height - scroll * zoomMultiplier, minZoom, Mathf.Infinity);
-    //         hoverCamera.m_Orbits[i].m_Radius = Mathf.Clamp(hoverCamera.m_Orbits[i].m_Radius - scroll * zoomMultiplier, minZoom, Mathf.Infinity);
-    //     }
-    // }
-    // public void AddZoom(float scroll)
-    // {
-    //     if (scroll == 0) return;
-    //     float scaledScroll = -scroll * zoomMultiplier;
-    //     for (int i = 0; i < hoverCamera.m_Orbits.Length; i++)
-    //     {
-    //         hoverCamera.m_Orbits[i].m_Height += Math.Sign(hoverCamera.m_Orbits[i].m_Height) * scaledScroll;
-    //         hoverCamera.m_Orbits[i].m_Radius += Math.Sign(hoverCamera.m_Orbits[i].m_Radius) * scaledScroll;
-    //     }
-    // }
     public void AddZoom(float scroll)
     {
         if (scroll == 0) return;
@@ -118,13 +102,6 @@ public class HoverControll : MonoBehaviour, IInitializable
             SetOrbits(minZoom);
             return;
         }
-        // CinemachineFreeLook.Orbit[] orbits = new CinemachineFreeLook.Orbit[hoverCamera.m_Orbits.Length];
-        // if (DropBelowMinimum(scaledScroll, out orbits))
-        // {
-        //     SetOrbits(minZoom);
-        //     return;
-        // }
-
         Vector2 orbitVector = new Vector2();
         for (int i = 0; i < hoverCamera.m_Orbits.Length; i++)
         {
@@ -144,23 +121,9 @@ public class HoverControll : MonoBehaviour, IInitializable
             orbitVector.x += hoverCamera.m_Orbits[i].m_Height;
             orbitVector.y += hoverCamera.m_Orbits[i].m_Radius;
             if (orbitVector.magnitude < minZoom) return true;
-            // if (Mathf.Abs(hoverCamera.m_Orbits[i].m_Height + orbitVector.x) < minZoom) return true;
-            // if (Mathf.Abs(hoverCamera.m_Orbits[i].m_Radius + orbitVector.y) < minZoom) return true;
         }
         return false;
     }
-    // bool DropBelowMinimum(float scaledScroll, out CinemachineFreeLook.Orbit[] orbits)
-    // {
-    //     Vector2 orbitVector = new Vector2();
-    //     for (int i = 0; i < hoverCamera.m_Orbits.Length; i++)
-    //     {
-    //         orbitVector.Set(hoverCamera.m_Orbits[i].m_Height, hoverCamera.m_Orbits[i].m_Radius);
-    //         orbitVector = orbitVector.normalized * scaledScroll;
-    //         if (hoverCamera.m_Orbits[i].m_Height + orbitVector.x < minZoom) return true;
-    //         else if (hoverCamera.m_Orbits[i].m_Radius + orbitVector.y < minZoom) return true;
-    //     }
-    //     return false;
-    // }
     void SetOrbits(float magnitude)
     {
         for (int i = 0; i < hoverCamera.m_Orbits.Length; i++)
@@ -171,21 +134,6 @@ public class HoverControll : MonoBehaviour, IInitializable
             hoverCamera.m_Orbits[i].m_Radius = orbitVector.y;
         }
     }
-    // public void SetZoom(float scroll)
-    // {
-    //     for (int i = 0; i < hoverCamera.m_Orbits.Length; i++)
-    //     {
-    //         // if (hoverCamera.m_Orbits[i].m_Height - NewMethod(scroll, hoverCamera.m_Orbits[i].m_Height) >= minOrbit[i].m_Height ||
-    //         // hoverCamera.m_Orbits[i].m_Radius - NewMethod(scroll, hoverCamera.m_Orbits[i].m_Radius) >= minOrbit[i].m_Radius)
-    //         //     continue;
-    //         hoverCamera.m_Orbits[i].m_Height -= NewMethod(scroll, hoverCamera.m_Orbits[i].m_Height);
-    //         hoverCamera.m_Orbits[i].m_Radius -= NewMethod(scroll, hoverCamera.m_Orbits[i].m_Radius);
-    //     }
-    // }
 
-    // private float NewMethod(float scroll, float value)
-    // {
-    //     return Mathf.Sign(value) * scroll * zoomMultiplier;
-    // }
     #endregion //METHODS
 }

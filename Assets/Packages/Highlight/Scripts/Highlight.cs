@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using ExtensionMethods;
-using System;
 
 public class Highlight : MonoBehaviour, IInitializable
 {
@@ -26,9 +24,11 @@ public class Highlight : MonoBehaviour, IInitializable
     public List<HighlightType> HighlightStack { get => highlightStack; set => highlightStack = value; }
     #endregion //PROPERTIES
 
+    #region -------- OUTSIDE CALL
     void Awake() => InitializeVariables();
-    void Start() => InitializeVariables();
-    void OnEnable() => InitializeVariables();
+    #endregion //OUTSIDE CALL
+
+    #region -------- METHODS
     [ContextMenu(nameof(InitializeVariables))]
     void InitializeVariables()
     {
@@ -36,7 +36,6 @@ public class Highlight : MonoBehaviour, IInitializable
         UpdateMaterialsRef();
         if (!HighlightVariations) HighlightVariations = ScriptableObject.CreateInstance<HighlightVariations>();
     }
-    #region -------- METHODS
     [ContextMenu(nameof(ClearHighlight))]
     public void ClearHighlight()
     {

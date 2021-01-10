@@ -10,6 +10,5 @@ public class HighlightData
     public float highlightPulseSpeed = 3;
     public Vector2 hightlightPulseAperture = new Vector2(3, 5);
     public bool useFresnel = true;
-    public HighlightData() { }
     public HighlightData(HighlightType highlightType) => type = highlightType;
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class BoardPiece : MonoBehaviour, IInitializable, IPoolable, IHighlightable, ISelectable,/*  IMediatorInstance<BoardPiece, BoardPiece.IntFlags>, */IMediator<BoardPiece.IntFlags>, IOnBoard
+public class BoardPiece : MonoBehaviour, IInitializable, IPoolable, IHighlightable, ISelectable, IMediator<BoardPiece.IntFlags>, IOnBoard
 {
     #region -------- FIELDS
     public SO_BoardSquare so_pieceData;

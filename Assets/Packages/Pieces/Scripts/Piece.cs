@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using ExtensionMethods;
 using UnityEngine;
 
@@ -9,26 +7,19 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
     #region -------- FIELDS
     public BoardPiece currentSquare;
     public BoardPiece cachedSquare;
-    public Transform targetTransform;
     public Highlight highlight;
-    public IntFlags intFlags;
     [SerializeField] Vector3Int boardCoord;
     public PlayerData playerData;
     public PieceMoveSet moveSet;
     public PieceMoveSet captureSet;
     #endregion //FIELDS
+
     #region -------- PROPERTIES
     public Vector3Int BoardCoord { get => boardCoord; set => boardCoord = value; }
     public Highlight Highlight { get => highlight; set => highlight = value; }
     #endregion //PROPERTIES
-    [Flags]
-    public enum IntFlags
-    {
-        none = 0,
-        MoveToCoord = 1 << 1,
-        ShowPossibleMoves = 1 << 2,
-        HidePossibleMoves = 1 << 3,
-    }
+
+    #region -------- OUTSIDE CALL
     public void Awake()
     {
         InitializeVariables();
@@ -36,6 +27,9 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
         playerData.ApplyPlayerData(this);
     }
     public void Start() => MoveToCoord();
+    #endregion //OUTSIDE CALL
+
+    #region -------- METHODS
     public void InitializeVariables()       //TODO test it
     {
         if (!highlight) highlight = highlight.Initialized(this);
@@ -44,8 +38,6 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
         if (!moveSet) moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
         if (!captureSet) captureSet = ScriptableObject.CreateInstance<PieceMoveSet>();
     }
-
-    #region -------- METHODS
     #region -------- MEDIATOR
     public void SignOn()
         => ContextMediator.SignOn(this);
@@ -96,4 +88,15 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
         return moveSet.IsMovimentAvailable(dif, playerData.isWhite);
     }
     #endregion //METHODS
+
+    #region -------- ENUM
+    [Flags]
+    public enum IntFlags
+    {
+        none = 0,
+        MoveToCoord = 1 << 1,
+        ShowPossibleMoves = 1 << 2,
+        HidePossibleMoves = 1 << 3,
+    }
+    #endregion //ENUM
 }

@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.ParticleSystem;
 using ExtensionMethods;
 using System.Linq;
-using UnityEngine.Animations;
 
 [CreateAssetMenu(menuName = nameof(ScriptableObject) + "/" + nameof(PieceMoveSet))]
 public class PieceMoveSet : ScriptableObject
 {
+    #region -------- FIELDS
     public Dimentions maxDimentionsAmount = Dimentions.all;
     public Dimentions dimentionalBinding = Dimentions.none;
     [Tooltip("Number of squares this piece can move on this dimention.\n" + "0 means no limit.")]
@@ -16,6 +15,15 @@ public class PieceMoveSet : ScriptableObject
     public List<int> distanceLimitPerDimention = new List<int>();
     public Dimentions lockedDimentions = Dimentions.none;
     public Dimentions lockedBackwards = Dimentions.none;
+    #endregion //FIELDS
+
+    #region -------- PROPERTIES
+    #endregion //PROPERTIES
+
+    #region -------- OUTSIDE CALL
+    #endregion //OUTSIDE CALL
+
+    #region -------- METHODS
     public bool IsMovimentAvailable(Vector3Int direction, bool isWhite)       //TODO test it
     {
         if (HasLockedDirection(direction)
@@ -57,7 +65,6 @@ public class PieceMoveSet : ScriptableObject
         List<int> binds = DimentionalBinds();
         if (binds.Count == 0) return true;
 
-        // Dimentions dimentionalLimits = ToDimentionsFlags(direction);
         Dimentions dimentionalLimits = direction.Rank().RankAs<Dimentions>();
         if (!dimentionalBinding.HasAny(dimentionalLimits)) return false;
 
@@ -106,6 +113,7 @@ public class PieceMoveSet : ScriptableObject
     }
     #endregion //MOVIMENT LIMITS
     public static bool IsOwnPosition(Vector3Int direction) => direction == Vector3Int.zero;
+    #endregion //METHODS
 }
 [Flags]
 public enum Dimentions

@@ -1,14 +1,22 @@
-using System;
 using ExtensionMethods;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = nameof(ScriptableObject) + "/" + nameof(PlayerData))]
 public class PlayerData : ScriptableObject
 {
+    #region -------- FIELDS
     public bool isWhite = true;
     public Material piecesMaterial;
     public Vector3 forward = Vector3.forward;
+    #endregion //FIELDS
 
+    #region -------- PROPERTIES
+    #endregion //PROPERTIES
+
+    #region -------- OUTSIDE CALL
+    #endregion //OUTSIDE CALL
+
+    #region -------- METHODS
     public void ApplyPlayerData(Piece samplePiece)
     {
         SetMaterials(samplePiece);
@@ -21,4 +29,5 @@ public class PlayerData : ScriptableObject
         renderers.SetMaterials(piecesMaterial);
     }
     public Renderer[] GetRendrers(GameObject gameObject) => gameObject.GetComponentsInChildren<Renderer>();
+    #endregion //METHODS
 }

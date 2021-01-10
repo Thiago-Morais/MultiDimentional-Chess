@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
-#if UNITY_EDITOR
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
 #endif //UNITY_EDITOR
 
 public class ContextMediator
@@ -29,31 +28,8 @@ public class ContextMediator
     static DinamicBoard dinamicBoard;
     static Selector selector;
     static GameManager gameManager;
-
-    // public static void SignOn(MonoBehaviour sender)
-    // {
-    //     switch (sender)
-    //     {
-    //         case Piece c: SignOn(sender as Piece); break;
-    //         case BoardPiece c: SignOn(sender as BoardPiece); break;
-    //         case DinamicBoard c: SignOn(sender as DinamicBoard); break;
-    //         case Selector c: SignOn(sender as Selector); break;
-    //     }
-    // }
-    // public static void Notify(MonoBehaviour sender, Enum action)
-    // {
-    //     switch (sender)
-    //     {
-    //         case Piece c: Notify(sender as Piece, action); break;
-    //         case BoardPiece c: Notify(sender as BoardPiece, action); break;
-    //         case DinamicBoard c: Notify(sender as DinamicBoard, action); break;
-    //         case Selector c: Notify(sender as Selector, action); break;
-    //     }
-    // }
     public static void SignOn(GameManager sender) => gameManager = sender;
-    public static void Notify(GameManager sender, Enum action)
-    {
-    }
+    public static void Notify(GameManager sender, Enum action) { }
     public static void SignOn(Piece sender) => pieces.Add(sender);
     public static void Notify(Piece sender, Enum action)
     {
@@ -79,7 +55,6 @@ public class ContextMediator
                         else
                         {
                             square.Highlight.ClearHighlight();
-                            // square.Highlight.HighlightOff();
                             continue;
                         }
                         square.Highlight.HighlightOn(highlightType);
@@ -89,7 +64,6 @@ public class ContextMediator
                 if (dinamicBoard)
                     foreach (BoardPiece square in dinamicBoard?.board)
                         square.Highlight.ClearHighlight();
-                // square.Highlight.HighlightOff();
                 break;
             case Piece.IntFlags.MoveToCoord:
                 BoardPiece boardPiece = dinamicBoard.GetSquareAt(sender.BoardCoord);
@@ -120,9 +94,7 @@ public class ContextMediator
         }
     }
     public static void SignOn(DinamicBoard sender) => dinamicBoard = sender;
-    public static void Notify(DinamicBoard sender, Enum action)
-    {
-    }
+    public static void Notify(DinamicBoard sender, Enum action) { }
     public static void SignOn(Selector sender) => selector = sender;
     public static void Notify(Selector sender, Enum action)
     {

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,25 +11,26 @@ public class Selector : MonoBehaviour, IMediator<Selector.IntFlags>, IHighlighte
     Vector2 m_PointerPosition;
     ISelectable cachedSelected;
     [SerializeField] HighlightType highlightType = HighlightType.selected;
-
     #endregion //FIELDS
 
     #region -------- PROPERTIES
     public HighlightType HighlightType { get => highlightType; set => highlightType = value; }
     public ISelectable CachedSelected { get => cachedSelected; private set => cachedSelected = value; }
     #endregion //PROPERTIES
-    [Flags]
-    public enum IntFlags
-    {
-        none = 0,
-        SelectionChanged = 1 << 0,
-        DeselectAll = 1 << 1,
-    }
+
+    #region -------- OUTSIDE CALL
     void Awake()
     {
         SignOn();
         if (!m_Camera) m_Camera = Camera.main;
     }
+    public void OnPoint(InputAction.CallbackContext context) { if (context.performed) m_PointerPosition = context.ReadValue<Vector2>(); }
+    public void OnSelect(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        UpdateSelect();
+    }
+    #endregion //OUTSIDE CALL
 
     #region -------- METHODS
     #region -------- MEDIATOR
@@ -39,13 +38,7 @@ public class Selector : MonoBehaviour, IMediator<Selector.IntFlags>, IHighlighte
     public void Notify(IntFlags intFlag) => ContextMediator.Notify(this, intFlag);
     #endregion //MEDIATOR
 
-    public void OnPoint(InputAction.CallbackContext context) { if (context.performed) m_PointerPosition = context.ReadValue<Vector2>(); }
-    public void OnSelect(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        UpdateSelect();
-    }
-    private void UpdateSelect()
+    void UpdateSelect()
     {
         ISelectable newSelected = GetSelectableUsingRaycast();
 
@@ -86,4 +79,14 @@ public class Selector : MonoBehaviour, IMediator<Selector.IntFlags>, IHighlighte
         return hit.transform?.GetComponentInChildren<ISelectable>();
     }
     #endregion //METHODS
+
+    #region -------- ENUM
+    [Flags]
+    public enum IntFlags
+    {
+        none = 0,
+        SelectionChanged = 1 << 0,
+        DeselectAll = 1 << 1,
+    }
+    #endregion //ENUM
 }
