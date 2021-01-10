@@ -129,27 +129,6 @@ public class ContextMediator
         switch (action)
         {
             case Selector.IntFlags.SelectionChanged:
-                /*
-                verifica se foi clicado em:
-                    nada
-                    um quadrado vazio
-                    um quadrado com uma peça
-                        se essa peça é aliada
-                        se essa peça é inimiga
-                */
-                // Type type = sender.currentSelected.GetType();
-                // if (type == typeof(Piece))
-                // {
-                //     Piece selectedPiece = selector.currentSelected as Piece;
-                // }
-                // else if (type == typeof(BoardPiece))
-                //     if (!selectedPiece) break;
-
-                // if (selectedPiece.IsAnyMovimentAvailable(sender))
-                // {
-                //     selectedPiece.BoardCoord = sender.BoardCoord;
-                //     selectedPiece.MoveToCoord();
-                // }
                 break;
             case Selector.IntFlags.DeselectAll:
                 foreach (BoardPiece square in squares) square.OnDeselected();

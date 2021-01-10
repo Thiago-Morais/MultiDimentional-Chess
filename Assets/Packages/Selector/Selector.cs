@@ -65,59 +65,17 @@ public class Selector : MonoBehaviour, IMediator<Selector.IntFlags>, IHighlighte
             Deselect(currentSelected);
             currentSelected = null;
         }
-        ContextHandler();
         Notify(IntFlags.SelectionChanged);
         Debug.Log($"{nameof(currentSelected)} = {currentSelected}", gameObject);
     }
     public void Deselect(ISelectable cachedSelected)
     {
-        // cachedSelected?.Highlight.HighlightOff();
         cachedSelected?.OnDeselected();
     }
     void Select(ISelectable currentSelected)
     {
         currentSelected?.Highlight.HighlightOn(HighlightType);
-        // currentSelected?.Highlight.HighlightOn(HighlightType);
         currentSelected?.OnSelected();
-    }
-    void ContextHandler()
-    {
-        //TODO resolver isso ¯\(°_o)/¯
-        /*
-        Desceleciona tudo
-        verifica se foi clicado em:
-            nada:
-                nada
-            uma peça
-                se essa peça é aliada: 
-                    muda seleção
-                se essa peça é inimiga: 
-                    nada
-            um quadrado
-                um quadrado vazio:
-                    nada
-                um quadrado com uma peça
-                    se essa peça é aliada
-                        muda seleção para peça nela
-                    se essa peça é inimiga
-                        nada
-        */
-        // DeselectAll();
-        // if (currentSelected == null) return;
-
-        // Piece selectedPiece;
-
-        // Type type = currentSelected.GetType();
-        // if (type == typeof(BoardPiece))
-        // {
-        //     Piece piece = (currentSelected as BoardPiece).currentPiece;
-        //     if (!piece) return;
-        //     else selectedPiece = piece;
-        // }
-        // else selectedPiece = currentSelected as Piece;
-
-        // // if (GameManager.Instance.IsTurn(selectedPiece.playerData))
-        // selectedPiece.OnSelected();
     }
     internal void DeselectAll() => Notify(IntFlags.DeselectAll);
     ISelectable GetSelectableUsingRaycast()
