@@ -2,7 +2,7 @@
 using ExtensionMethods;
 using UnityEngine;
 
-public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFlags>
+public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFlags>, IInitializable
 {
     #region FIELDS
     public BoardPiece[,,] board;
@@ -170,10 +170,11 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
     void UpdateBoardCoordAt() => board.ForEachDoAction(UpdateBoardPieceCoordAt);         //TODO test it
     public void UpdateBoardPieceCoordAt(int i, int j, int k) => board[i, j, k].BoardCoord = new Vector3Int(i, j, k);          //TODO test it
     #endregion //BOARD GENERATION
-    public BoardPiece GetSquareAt(Vector3Int boardCoord)
+    public BoardPiece GetSquareAt(Vector3Int boardCoord) => GetSquareAt(boardCoord.x, boardCoord.y, boardCoord.z);
+    public BoardPiece GetSquareAt(int boardCoordX, int boardCoordY, int boardCoordZ)
     {
-        if (board.OutOfBounds(boardCoord.x, boardCoord.y, boardCoord.z)) return default(BoardPiece);
-        return board[boardCoord.x, boardCoord.y, boardCoord.z];
+        if (board.OutOfBounds(boardCoordX, boardCoordY, boardCoordZ)) return default(BoardPiece);
+        return board[boardCoordX, boardCoordY, boardCoordZ];
     }
     public bool? IsMovimentAvailable(Piece piece, Vector3Int boardCoord)        //TODO test it
     {
@@ -186,6 +187,33 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
         BoardPiece[,,] boardPieces = InstantiateABoard(boardSize);
         boardPieces.ForEachDoAction((i, j, k) => boardPieces[i, j, k] = GetPool(i + j + k).GetFromPoolGrouped<BoardPiece>());
         return boardPieces;
+    }
+    public bool HasPieceBetween(Vector3Int coordA, Vector3Int coordB)
+    {
+        /*
+        verificar o rank da direção pra saber qual verificação fazer
+        se não cair na verificação, não tem peça na frente
+        verificação 
+            pega o valor maximo da direção   
+            verifica cada peça até o valor maximo 
+                se qualquer uma tiver um peça
+                    true
+            se chegar no maximo
+                false
+        */
+        Vector3Int direction = coordB - coordA;
+        int binded = default;
+        if (direction.IsBindedIgnoringZero(ref binded))
+        {
+            return true;
+        }
+        return false;
+    }
+    public IInitializable Initialized(Transform parent = null)
+    {
+        InitializeVariables();
+        transform.parent = parent;
+        return this;
     }
     #endregion //METHODS
 

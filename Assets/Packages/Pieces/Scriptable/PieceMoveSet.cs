@@ -122,16 +122,20 @@ public class PieceMoveSet : ScriptableObject
     public bool IsRayBlocked(Piece piece, BoardPiece square)
     {
         if (rayBlocked == Dimentions.none) return false;
-
         Vector3Int direction = piece.VectorDifference(square);
-        if (direction.Rank() > 1)
-        {
-            if (direction.x != 0 && direction.y != 0 && Mathf.Abs(direction.x) != Mathf.Abs(direction.y)) return false;
-            if (direction.x != 0 && direction.z != 0 && Mathf.Abs(direction.x) != Mathf.Abs(direction.z)) return false;
-            if (direction.y != 0 && direction.z != 0 && Mathf.Abs(direction.y) != Mathf.Abs(direction.z)) return false;
-        }
+        int directionRank = direction.Rank();
+        if (rayBlocked.HasAny(directionRank.RankAs<Dimentions>()))
+            return square.board.HasPieceBetween(piece.BoardCoord, square.BoardCoord);
+        return false;
+        // Vector3Int direction = piece.VectorDifference(square);
+        // if (direction.Rank() > 1)
+        // {
+        //     if (direction.x != 0 && direction.y != 0 && Mathf.Abs(direction.x) != Mathf.Abs(direction.y)) return false;
+        //     if (direction.x != 0 && direction.z != 0 && Mathf.Abs(direction.x) != Mathf.Abs(direction.z)) return false;
+        //     if (direction.y != 0 && direction.z != 0 && Mathf.Abs(direction.y) != Mathf.Abs(direction.z)) return false;
+        // }
 
-        return true;
+        // return true;
     }
     #endregion //METHODS
 }

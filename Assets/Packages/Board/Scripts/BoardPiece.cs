@@ -8,6 +8,7 @@ public class BoardPiece : MonoBehaviour, IInitializable, IPoolable, IHighlightab
     public Transform pieceTarget;
     [SerializeField] Vector3Int boardCoord;
     public Piece currentPiece;
+    public DinamicBoard board;
     #endregion //FIELDS
 
     #region -------- PROPERTIES

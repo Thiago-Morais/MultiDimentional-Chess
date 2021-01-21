@@ -8,7 +8,7 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
     public BoardPiece currentSquare;
     public BoardPiece cachedSquare;
     public Highlight highlight;
-    [SerializeField] Vector3Int boardCoord;
+    [SerializeField] Vector3Int boardCoord = new Vector3Int(0, 0, 0);
     public PlayerData playerData;
     public PieceMoveSet moveSet;
     public PieceMoveSet captureSet;
