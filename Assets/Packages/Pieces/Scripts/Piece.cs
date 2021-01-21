@@ -83,9 +83,7 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
     public bool IsMovimentAvailable(BoardPiece square) => IsMovimentAvailableWith(square, moveSet);     //TODO test it
     bool IsMovimentAvailableWith(BoardPiece square, PieceMoveSet moveSet)       //TODO test it
     {
-        Vector3Int dif = square.BoardCoord - BoardCoord;
-
-        return moveSet.IsMovimentAvailable(dif, playerData.isWhite);
+        return moveSet.IsMovimentAvailable(this, square);
     }
     #endregion //METHODS
 

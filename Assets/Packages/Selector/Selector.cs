@@ -25,11 +25,7 @@ public class Selector : MonoBehaviour, IMediator<Selector.IntFlags>, IHighlighte
         if (!m_Camera) m_Camera = Camera.main;
     }
     public void OnPoint(InputAction.CallbackContext context) { if (context.performed) m_PointerPosition = context.ReadValue<Vector2>(); }
-    public void OnSelect(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        UpdateSelect();
-    }
+    public void OnSelect(InputAction.CallbackContext context) { if (context.performed) UpdateSelect(); }
     #endregion //OUTSIDE CALL
 
     #region -------- METHODS

@@ -10,9 +10,17 @@ public class HoverControll : MonoBehaviour, IInitializable
     public string cachedYAxis = "Mouse Y";
     public float[] cachedHeights;
     public float[] cachedRadiuses;
-    public float zoom;
+    public float scroll;
     public float zoomMultiplier = 0.01f;
     public float minZoom = .1f;
+    public Vector2 secondTouchPosition;
+    Vector2 secondTouchPositionCached;
+    private Vector2 firstPointStart;
+    private Vector2 secondPointStart;
+    private Vector2 firstPointPosition;
+    private Vector2 secondPointPosition;
+    private Vector2 firstPointDelta;
+    private Vector2 secondPointDelta;
     #endregion //FIELDS
 
     #region -------- PROPERTIES
@@ -38,14 +46,47 @@ public class HoverControll : MonoBehaviour, IInitializable
             case InputActionPhase.Canceled: DeactivateHoverCamera(); break;
         }
     }
-    public void OnZoom(InputAction.CallbackContext context)
+    public void OnFirstPointPosition(InputAction.CallbackContext context)
     {
-        Debug.Log($"{nameof(context.phase)} = {context.phase}", gameObject);
-        switch (context.phase)
+        if (context.phase == InputActionPhase.Performed) firstPointPosition = context.ReadValue<Vector2>();
+    }
+    public void OnSecondPointPosition(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed) secondPointPosition = context.ReadValue<Vector2>();
+    }
+    public void OnFirstPointDelta(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed) firstPointDelta = context.ReadValue<Vector2>();
+    }
+    public void OnSecondPointDelta(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed) secondPointDelta = context.ReadValue<Vector2>();
+        TouchZoom();
+    }
+    public void OnScroll(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
         {
-            case InputActionPhase.Performed: zoom = context.ReadValue<float>(); break;
+            scroll = context.ReadValue<float>();
+            AddDeltaZoom(scroll);
         }
-        AddZoom(zoom);
+    }
+    public void TouchZoom()
+    {
+        float currentDistance = Vector2.Distance(secondPointPosition, firstPointPosition);
+        float lastDistance = Vector2.Distance(secondPointPosition - secondPointDelta, firstPointPosition - firstPointDelta);
+        float delta = currentDistance - lastDistance;
+        Debug.Log(
+$@"---------------------ZOOM---------------------
+ {nameof(firstPointDelta)} = {firstPointDelta}
+ {nameof(secondPointDelta)} = {secondPointDelta}
+ {nameof(firstPointPosition)} = {firstPointPosition}
+ {nameof(secondPointPosition)} = {secondPointPosition}
+ {nameof(currentDistance)} = {currentDistance}
+ {nameof(lastDistance)} = {lastDistance}
+ {nameof(delta)} = {delta}
+---------------------ZOOM---------------------");
+        AddDeltaZoom(-delta);
     }
     #endregion //INPUTS
     [ContextMenu(nameof(ActivateHoverCamera))] public void ActivateHoverCamera() => ResetFreeLookAxis();
@@ -90,14 +131,14 @@ public class HoverControll : MonoBehaviour, IInitializable
         hoverCamera.m_XAxis.m_InputAxisValue = 0;
         hoverCamera.m_YAxis.m_InputAxisValue = 0;
     }
-    public void AddZoom(float scroll)
+    public void AddDeltaZoom(float delta)
     {
-        if (scroll == 0) return;
-        SetZoom(-scroll * zoomMultiplier);
+        if (delta == 0) return;
+        AddScaledDeltaZoom(delta * zoomMultiplier);
     }
-    public void SetZoom(float scaledScroll)
+    public void AddScaledDeltaZoom(float scaledDelta)
     {
-        if (DropBelowMinimum(scaledScroll))
+        if (DropBelowMinimum(scaledDelta))
         {
             SetOrbits(minZoom);
             return;
@@ -106,7 +147,7 @@ public class HoverControll : MonoBehaviour, IInitializable
         for (int i = 0; i < hoverCamera.m_Orbits.Length; i++)
         {
             orbitVector.Set(hoverCamera.m_Orbits[i].m_Height, hoverCamera.m_Orbits[i].m_Radius);
-            orbitVector = orbitVector.normalized * scaledScroll;
+            orbitVector = orbitVector.normalized * scaledDelta;
             hoverCamera.m_Orbits[i].m_Height += orbitVector.x;
             hoverCamera.m_Orbits[i].m_Radius += orbitVector.y;
         }

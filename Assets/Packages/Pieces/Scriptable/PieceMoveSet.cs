@@ -15,6 +15,7 @@ public class PieceMoveSet : ScriptableObject
     public List<int> distanceLimitPerDimention = new List<int>();
     public Dimentions lockedDimentions = Dimentions.none;
     public Dimentions lockedBackwards = Dimentions.none;
+    public Dimentions rayBlocked;
     #endregion //FIELDS
 
     #region -------- PROPERTIES
@@ -24,14 +25,19 @@ public class PieceMoveSet : ScriptableObject
     #endregion //OUTSIDE CALL
 
     #region -------- METHODS
-    public bool IsMovimentAvailable(Vector3Int direction, bool isWhite)       //TODO test it
+    // public bool IsMovimentAvailable(Vector3Int direction, bool isWhite)       //TODO test it
+    public bool IsMovimentAvailable(Piece piece, BoardPiece square)       //TODO test it
     {
-        if (HasLockedDirection(direction)
-            || HasLockedBackwards(direction, !isWhite)
+        Vector3Int direction = piece.VectorDifference(square);
+
+        if (IsRayBlocked(piece, square)
+            || HasLockedDirection(direction)
+            || HasLockedBackwards(direction, !piece.playerData.isWhite)
             || !IsWithinMaxDimentionsAmount(direction)
             || !IsWithinDimentionalBinding(direction)
             || !IsWithinMovimentLimits(direction)
-            || IsOwnPosition(direction))
+            || IsOwnPosition(direction)
+            )
             return false;
         return true;
     }
@@ -113,6 +119,20 @@ public class PieceMoveSet : ScriptableObject
     }
     #endregion //MOVIMENT LIMITS
     public static bool IsOwnPosition(Vector3Int direction) => direction == Vector3Int.zero;
+    public bool IsRayBlocked(Piece piece, BoardPiece square)
+    {
+        if (rayBlocked == Dimentions.none) return false;
+
+        Vector3Int direction = piece.VectorDifference(square);
+        if (direction.Rank() > 1)
+        {
+            if (direction.x != 0 && direction.y != 0 && Mathf.Abs(direction.x) != Mathf.Abs(direction.y)) return false;
+            if (direction.x != 0 && direction.z != 0 && Mathf.Abs(direction.x) != Mathf.Abs(direction.z)) return false;
+            if (direction.y != 0 && direction.z != 0 && Mathf.Abs(direction.y) != Mathf.Abs(direction.z)) return false;
+        }
+
+        return true;
+    }
     #endregion //METHODS
 }
 [Flags]

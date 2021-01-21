@@ -10,7 +10,7 @@ public class HoverHighlight : MonoBehaviour, IHighlighter
     Rigidbody m_CacheRigidBody;
     IHighlightable m_CachedHighlightable;
     Highlight m_CachedHighlight;
-    Vector2 m_MousePosition;
+    Vector2 m_PointerPosition;
     #endregion //FIELDS
 
     #region -------- PROPERTIES
@@ -23,7 +23,7 @@ public class HoverHighlight : MonoBehaviour, IHighlighter
     {
         if (!context.performed) return;
 
-        m_MousePosition = context.ReadValue<Vector2>();
+        m_PointerPosition = context.ReadValue<Vector2>();
         UpdateHighlight();
     }
     #endregion //EXTERNAL CALL
@@ -52,7 +52,7 @@ public class HoverHighlight : MonoBehaviour, IHighlighter
     public void HoveredOut(IHighlightable hovered) => hovered?.Highlight?.HighlightUndo();
     RaycastHit MouseRayCast(Camera camera)
     {
-        Ray ray = camera.ScreenPointToRay(m_MousePosition);
+        Ray ray = camera.ScreenPointToRay(m_PointerPosition);
         RaycastHit hit = default(RaycastHit);
         Physics.Raycast(ray.origin, ray.direction, out hit);
         return hit;

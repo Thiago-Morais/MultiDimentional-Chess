@@ -43,26 +43,26 @@ public class Highlight : MonoBehaviour, IInitializable
         HighlightOff();
         HighlightType = HighlightType.none;
     }
-    public void HighlightOn(HighlightType highlightType)
+    public void HighlightOn(HighlightType type)
     {
-        SetNewHighlightValues(highlightType);
+        SetNewHighlightValues(type);
         HighlightOn();
     }
     [ContextMenu(nameof(UpdateHighlightValues))]
     void UpdateHighlightValues() => SetNewHighlightValues(HighlightType);
-    public void SetNewHighlightValues(HighlightType highlightType)
+    public void SetNewHighlightValues(HighlightType type)
     {
         HighlightStack.Push(HighlightType);
-        SetHighlightValues(highlightType);
+        SetHighlightValues(type);
         return;
     }
     public void HighlightUndo()
     {
         SetHighlightValues(HighlightStack.Pop());
     }
-    public void HighlightUndo(HighlightType highlightType)
+    public void HighlightUndo(HighlightType type)
     {
-        HighlightStack.Remove(highlightType);
+        HighlightStack.Remove(type);
         SetHighlightValues(HighlightStack.Peek());
     }
     [ContextMenu(nameof(UpdateMaterialsRef))]
@@ -73,21 +73,21 @@ public class Highlight : MonoBehaviour, IInitializable
             highlightMaterials.AddRange(renderer.materials);
     }
 
-    void SetHighlightValues(HighlightType highlightType)
+    void SetHighlightValues(HighlightType type)
     {
-        HighlightData highlightData = HighlightVariations.GetHighlightData(highlightType);
-        SetHighlightValues(highlightData);
-        if (highlightType == HighlightType.none) ClearHighlight();
-        HighlightType = highlightType;
+        HighlightData data = HighlightVariations.GetHighlightData(type);
+        SetHighlightValues(data);
+        if (type == HighlightType.none) ClearHighlight();
+        HighlightType = type;
     }
-    void SetHighlightValues(HighlightData highlightData)
+    void SetHighlightValues(HighlightData data)
     {
         foreach (Material material in highlightMaterials)
         {
-            material.SetFloat("HIGHLIGHT_PULSE_SPEED", highlightData.highlightPulseSpeed);
-            material.SetVector("HIGHTLIGHT_PULSE_APERTURE", highlightData.hightlightPulseAperture);
-            material.SetColor("HIGHLIGHT_COLOR", highlightData.highlightColor);
-            material.SetKeyword("FRESNEL_ON", highlightData.useFresnel);
+            material.SetFloat("HIGHLIGHT_PULSE_SPEED", data.highlightPulseSpeed);
+            material.SetVector("HIGHTLIGHT_PULSE_APERTURE", data.hightlightPulseAperture);
+            material.SetColor("HIGHLIGHT_COLOR", data.highlightColor);
+            material.SetKeyword("FRESNEL_ON", data.useFresnel);
         }
     }
     [ContextMenu(nameof(HighlightOn))]

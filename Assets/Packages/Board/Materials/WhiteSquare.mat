@@ -19,6 +19,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - ALBEDO_TEXTURE:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - EMISSION_TEXTURE:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -53,9 +57,11 @@ Material:
     - BOOLEAN_8AC66449: 0
     - ENUM_35648BAE: 2
     - ENUM_6E98E151: 0
+    - FRESNEL: 1
     - HIGHLIGHT: 0
     - HIGHLIGHT_PULSE_SPEED: 3
     - METALLIC_MULTIPLIER: 0
+    - NORMAL_MULTIPLIER: 1
     - OCCLUSION_MULTIPLIER: 1
     - SMOOTHNESS: 0.5
     - SMOOTHNESS_SOURCE: 1

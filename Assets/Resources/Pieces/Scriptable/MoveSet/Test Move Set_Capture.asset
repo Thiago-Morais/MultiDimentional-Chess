@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9102a93036e6bec4394cff69e97b5267, type: 3}
-  m_Name: PawnMoveSet
+  m_Name: Test Move Set_Capture
   m_EditorClassIdentifier: 
-  maxDimentionsAmount: 1
-  dimentionalBinding: 0
+  maxDimentionsAmount: -1
+  dimentionalBinding: 2
   distanceLimitType: 1
-  distanceLimitPerDimention: 010000000100000001000000
-  lockedDimentions: 1
-  lockedBackwards: 6
-  rayBlocked: 0
+  distanceLimitPerDimention: 
+  lockedDimentions: 0
+  lockedBackwards: 0
+  rayBlocked: 2

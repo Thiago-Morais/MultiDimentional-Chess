@@ -144,7 +144,7 @@ namespace Tests_EditMode
             hoverControll.minZoom = 1;
             Vector2 normalizedOrbit = new Vector2(freeLook.m_Orbits[orbit].m_Height, freeLook.m_Orbits[orbit].m_Radius).normalized;
             //ACT
-            hoverControll.SetZoom(-3);
+            hoverControll.AddScaledDeltaZoom(-3);
             //ASSERT
             Assert.AreEqual(normalizedOrbit.x, hoverControll.hoverCamera.m_Orbits[orbit].m_Height);
         }
@@ -160,7 +160,7 @@ namespace Tests_EditMode
 
             hoverControll.hoverCamera = freeLook;
             //ACT
-            hoverControll.SetZoom(positiveZoom);
+            hoverControll.AddScaledDeltaZoom(positiveZoom);
             //ASSERT
             Assert.Greater(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }
@@ -176,7 +176,7 @@ namespace Tests_EditMode
 
             hoverControll.hoverCamera = freeLook;
             //ACT
-            hoverControll.SetZoom(positiveZoom);
+            hoverControll.AddScaledDeltaZoom(positiveZoom);
             //ASSERT
             Assert.Less(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }
@@ -192,7 +192,7 @@ namespace Tests_EditMode
 
             hoverControll.hoverCamera = freeLook;
             //ACT
-            hoverControll.SetZoom(positiveZoom);
+            hoverControll.AddScaledDeltaZoom(positiveZoom);
             //ASSERT
             Assert.Less(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }
@@ -208,7 +208,7 @@ namespace Tests_EditMode
 
             hoverControll.hoverCamera = freeLook;
             //ACT
-            hoverControll.SetZoom(positiveZoom);
+            hoverControll.AddScaledDeltaZoom(positiveZoom);
             //ASSERT
             Assert.Greater(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }

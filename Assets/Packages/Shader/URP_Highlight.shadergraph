@@ -90,25 +90,25 @@
             "typeInfo": {
                 "fullName": "UnityEditor.ShaderGraph.ShaderKeyword"
             },
-            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"e5e2ab75-18e0-4875-a676-7d396fbb05b9\"\n    },\n    \"m_Name\": \"SmoothnesSource\",\n    \"m_DefaultReferenceName\": \"ENUM_35648BAE\",\n    \"m_OverrideReferenceName\": \"SMOOTHNESS_SOURCE\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 1,\n    \"m_KeywordDefinition\": 0,\n    \"m_KeywordScope\": 0,\n    \"m_Entries\": [\n        {\n            \"id\": 2,\n            \"displayName\": \"Metallic\",\n            \"referenceName\": \"METALLIC\"\n        },\n        {\n            \"id\": 3,\n            \"displayName\": \"Albedo\",\n            \"referenceName\": \"ALBEDO\"\n        }\n    ],\n    \"m_Value\": 1,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
+            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"e5e2ab75-18e0-4875-a676-7d396fbb05b9\"\n    },\n    \"m_Name\": \"SmoothnesSource\",\n    \"m_DefaultReferenceName\": \"ENUM_35648BAE\",\n    \"m_OverrideReferenceName\": \"SMOOTHNESS_SOURCE\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 1,\n    \"m_KeywordDefinition\": 1,\n    \"m_KeywordScope\": 0,\n    \"m_Entries\": [\n        {\n            \"id\": 2,\n            \"displayName\": \"Metallic\",\n            \"referenceName\": \"METALLIC\"\n        },\n        {\n            \"id\": 3,\n            \"displayName\": \"Albedo\",\n            \"referenceName\": \"ALBEDO\"\n        }\n    ],\n    \"m_Value\": 1,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
         },
         {
             "typeInfo": {
                 "fullName": "UnityEditor.ShaderGraph.ShaderKeyword"
             },
-            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"4dd2457c-22c1-4b07-8b01-74aafcb32beb\"\n    },\n    \"m_Name\": \"AlphaSource\",\n    \"m_DefaultReferenceName\": \"\",\n    \"m_OverrideReferenceName\": \"ALPHA_SOURCE\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 1,\n    \"m_KeywordDefinition\": 0,\n    \"m_KeywordScope\": 0,\n    \"m_Entries\": [\n        {\n            \"id\": 2,\n            \"displayName\": \"Metallic\",\n            \"referenceName\": \"METALLIC\"\n        },\n        {\n            \"id\": 3,\n            \"displayName\": \"Albedo\",\n            \"referenceName\": \"ALBEDO\"\n        }\n    ],\n    \"m_Value\": 0,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
+            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"4dd2457c-22c1-4b07-8b01-74aafcb32beb\"\n    },\n    \"m_Name\": \"AlphaSource\",\n    \"m_DefaultReferenceName\": \"\",\n    \"m_OverrideReferenceName\": \"ALPHA_SOURCE\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 1,\n    \"m_KeywordDefinition\": 1,\n    \"m_KeywordScope\": 0,\n    \"m_Entries\": [\n        {\n            \"id\": 2,\n            \"displayName\": \"Metallic\",\n            \"referenceName\": \"METALLIC\"\n        },\n        {\n            \"id\": 3,\n            \"displayName\": \"Albedo\",\n            \"referenceName\": \"ALBEDO\"\n        }\n    ],\n    \"m_Value\": 0,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
         },
         {
             "typeInfo": {
                 "fullName": "UnityEditor.ShaderGraph.ShaderKeyword"
             },
-            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"1178934e-68da-40e6-b92c-2c57e69948f6\"\n    },\n    \"m_Name\": \"Highlight\",\n    \"m_DefaultReferenceName\": \"BOOLEAN_9DE55A71_ON\",\n    \"m_OverrideReferenceName\": \"HIGHLIGHT_ON\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 0,\n    \"m_KeywordDefinition\": 0,\n    \"m_KeywordScope\": 0,\n    \"m_Entries\": [],\n    \"m_Value\": 0,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
+            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"1178934e-68da-40e6-b92c-2c57e69948f6\"\n    },\n    \"m_Name\": \"Highlight\",\n    \"m_DefaultReferenceName\": \"BOOLEAN_9DE55A71_ON\",\n    \"m_OverrideReferenceName\": \"HIGHLIGHT_ON\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 0,\n    \"m_KeywordDefinition\": 1,\n    \"m_KeywordScope\": 0,\n    \"m_Entries\": [],\n    \"m_Value\": 0,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
         },
         {
             "typeInfo": {
                 "fullName": "UnityEditor.ShaderGraph.ShaderKeyword"
             },
-            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"1a12d5e6-01f4-47da-83bf-db0fcbd1a891\"\n    },\n    \"m_Name\": \"Fresnel\",\n    \"m_DefaultReferenceName\": \"BOOLEAN_E3C36EDB_ON\",\n    \"m_OverrideReferenceName\": \"FRESNEL_ON\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 0,\n    \"m_KeywordDefinition\": 0,\n    \"m_KeywordScope\": 0,\n    \"m_Entries\": [],\n    \"m_Value\": 1,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
+            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"1a12d5e6-01f4-47da-83bf-db0fcbd1a891\"\n    },\n    \"m_Name\": \"Fresnel\",\n    \"m_DefaultReferenceName\": \"BOOLEAN_E3C36EDB_ON\",\n    \"m_OverrideReferenceName\": \"FRESNEL_ON\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 0,\n    \"m_KeywordDefinition\": 1,\n    \"m_KeywordScope\": 0,\n    \"m_Entries\": [],\n    \"m_Value\": 1,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
         }
     ],
     "m_SerializableNodes": [

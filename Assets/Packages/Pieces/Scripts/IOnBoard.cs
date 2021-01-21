@@ -1,6 +1,7 @@
 using UnityEngine;
 
-internal interface IOnBoard
+
+public interface IOnBoard
 {
     Vector3Int BoardCoord { get; set; }
 }

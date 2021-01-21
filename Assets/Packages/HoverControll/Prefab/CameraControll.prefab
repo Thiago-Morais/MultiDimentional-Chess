@@ -124,9 +124,10 @@ MonoBehaviour:
   cachedYAxis: 
   cachedHeights: []
   cachedRadiuses: []
-  zoom: 0
+  scroll: 0
   zoomMultiplier: 0.01
   minZoom: 3.5
+  secondTouchPosition: {x: 0, y: 0}
 --- !u!114 &5662723957260697477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -221,9 +222,101 @@ MonoBehaviour:
     m_ActionId: c6b2dacb-c2cb-42a1-8697-b5d6b199aff0
     m_ActionName: Player/Hover[/Mouse/leftButton,/Mouse/position]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5662723957260697479}
+        m_TargetAssemblyTypeName: HoverControll, Scripts
+        m_MethodName: OnScroll
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 0415726f-3614-4179-a90f-3ec4e8d37cbb
     m_ActionName: Player/UnHover[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5662723957260697496}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 63f2d42e-8b93-4f82-9f6f-268b2e71a4da
+    m_ActionName: UI/StartPoint
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5662723957260697479}
+        m_TargetAssemblyTypeName: HoverControll, Scripts
+        m_MethodName: OnSecondPointPosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f4ad5258-ce11-4dac-9739-736d4b12e86c
+    m_ActionName: Player/SecondPoint
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5662723957260697479}
+        m_TargetAssemblyTypeName: HoverControll, Scripts
+        m_MethodName: OnFirstPointPosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: a65f40d7-190a-4ec0-9f43-7c2f09d0c4be
+    m_ActionName: Player/FirstPoint
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5662723957260697479}
+        m_TargetAssemblyTypeName: HoverControll, Scripts
+        m_MethodName: OnFirstPointDelta
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: eba83e15-5530-47ea-8723-4ede0ad853fa
+    m_ActionName: Player/StartFirstPoint
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5662723957260697479}
+        m_TargetAssemblyTypeName: HoverControll, Scripts
+        m_MethodName: OnSecondPointDelta
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 39aa9f00-38ec-446d-880b-02c68b10a7e4
+    m_ActionName: Player/StartSecondPoint
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
