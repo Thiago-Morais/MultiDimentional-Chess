@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using ExtensionMethods;
 using System.Collections.Generic;
+using System;
 
 namespace Tests_EditMode
 {
@@ -141,7 +142,35 @@ namespace Tests_EditMode
                 //ASSERT
                 Assert.IsEmpty(list);
             }
+            [Sequential]
+            [Test]
+            public void RemoveAll_PassedAValueRemoveAllOccurrencesFromList_ReturnListWithoutValue(
+                [ValueSource(nameof(NumList))] int[] listSource,
+                [ValueSource(nameof(ExpectedList))] int[] expectedSource)
+            {
+                //SETUP
+                List<int> list = new List<int>(listSource);
+                List<int> expected = new List<int>(expectedSource);
+                //ACT
+                list.RemoveAll(0);
+                //ASSERT
+                Assert.AreEqual(expected, list);
+            }
+            static int[][] NumList =
+               {
+                new[] {0, 1, 0, 2, 0},
+                new[] {0, 0, 1, 0, 0, 2, 0},
+                new[] {0},
+                new[] {1, 2},
+            };
+            static int[][] ExpectedList =
+               {
+                new[] {1, 2},
+                new[] {1, 2},
+                new int[] {},
+                new[] {1, 2},
+            };
+            #endregion //LIST EXTENSIONS TESTS
         }
-        #endregion //LIST EXTENSIONS TESTS
     }
 }

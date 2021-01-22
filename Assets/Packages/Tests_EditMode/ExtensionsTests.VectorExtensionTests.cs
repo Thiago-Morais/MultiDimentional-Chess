@@ -71,6 +71,31 @@ namespace Tests_EditMode
                 //ASSERT
                 Assert.AreEqual(3, rank);
             }
+            static object[] BindedVector =
+            {
+                new object[] { new Vector3Int(0, 0, 0), true, },
+                new object[] { new Vector3Int(1, 0, 0), true, },
+                new object[] { new Vector3Int(-1, 0, 0), true, },
+                new object[] { new Vector3Int(0, 2, 2), true, },
+                new object[] { new Vector3Int(0, -2, 2), true, },
+                new object[] { new Vector3Int(3, 3, 3), true, },
+                new object[] { new Vector3Int(3, -3, 3), true, },
+                new object[] { new Vector3Int(-3, -3, -3), true, },
+                new object[] { new Vector3Int(1, 2, 0), false, },
+                new object[] { new Vector3Int(3, 0, 4), false, },
+                new object[] { new Vector3Int(5, 6, 7), false, },
+                new object[] { new Vector3Int(1, 1, 2), false, },
+            };
+            [TestCaseSource(nameof(BindedVector))]
+            [Test]
+            public void IsBindedIgnoringZero_BindedVector_IsBinded(Vector3Int binded, bool expected)
+            {
+                //SETUP
+                //ACT
+                Binding binding = binded.IsBindedIgnoringZero();
+                //ASSERT
+                Assert.AreEqual(expected, binding.isBinded);
+            }
         }
     }
 }

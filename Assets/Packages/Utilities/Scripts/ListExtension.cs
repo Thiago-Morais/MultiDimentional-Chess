@@ -39,7 +39,7 @@ namespace ExtensionMethods
         public static List<int> RemoveAll(this List<int> values, int value)
         {
             for (int i = 0; i < values.Count; i++)
-                if (values[i] == value) values.Remove(values[i]);
+                if (values[i] == value) values.Remove(values[i--]);
             return values;
         }
     }

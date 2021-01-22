@@ -33,27 +33,30 @@ namespace ExtensionMethods
             return rank;
         }
         public static bool IsBinded(this Vector3Int vector) => vector.x == vector.y && vector.y == vector.z;
-        public static bool IsBindedIgnoringZero(this Vector3Int vector)
+        public static Binding IsBindedIgnoringZero(this Vector3Int vector)
         {
-            List<int> bindedValues = new List<int>() { vector.x, vector.y, vector.z }.RemoveAll(0);
-            if (bindedValues.Count == 0 || bindedValues.Count == 1) return true;
+            Binding binding = new Binding(isBinded: true);
 
-            int cachedBind = bindedValues[0];
-            for (int i = 1; i < bindedValues.Count; i++)
-            {
-                int bind = bindedValues[i];
-                if (bind != cachedBind) return false;
-
-                cachedBind = bind;
-            }
-            return true;
+            List<int> bindedValues = new List<int>() { Mathf.Abs(vector.x), Mathf.Abs(vector.y), Mathf.Abs(vector.z) }.RemoveAll(0);
+            if (bindedValues.Count == 0 || bindedValues.Count == 1)
+                binding.isBinded = true;
+            else
+                for (int i = 0; i < bindedValues.Count - 1; i++)
+                    if (bindedValues[i] != bindedValues[i + 1])
+                    {
+                        binding.isBinded = false;
+                        break;
+                    }
+            return binding;
         }
         public static bool IsBindedIgnoringZero(this Vector3Int vector, ref int binded)
         {
-            List<int> bindedValues = new List<int>() { vector.x, vector.y, vector.z }.RemoveAll(0);
-            if (bindedValues.Count == 0 || bindedValues.Count == 1) return true;
+            List<int> bindedValues = new List<int>() { Mathf.Abs(vector.x), Mathf.Abs(vector.y), Mathf.Abs(vector.z) }.RemoveAll(0);
+            if (bindedValues.Count == 0) return true;
 
             int cachedBind = binded = bindedValues[0];
+            if (bindedValues.Count == 1) return true;
+
             for (int i = 1; i < bindedValues.Count; i++)
             {
                 int bind = bindedValues[i];

@@ -188,12 +188,8 @@ namespace Tests_EditMode
             //ASSERT
             Assert.False(isBlocked);
         }
+        // Se não tem nenhuma peça entre player e a coordenada
         [TestCase(Dimentions.one, 4, 2, 2)]
-        [TestCase(Dimentions.one, -4, 2, 2)]
-        [TestCase(Dimentions.one, 2, 4, 2)]
-        [TestCase(Dimentions.one, 2, 2, 4)]
-        [TestCase(Dimentions.two, 4, 4, 2)]
-        [TestCase(Dimentions.three, 4, 4, 4)]
         [Test]
         public void IsRayBlocked_RayBlockedHasDirRankAndDontHavePieceBetweenTarget_ReturnFalse(//TODO doing
             Dimentions rayBlocked,

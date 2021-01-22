@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -192,6 +193,82 @@ namespace Tests_EditMode
             Assert.NotNull(dinamicBoard.board);
             Assert.NotNull(dinamicBoard.WhitePool);
             Assert.NotNull(dinamicBoard.BlackPool);
+        }
+        static object[] TargetAheadAndNoPiecesInBetween = {
+            new object[] { new Vector3Int(0, 0, 0), new Vector3Int(0, 0, 2)  },
+            new object[] { new Vector3Int(0, 2, 3), new Vector3Int(0, 0, 4)  } ,
+            new object[] { new Vector3Int(2, 2, 1), new Vector3Int(0, 0, 1)  } };
+        [TestCaseSource(nameof(TargetAheadAndNoPiecesInBetween))]
+        [Test]
+        public void HasPieceBetween_TargetAheadAndNoPiecesInBetween_ReturnFalse(
+            Vector3Int player,
+            Vector3Int playerMove)
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>().Initialized() as DinamicBoard;
+            Piece piece = new GameObject(nameof(piece)).AddComponent<Piece>();
+
+            piece.BoardCoord = player;
+            Vector3Int targetCoord = piece.BoardCoord + playerMove;
+            //ACT
+            bool hasPieceBetween = dinamicBoard.HasPieceBetween(piece.BoardCoord, targetCoord);
+            //ASSERT
+            Assert.False(hasPieceBetween);
+        }
+        static object[] TargetAheadAndHavePiecesInBetween = {
+            new object[] { new Vector3Int(0, 0, 0), new Vector3Int(0, 0, 2), new Vector3Int(0, 0, 1) },
+            new object[] { new Vector3Int(0, 2, 3), new Vector3Int(0, 0, 4), new Vector3Int(0, 2, 6) } };
+        [TestCaseSource(nameof(TargetAheadAndHavePiecesInBetween))]
+        [Test]
+        public void HasPieceBetween_TargetAheadAndHavePiecesInBetween_ReturnTrue(
+            Vector3Int playerCoord,
+            Vector3Int playerMove,
+            Vector3Int enemyCoord)
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>().Initialized() as DinamicBoard;
+            dinamicBoard.TryUpdateBoard(new Vector3Int(10, 10, 10), Vector3.zero);
+
+            Piece player = new GameObject(nameof(player)).AddComponent<Piece>();
+            player.BoardCoord = playerCoord;
+
+            Piece enemy = new GameObject(nameof(enemy)).AddComponent<Piece>();
+            enemy.MoveTo(dinamicBoard.GetSquareAt(enemyCoord));
+            //ACT
+            Vector3Int playerTarget = playerCoord + playerMove;
+            bool hasPieceBetween = dinamicBoard.HasPieceBetween(player.BoardCoord, playerTarget);
+            //ASSERT
+            Assert.True(hasPieceBetween);
+        }
+        static object[] TargetBindedAndHavePiecesInBetween =
+        {
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(3, 3, 0), new Vector3Int(5+1, 5+1, 5) },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(0, -5, -5), new Vector3Int(5, 5-1, 5-1) },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(4, -4, 4), new Vector3Int(5+3, 5-3, 5+3) },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(2, 2, 2), new Vector3Int(5+1, 5+1, 5+1) },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(-2, -2, -2), new Vector3Int(5-1, 5-1, 5-1) },
+        };
+        [TestCaseSource(nameof(TargetBindedAndHavePiecesInBetween))]
+        [Test]
+        public void HasPieceBetween_TargetBindedAndHavePiecesInBetween_ReturnTrue(
+            Vector3Int playerCoord,
+            Vector3Int playerMove,
+            Vector3Int enemyCoord)
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>().Initialized() as DinamicBoard;
+            dinamicBoard.TryUpdateBoard(new Vector3Int(10, 10, 10), Vector3.zero);
+
+            Piece player = new GameObject(nameof(player)).AddComponent<Piece>();
+            player.BoardCoord = playerCoord;
+
+            Piece enemy = new GameObject(nameof(enemy)).AddComponent<Piece>();
+            enemy.MoveTo(dinamicBoard.GetSquareAt(enemyCoord));
+            //ACT
+            Vector3Int playerTarget = playerCoord + playerMove;
+            bool hasPieceBetween = dinamicBoard.HasPieceBetween(player.BoardCoord, playerTarget);
+            //ASSERT
+            Assert.True(hasPieceBetween);
         }
     }
     #endregion //BOARD TESTS

@@ -205,7 +205,9 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
         int binded = default;
         if (direction.IsBindedIgnoringZero(ref binded))
         {
-            return true;
+            for (int i = 0; i < binded; i++)
+                if (GetSquareAt(coordA + new Vector3Int(binded, binded, binded)))
+                    return true;
         }
         return false;
     }
