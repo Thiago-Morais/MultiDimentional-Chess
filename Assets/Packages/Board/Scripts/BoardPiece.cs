@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class BoardPiece : MonoBehaviour, IInitializable, IPoolable, IHighlightable, ISelectable, IMediator<BoardPiece.IntFlags>, IOnBoard
 {
@@ -62,6 +63,7 @@ public class BoardPiece : MonoBehaviour, IInitializable, IPoolable, IHighlightab
     }
     [ContextMenu(nameof(UpdateSize))]
     public void UpdateSize() => so_pieceData.UpdateSize(this);
+    public Vector3 GetSize() => so_pieceData.pieceBounds.size;
     public Component Deactivated()
     {
         gameObject.SetActive(false);

@@ -163,8 +163,7 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
     Vector3 GetSquareSize(int index)                                //TODO test it
     {
         BoardPiece boardPiece = ((BoardPiece)this.GetPool(index).sample);
-        if (!boardPiece.so_pieceData) boardPiece.InitializeVariables();
-        return boardPiece.so_pieceData.pieceBounds.size;
+        return boardPiece.GetSize();
     }
     [ContextMenu(nameof(UpdateBoardPieces))]
     public void UpdateBoardPieces()

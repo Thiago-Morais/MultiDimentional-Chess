@@ -163,20 +163,25 @@ namespace Tests_EditMode
             //ASSERT
             Assert.False(isBlocked);
         }
-        [TestCase(Dimentions.one, 1, 1, 0)]
-        [TestCase(Dimentions.one, 1, 1, 1)]
-        [TestCase(Dimentions.two, 1, 0, 0)]
-        [TestCase(Dimentions.two, 1, 1, 1)]
-        [TestCase(Dimentions.three, 1, 0, 0)]
-        [TestCase(Dimentions.three, 1, 1, 0)]
-        [TestCase(Dimentions.one | Dimentions.two, 1, 1, 1)]
-        [TestCase(Dimentions.one | Dimentions.three, 1, 1, 0)]
-        [TestCase(Dimentions.two | Dimentions.three, 1, 0, 0)]
+        static object[] DirectionRankIsNotBlocked =
+        {
+            new object[] { Dimentions.one, new Vector3Int(1, 1, 0) },
+            new object[] { Dimentions.one, new Vector3Int(1, -1, 0) },
+            new object[] { Dimentions.one, new Vector3Int(-1, -1, 0) },
+            new object[] { Dimentions.one, new Vector3Int(1, 1, 1) },
+            new object[] { Dimentions.two, new Vector3Int(1, 0, 0) },
+            new object[] { Dimentions.two, new Vector3Int(1, 1, 1) },
+            new object[] { Dimentions.three, new Vector3Int(1, 0, 0) },
+            new object[] { Dimentions.three, new Vector3Int(1, 1, 0) },
+            new object[] { Dimentions.one | Dimentions.two, new Vector3Int(1, 1, 1) },
+            new object[] { Dimentions.one | Dimentions.three, new Vector3Int(1, 1, 0) },
+            new object[] { Dimentions.two | Dimentions.three, new Vector3Int(1, 0, 0) },
+        };
+        [TestCaseSource(nameof(DirectionRankIsNotBlocked))]
         [Test]
-        public void IsRayBlocked_RayBlockedDontHaveDirRank_ReturnFalse(Dimentions rayBlocked, int targetCoordX, int targetCoordY, int targetCoordZ)
+        public void IsRayBlocked_DirectionRankIsNotBlocked_ReturnFalse(Dimentions rayBlocked, Vector3Int targetCoord)
         {
             //SETUP
-            Vector3Int targetCoord = new Vector3Int(targetCoordX, targetCoordY, targetCoordZ);
             PieceMoveSet moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
             Piece piece = new GameObject(nameof(piece)).AddComponent<Piece>();
             BoardPiece boardPiece = new GameObject(nameof(boardPiece)).AddComponent<BoardPiece>();
@@ -188,10 +193,48 @@ namespace Tests_EditMode
             //ASSERT
             Assert.False(isBlocked);
         }
+        static object[] DirectionRankIsBlocked =
+        {
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(2, 0, 0), new Vector3Int(1, 0, 0), Dimentions.one, },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(0, -2, 0), new Vector3Int(0, -1, 0), Dimentions.one, },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(2, 2, 0), new Vector3Int(1, 1, 0), Dimentions.two, },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(2, 0, -2), new Vector3Int(1, 0, -1), Dimentions.two, },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(0, -2, -2), new Vector3Int(0, -1, -1), Dimentions.two, },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(3, 3, 3), new Vector3Int(1, 1, 1), Dimentions.three, },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(3, 3, -3), new Vector3Int(1, 1, -1), Dimentions.three, },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(-3, -3, -3), new Vector3Int(-1, -1, -1), Dimentions.three, },
+        };
+        [TestCaseSource(nameof(DirectionRankIsBlocked))]
+        [Test]
+        public void IsRayBlocked_DirectionRankIsBlockedAndHavePieceBetweenTarget_ReturnTrue(
+            Vector3Int player,
+            Vector3Int playerOffset,
+            Vector3Int enemyOffset,
+            Dimentions rayBlocked)
+        {
+            //SETUP
+            PieceMoveSet moveSet = ScriptableObject.CreateInstance<PieceMoveSet>();
+            Piece piece = new GameObject(nameof(piece)).AddComponent<Piece>();
+            Piece enemy = new GameObject(nameof(piece)).AddComponent<Piece>();
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>().Initialized() as DinamicBoard;
+
+            dinamicBoard.size = new Vector3Int(10, 10, 10);
+            dinamicBoard.TryUpdateBoard();
+
+            moveSet.rayBlocked = rayBlocked;
+            piece.BoardCoord = player;
+            enemy.MoveTo(dinamicBoard.GetSquareAt(player + enemyOffset));
+
+            BoardPiece target = dinamicBoard.GetSquareAt(player + playerOffset);
+            //ACT
+            bool isBlocked = moveSet.IsRayBlocked(piece, target);
+            //ASSERT
+            Assert.True(isBlocked);
+        }
         // Se não tem nenhuma peça entre player e a coordenada
         [TestCase(Dimentions.one, 4, 2, 2)]
         [Test]
-        public void IsRayBlocked_RayBlockedHasDirRankAndDontHavePieceBetweenTarget_ReturnFalse(//TODO doing
+        public void IsRayBlocked_DirectionRankIsBlockedAndDontPieceBetweenTarget_ReturnFalse(//TODO doing
             Dimentions rayBlocked,
             int targetCoordX,
             int targetCoordY,
@@ -213,16 +256,6 @@ namespace Tests_EditMode
             bool isBlocked = moveSet.IsRayBlocked(piece, targetBoardPiece);
             //ASSERT
             Assert.False(isBlocked);
-        }
-        [Test]
-        public void IsRayBlocked_RayBlockedHasDirRankAndHasPieceBetweenTarget_ReturnTrue(int targetCoordX, int targetCoordY, int targetCoordZ)
-        {
-            //SETUP
-            Vector3Int targetCoord = new Vector3Int(targetCoordX, targetCoordY, targetCoordZ);
-            Piece piece = new GameObject(nameof(piece)).AddComponent<Piece>();
-            //ACT
-            //ASSERT
-            Assert.True(false);
         }
         #endregion //IS RAY BLOCKED
         #region -------- IS WITHIN MAX DIMENTIONS AMOUNT

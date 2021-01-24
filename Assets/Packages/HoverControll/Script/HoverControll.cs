@@ -15,12 +15,12 @@ public class HoverControll : MonoBehaviour, IInitializable
     public float minZoom = .1f;
     public Vector2 secondTouchPosition;
     Vector2 secondTouchPositionCached;
-    private Vector2 firstPointStart;
-    private Vector2 secondPointStart;
-    private Vector2 firstPointPosition;
-    private Vector2 secondPointPosition;
-    private Vector2 firstPointDelta;
-    private Vector2 secondPointDelta;
+    Vector2 firstPointStart;
+    Vector2 secondPointStart;
+    Vector2 firstPointPosition;
+    Vector2 secondPointPosition;
+    Vector2 firstPointDelta;
+    Vector2 secondPointDelta;
     #endregion //FIELDS
 
     #region -------- PROPERTIES

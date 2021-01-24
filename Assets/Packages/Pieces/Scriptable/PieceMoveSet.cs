@@ -122,10 +122,12 @@ public class PieceMoveSet : ScriptableObject
     public bool IsRayBlocked(Piece piece, BoardPiece square)
     {
         if (rayBlocked == Dimentions.none) return false;
+
         Vector3Int direction = piece.VectorDifference(square);
-        int directionRank = direction.Rank();
-        if (rayBlocked.HasAny(directionRank.RankAs<Dimentions>()))
+        Dimentions rankAsDimentions = direction.Rank().RankAs<Dimentions>();
+        if (rayBlocked.HasAny(rankAsDimentions))
             return square.board.HasPieceBetween(piece.BoardCoord, square.BoardCoord);
+
         return false;
         // Vector3Int direction = piece.VectorDifference(square);
         // if (direction.Rank() > 1)
