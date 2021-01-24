@@ -16,5 +16,6 @@ MonoBehaviour:
   dimentionalBinding: 3
   distanceLimitType: 1
   distanceLimitPerDimention: 
-  blockedDimentions: 0
-  backwardsBlocker: 0
+  lockedDimentions: 0
+  lockedBackwards: 0
+  rayBlocked: -1

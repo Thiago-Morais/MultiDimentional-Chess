@@ -15,7 +15,7 @@ public class PieceMoveSet : ScriptableObject
     public List<int> distanceLimitPerDimention = new List<int>();
     public Dimentions lockedDimentions = Dimentions.none;
     public Dimentions lockedBackwards = Dimentions.none;
-    public Dimentions rayBlocked;
+    public Dimentions rayBlocked = Dimentions.all;
     #endregion //FIELDS
 
     #region -------- PROPERTIES
@@ -28,15 +28,15 @@ public class PieceMoveSet : ScriptableObject
     // public bool IsMovimentAvailable(Vector3Int direction, bool isWhite)       //TODO test it
     public bool IsMovimentAvailable(Piece piece, BoardPiece square)       //TODO test it
     {
-        Vector3Int direction = piece.VectorDifference(square);
+        Vector3Int offset = piece.VectorDifference(square);
 
         if (IsRayBlocked(piece, square)
-            || HasLockedDirection(direction)
-            || HasLockedBackwards(direction, !piece.playerData.isWhite)
-            || !IsWithinMaxDimentionsAmount(direction)
-            || !IsWithinDimentionalBinding(direction)
-            || !IsWithinMovimentLimits(direction)
-            || IsOwnPosition(direction)
+            || HasLockedDirection(offset)
+            || HasLockedBackwards(offset, !piece.playerData.isWhite)
+            || !IsWithinMaxDimentionsAmount(offset)
+            || !IsWithinDimentionalBinding(offset)
+            || !IsWithinMovimentLimits(offset)
+            || IsOwnPosition(offset)
             )
             return false;
         return true;

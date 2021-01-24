@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Tests_EditMode
 {
-    #region ------- BOARD TESTS
+    #region ------- BOARD_TESTS
     public class BoardTests
     {
         Piece piece1;
@@ -47,6 +47,8 @@ namespace Tests_EditMode
                     Assert.IsFalse(square.Highlight.IsHighlighted);
 
         }
+
+        #region -------- RESET_BOARD_SIZE
         [Test]
         public void ResetBoardSize_1x1x1_BoardSizeIs1()
         {
@@ -69,6 +71,9 @@ namespace Tests_EditMode
             //ASSERT
             Assert.AreEqual(8, dinamicBoard.board.Length);
         }
+        #endregion //RESET_BOARD_SIZE
+
+        #region -------- INSTANTIATE_A_BOARD
         [Test]
         public void InstantiateABoard_3x3x3_Empty3x3x3Board()
         {
@@ -89,6 +94,9 @@ namespace Tests_EditMode
             //ASSERT
             Assert.AreEqual(new BoardPiece[0, 0, 1], board);
         }
+        #endregion //INSTANTIATE_A_BOARD
+
+        #region -------- GENERATE_SQUARE_USING
         [Test]
         public void GenerateSquareUsing_PairIndex_WhiteBoardPiece()
         {
@@ -111,6 +119,9 @@ namespace Tests_EditMode
             //ASSERT
             Assert.AreSame(((BoardPiece)dinamicBoard.BlackPool.sample).so_pieceData, boardPiece.so_pieceData);
         }
+        #endregion //GENERATE_SQUARE_USING
+
+        #region -------- GET_POOL
         [Test]
         public void GetPool_PairIndex_WhitePool()
         {
@@ -134,6 +145,9 @@ namespace Tests_EditMode
             //ASSERT
             Assert.AreSame(dinamicBoard.BlackPool, pool);
         }
+        #endregion //GET_POOL
+
+        #region -------- GET_SQUARE_AT
         [Test]
         public void GetSquareAt_OutOfBounds_Null()
         {
@@ -156,6 +170,7 @@ namespace Tests_EditMode
             //ASSERT
             Assert.AreSame(dinamicBoard.board[2, 2, 2], boardPiece);
         }
+        #endregion //GET_SQUARE_AT
         [Test]
         public void UpdateBoardPieceCoordAt_0x0x0_BoardPieceCoord0x0x0()
         {
@@ -194,6 +209,8 @@ namespace Tests_EditMode
             Assert.NotNull(dinamicBoard.WhitePool);
             Assert.NotNull(dinamicBoard.BlackPool);
         }
+
+        #region -------- HAS_PIECE_BETWEEN
         static object[] TargetAheadAndNoPiecesInBetween = {
             new object[] { new Vector3Int(0, 0, 0), new Vector3Int(0, 0, 2)  },
             new object[] { new Vector3Int(0, 2, 3), new Vector3Int(0, 0, 4)  } ,
@@ -257,12 +274,12 @@ namespace Tests_EditMode
         {
             //SETUP
             DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>().Initialized() as DinamicBoard;
-            dinamicBoard.TryUpdateBoard(new Vector3Int(10, 10, 10), Vector3.zero);
-
             Piece player = new GameObject(nameof(player)).AddComponent<Piece>();
-            player.BoardCoord = playerCoord;
-
             Piece enemy = new GameObject(nameof(enemy)).AddComponent<Piece>();
+
+
+            dinamicBoard.TryUpdateBoard(new Vector3Int(10, 10, 10), Vector3.zero);
+            player.BoardCoord = playerCoord;
             enemy.MoveTo(dinamicBoard.GetSquareAt(enemyCoord));
             //ACT
             Vector3Int playerTarget = playerCoord + playerMove;
@@ -270,6 +287,89 @@ namespace Tests_EditMode
             //ASSERT
             Assert.True(hasPieceBetween);
         }
+        static object[] TargetBindedAndNoPiecesInBetween =
+        {
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(3, 3, 0), },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(0, -5, -5), },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(4, -4, 4), },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(2, 2, 2), },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(-2, -2, -2), },
+        };
+        [TestCaseSource(nameof(TargetBindedAndNoPiecesInBetween))]
+        [Test]
+        public void HasPieceBetween_TargetBindedAndNoPiecesInBetween_ReturnFalse(
+            Vector3Int playerCoord,
+            Vector3Int playerMove)
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>().Initialized() as DinamicBoard;
+            Piece player = new GameObject(nameof(player)).AddComponent<Piece>();
+
+            dinamicBoard.TryUpdateBoard(new Vector3Int(10, 10, 10), Vector3.zero);
+            player.BoardCoord = playerCoord;
+            //ACT
+            Vector3Int playerTarget = playerCoord + playerMove;
+            bool hasPieceBetween = dinamicBoard.HasPieceBetween(player.BoardCoord, playerTarget);
+            //ASSERT
+            Assert.False(hasPieceBetween);
+        }
+        #endregion //HAS_PIECE_BETWEEN
+
+        #region -------- UPDATE_BOARD_PIECES
+        static object[] BoardSizeAndPiece =
+        {
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(0, 0, 0), },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(1, 0, 0), },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(1, 1, 0), },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(0, 2, 2), },
+            new object[] { new Vector3Int(5, 5, 5), new Vector3Int(4, 4, 4), },
+        };
+        [TestCaseSource(nameof(BoardSizeAndPiece))]
+        [Test]
+        public void UpdateBoardPieces__PiecesWithBoardCoordEqualToBoard(Vector3Int boardSize, Vector3Int pieceCoord)
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>().Initialized() as DinamicBoard;
+            dinamicBoard.ResetBoardSize(boardSize);
+            BoardPiece[,,] board = dinamicBoard.board;
+            //ACT
+            dinamicBoard.UpdateBoardPieces();
+            //ASSERT
+            Assert.AreEqual(pieceCoord, board[pieceCoord.x, pieceCoord.y, pieceCoord.z].BoardCoord);
+        }
+        [Test]
+        public void UpdateBoardPieces__SetBoardPiecesBoardReferenceAsDinamicBoard(
+            [Values(1, 2)] int x,
+            [Values(1, 2, 3)] int y,
+            [Values(1, 4, 5)] int z)
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>().Initialized() as DinamicBoard;
+            dinamicBoard.ResetBoardSize(new Vector3Int(x, y, z));
+            BoardPiece[,,] board = dinamicBoard.board;
+            //ACT
+            dinamicBoard.UpdateBoardPieces();
+            //ASSERT
+            foreach (BoardPiece square in dinamicBoard.board)
+                Assert.AreEqual(dinamicBoard, square.board);
+        }
+        #endregion //UPDATE_BOARD_PIECES
+
+        #region -------- UPDATE BOARD COORD
+        [TestCaseSource(nameof(BoardSizeAndPiece))]
+        [Test]
+        public void UpdateBoardCoord__PiecesWithBoardCoordEqualToBoard(Vector3Int boardSize, Vector3Int pieceCoord)
+        {
+            //SETUP
+            DinamicBoard dinamicBoard = new GameObject(nameof(dinamicBoard)).AddComponent<DinamicBoard>().Initialized() as DinamicBoard;
+            dinamicBoard.ResetBoardSize(boardSize);
+            BoardPiece[,,] board = dinamicBoard.board;
+            //ACT
+            dinamicBoard.UpdateBoardCoord();
+            //ASSERT
+            Assert.AreEqual(pieceCoord, board[pieceCoord.x, pieceCoord.y, pieceCoord.z].BoardCoord);
+        }
+        #endregion //UPDATE BOARD COORD
     }
-    #endregion //BOARD TESTS
+    #endregion //BOARD_TESTS
 }

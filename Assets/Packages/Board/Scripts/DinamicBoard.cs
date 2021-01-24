@@ -66,7 +66,7 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
         if (DidSizeChanged(size))
         {
             ResetBoardSize(size);
-            UpdateBoardCoordAt();
+            UpdateBoardPieces();
         }
         UpdatePadding(padding);
         UpdateCenter();
@@ -78,7 +78,7 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
         ResetBoardSize(size);
         UpdatePadding(padding);
         UpdateCenter();
-        UpdateBoardCoordAt();
+        UpdateBoardPieces();
     }
     [ContextMenu(nameof(UpdateCenter))]
     public void UpdateCenter()      //TODO test it
@@ -160,14 +160,23 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
                 }
         cachePadding = padding;
     }
-    Vector3 GetSquareSize(int index)
+    Vector3 GetSquareSize(int index)                                //TODO test it
     {
         BoardPiece boardPiece = ((BoardPiece)this.GetPool(index).sample);
         if (!boardPiece.so_pieceData) boardPiece.InitializeVariables();
         return boardPiece.so_pieceData.pieceBounds.size;
-    }       //TODO test it
-    [ContextMenu(nameof(UpdateBoardCoordAt))]
-    void UpdateBoardCoordAt() => board.ForEachDoAction(UpdateBoardPieceCoordAt);         //TODO test it
+    }
+    [ContextMenu(nameof(UpdateBoardPieces))]
+    public void UpdateBoardPieces()
+    {
+        UpdateBoardCoord();
+        UpdateBoardPiecesBoardReference();
+    }
+    public void UpdateBoardPiecesBoardReference() => board.ForEachDoAction(UpdateBoardPiecesBoardAt);
+    [ContextMenu(nameof(UpdateBoardPiecesBoardAt))]
+    public void UpdateBoardPiecesBoardAt(int i, int j, int k) => board[i, j, k].board = this;
+    [ContextMenu(nameof(UpdateBoardCoord))]
+    public void UpdateBoardCoord() => board.ForEachDoAction(UpdateBoardPieceCoordAt);         //TODO test it
     public void UpdateBoardPieceCoordAt(int i, int j, int k) => board[i, j, k].BoardCoord = new Vector3Int(i, j, k);          //TODO test it
     #endregion //BOARD GENERATION
     public BoardPiece GetSquareAt(Vector3Int boardCoord) => GetSquareAt(boardCoord.x, boardCoord.y, boardCoord.z);
@@ -202,12 +211,15 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
                 false
         */
         Vector3Int direction = coordB - coordA;
-        int binded = default;
-        if (direction.IsBindedIgnoringZero(ref binded))
+        Binding binding = Binding.IsBindedIgnoringZero(direction);
+        if (binding.IsBinded)
         {
-            for (int i = 0; i < binded; i++)
-                if (GetSquareAt(coordA + new Vector3Int(binded, binded, binded)))
+            for (int i = 0; i < Mathf.Abs(binding.binded[0]); i++)
+            {
+                Vector3Int nextSquareForDirection = coordA + binding.signVector * (i + 1);
+                if (GetSquareAt(nextSquareForDirection)?.currentPiece)
                     return true;
+            }
         }
         return false;
     }
