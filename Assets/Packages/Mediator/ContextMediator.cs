@@ -48,7 +48,7 @@ public class ContextMediator
                         {
                             highlightType = HighlightType.capturable;
                         }
-                        else if (sender.IsMovimentAvailable(square))
+                        else if (sender.IsMovementAvailable(square))
                         {
                             highlightType = HighlightType.movable;
                         }
@@ -67,7 +67,7 @@ public class ContextMediator
                 break;
             case Piece.IntFlags.MoveToCoord:
                 BoardPiece boardPiece = dinamicBoard.GetSquareAt(sender.BoardCoord);
-                if (!boardPiece) { Debug.LogError($"Tryed to get Square at {sender.BoardCoord} but it was out of bounds.", sender); break; }
+                if (!boardPiece) { Debug.LogError($"Tried to get Square at {sender.BoardCoord} but it was out of bounds.", sender); break; }
 
                 sender.MoveTo(boardPiece);
                 break;
@@ -83,7 +83,7 @@ public class ContextMediator
                 Piece selectedPiece = selector.currentSelected as Piece;
                 if (!selectedPiece) break;
 
-                if (selectedPiece.IsAnyMovimentAvailable(sender))
+                if (selectedPiece.IsAnyMovementAvailable(sender))
                 {
                     selectedPiece.BoardCoord = sender.BoardCoord;
                     selectedPiece.MoveToCoord();

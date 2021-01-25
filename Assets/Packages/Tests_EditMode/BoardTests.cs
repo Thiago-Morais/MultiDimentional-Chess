@@ -41,7 +41,7 @@ namespace Tests_EditMode
             selector.ChangeSelection(piece1);
             //ASSERT
             foreach (BoardPiece square in dinamicBoard.board)
-                if (piece1.IsAnyMovimentAvailable(square) || piece1.BoardCoord == square.BoardCoord)
+                if (piece1.IsAnyMovementAvailable(square) || piece1.BoardCoord == square.BoardCoord)
                     Assert.IsTrue(square.Highlight.IsHighlighted);
                 else
                     Assert.IsFalse(square.Highlight.IsHighlighted);

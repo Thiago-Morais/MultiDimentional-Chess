@@ -9,10 +9,10 @@ public class PieceMoveSet : ScriptableObject
 {
     #region -------- FIELDS
     public Dimentions maxDimentionsAmount = Dimentions.all;
-    public Dimentions dimentionalBinding = Dimentions.none;
-    [Tooltip("Number of squares this piece can move on this dimention.\n" + "0 means no limit.")]
+    public Dimentions dimensionalBinding = Dimentions.none;
+    [Tooltip("Number of squares this piece can move on this dimension.\n" + "0 means no limit.")]
     public LimitType distanceLimitType = LimitType.atMostAll;
-    public List<int> distanceLimitPerDimention = new List<int>();
+    public List<int> distanceLimitPerDimension = new List<int>();
     public Dimentions lockedDimentions = Dimentions.none;
     public Dimentions lockedBackwards = Dimentions.none;
     public Dimentions rayBlocked = Dimentions.all;
@@ -25,8 +25,8 @@ public class PieceMoveSet : ScriptableObject
     #endregion //OUTSIDE CALL
 
     #region -------- METHODS
-    // public bool IsMovimentAvailable(Vector3Int direction, bool isWhite)       //TODO test it
-    public bool IsMovimentAvailable(Piece piece, BoardPiece square)       //TODO test it
+    // public bool IsMovementAvailable(Vector3Int direction, bool isWhite)       //TODO test it
+    public bool IsMovementAvailable(Piece piece, BoardPiece square)       //TODO test it
     {
         Vector3Int offset = piece.VectorDifference(square);
 
@@ -34,8 +34,8 @@ public class PieceMoveSet : ScriptableObject
             || HasLockedDirection(offset)
             || HasLockedBackwards(offset, !piece.playerData.isWhite)
             || !IsWithinMaxDimentionsAmount(offset)
-            || !IsWithinDimentionalBinding(offset)
-            || !IsWithinMovimentLimits(offset)
+            || !IsWithinDimensionalBinding(offset)
+            || !IsWithinMovementLimits(offset)
             || IsOwnPosition(offset)
             )
             return false;
@@ -49,43 +49,43 @@ public class PieceMoveSet : ScriptableObject
         if (lockedDimentions.HasAny(Dimentions.three) && direction.y != 0) return true;
         return false;
     }
-    public bool HasLockedBackwards(Vector3Int direction, bool inversed)
+    public bool HasLockedBackwards(Vector3Int direction, bool inverted)
     {
-        if (inversed) direction = -direction;
+        if (inverted) direction = -direction;
         if (lockedBackwards.HasAny(Dimentions.one) && direction.x < 0) return true;
         if (lockedBackwards.HasAny(Dimentions.two) && direction.z < 0) return true;
         if (lockedBackwards.HasAny(Dimentions.three) && direction.y < 0) return true;
         return false;
     }
-    #region -------- DIMENTIONAL LIMITS
+    #region -------- DIMENSIONAL LIMITS
     public bool IsWithinMaxDimentionsAmount(Vector3Int direction)
     {
         Dimentions directions = direction.Rank().RankAs<Dimentions>();
         return maxDimentionsAmount.HasAny(directions);
     }      //TODO test it
-    #endregion //DIMENTIONAL LIMITS
+    #endregion //DIMENSIONAL LIMITS
 
-    #region -------- DIMENTIONAL BINDINGS 
-    public bool IsWithinDimentionalBinding(Vector3Int direction)      //TODO test it
+    #region -------- DIMENSIONAL BINDINGS 
+    public bool IsWithinDimensionalBinding(Vector3Int direction)      //TODO test it
     {
-        List<int> binds = DimentionalBinds();
+        List<int> binds = DimensionalBinds();
         if (binds.Count == 0) return true;
 
-        Dimentions dimentionalLimits = direction.Rank().RankAs<Dimentions>();
-        if (!dimentionalBinding.HasAny(dimentionalLimits)) return false;
+        Dimentions dimensionalLimits = direction.Rank().RankAs<Dimentions>();
+        if (!dimensionalBinding.HasAny(dimensionalLimits)) return false;
 
         List<int> limits = direction.AsList();
-        if (dimentionalLimits == Dimentions.two) return HasBindedLimits(limits, 2);
-        if (dimentionalLimits == Dimentions.three) return HasBindedLimits(limits, 3);
+        if (dimensionalLimits == Dimentions.two) return HasBindedLimits(limits, 2);
+        if (dimensionalLimits == Dimentions.three) return HasBindedLimits(limits, 3);
         return true;
     }
-    public List<int> DimentionalBinds() => DimentionalBinds(dimentionalBinding);        //TODO test it
-    public static List<int> DimentionalBinds(Dimentions dimentionalBinding)     //TODO test it
+    public List<int> DimensionalBinds() => DimensionalBinds(dimensionalBinding);        //TODO test it
+    public static List<int> DimensionalBinds(Dimentions dimensionalBinding)     //TODO test it
     {
         List<int> bind = new List<int>();
-        if (dimentionalBinding.HasAny(Dimentions.one)) bind.Add(1);
-        if (dimentionalBinding.HasAny(Dimentions.two)) bind.Add(2);
-        if (dimentionalBinding.HasAny(Dimentions.three)) bind.Add(3);
+        if (dimensionalBinding.HasAny(Dimentions.one)) bind.Add(1);
+        if (dimensionalBinding.HasAny(Dimentions.two)) bind.Add(2);
+        if (dimensionalBinding.HasAny(Dimentions.three)) bind.Add(3);
         return bind;
     }
     public static bool HasBindedLimits(List<int> limits, int bindingAmount)     //TODO test it
@@ -94,18 +94,18 @@ public class PieceMoveSet : ScriptableObject
         var binded = groupedLimits.Where(group => group.Key != 0 && group.Count() >= bindingAmount);
         return binded.Count() > 0;
     }
-    #endregion //DIMENTIONAL BINDINGS 
+    #endregion //DIMENSIONAL BINDINGS 
 
-    #region -------- MOVIMENT LIMITS
-    public bool IsWithinMovimentLimits(Vector3Int direction)      //TODO test it
+    #region -------- MOVEMENT LIMITS
+    public bool IsWithinMovementLimits(Vector3Int direction)      //TODO test it
     {
-        if (distanceLimitPerDimention.Count == 0) return true;
+        if (distanceLimitPerDimension.Count == 0) return true;
         List<int> _direction = direction.AbsolutesOverZero();
-        return IsWithinMovimentLimits(_direction);
+        return IsWithinMovementLimits(_direction);
     }
-    public bool IsWithinMovimentLimits(List<int> direction)       //TODO test it
+    public bool IsWithinMovementLimits(List<int> direction)       //TODO test it
     {
-        List<int> limitsCache = new List<int>(distanceLimitPerDimention);
+        List<int> limitsCache = new List<int>(distanceLimitPerDimension);
         List<int> directionCache = new List<int>(direction);
         //TODO otimizar essa verificação (só precisa retornar a quantidade de elementos que não deram match)
         limitsCache.RemoveMatchingElements(directionCache);
@@ -117,7 +117,7 @@ public class PieceMoveSet : ScriptableObject
             default: return true;
         }
     }
-    #endregion //MOVIMENT LIMITS
+    #endregion //MOVEMENT LIMITS
     public static bool IsOwnPosition(Vector3Int direction) => direction == Vector3Int.zero;
     public bool IsRayBlocked(Piece piece, BoardPiece square)
     {
@@ -129,15 +129,6 @@ public class PieceMoveSet : ScriptableObject
             return square.board.HasPieceBetween(piece.BoardCoord, square.BoardCoord);
 
         return false;
-        // Vector3Int direction = piece.VectorDifference(square);
-        // if (direction.Rank() > 1)
-        // {
-        //     if (direction.x != 0 && direction.y != 0 && Mathf.Abs(direction.x) != Mathf.Abs(direction.y)) return false;
-        //     if (direction.x != 0 && direction.z != 0 && Mathf.Abs(direction.x) != Mathf.Abs(direction.z)) return false;
-        //     if (direction.y != 0 && direction.z != 0 && Mathf.Abs(direction.y) != Mathf.Abs(direction.z)) return false;
-        // }
-
-        // return true;
     }
     #endregion //METHODS
 }

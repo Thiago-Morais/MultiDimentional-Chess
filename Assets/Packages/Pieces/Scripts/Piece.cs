@@ -78,12 +78,12 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
     }
     public void UnHighlightPossibleMoves() => Notify(IntFlags.HidePossibleMoves);       //TODO test it
     public void HighlightPossibleMoves() => Notify(IntFlags.ShowPossibleMoves);     //TODO test it
-    public bool IsAnyMovimentAvailable(BoardPiece square) => IsMovimentAvailable(square) || IsCaptureAvailable(square);     //TODO test it
-    public bool IsCaptureAvailable(BoardPiece square) => IsMovimentAvailableWith(square, captureSet);       //TODO test it
-    public bool IsMovimentAvailable(BoardPiece square) => IsMovimentAvailableWith(square, moveSet);     //TODO test it
-    bool IsMovimentAvailableWith(BoardPiece square, PieceMoveSet moveSet)       //TODO test it
+    public bool IsAnyMovementAvailable(BoardPiece square) => IsMovementAvailable(square) || IsCaptureAvailable(square);     //TODO test it
+    public bool IsCaptureAvailable(BoardPiece square) => IsMovementAvailableWith(square, captureSet);       //TODO test it
+    public bool IsMovementAvailable(BoardPiece square) => IsMovementAvailableWith(square, moveSet);     //TODO test it
+    bool IsMovementAvailableWith(BoardPiece square, PieceMoveSet moveSet)       //TODO test it
     {
-        return moveSet.IsMovimentAvailable(this, square);
+        return moveSet.IsMovementAvailable(this, square);
     }
     #endregion //METHODS
 

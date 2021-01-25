@@ -184,10 +184,10 @@ public partial class DinamicBoard : MonoBehaviour, IMediator<DinamicBoard.IntFla
         if (board.OutOfBounds(boardCoordX, boardCoordY, boardCoordZ)) return default(BoardPiece);
         return board[boardCoordX, boardCoordY, boardCoordZ];
     }
-    public bool? IsMovimentAvailable(Piece piece, Vector3Int boardCoord)        //TODO test it
+    public bool? IsMovementAvailable(Piece piece, Vector3Int boardCoord)        //TODO test it
     {
         BoardPiece boardPiece = GetSquareAt(boardCoord);
-        return piece.IsMovimentAvailable(boardPiece);
+        return piece.IsMovementAvailable(boardPiece);
     }
     public Pool GetPool(int index) => index.IsEven() ? WhitePool : BlackPool;
     public BoardPiece[,,] GenerateBoard(Vector3Int boardSize)

@@ -4,10 +4,10 @@ using UnityEngine;
 namespace Tests_EditMode
 {
     #region ------- PIECE TESTS
-    #region ------- PIECEMOVIMENT TESTS
+    #region ------- PIECE MOVEMENT TESTS
     public class PieceTests
     {
-        public class PieceMovimentTests
+        public class PieceMovementTests
         {
             Piece piece1;
             Piece piece2;
@@ -43,7 +43,7 @@ namespace Tests_EditMode
                 BoardPiece boardPiece = dinamicBoard.GetSquareAt(new Vector3Int(0, 0, 0));
                 piece1.MoveTo(boardPiece);
                 //ACT
-                bool? canMove = dinamicBoard.IsMovimentAvailable(piece1, new Vector3Int(0, 0, 1));
+                bool? canMove = dinamicBoard.IsMovementAvailable(piece1, new Vector3Int(0, 0, 1));
                 //ASSERT
                 Assert.IsTrue(canMove);
             }
