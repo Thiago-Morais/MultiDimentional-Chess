@@ -20,6 +20,7 @@ namespace Tests_EditMode
             //ASSERT
             Assert.NotNull(hoverControll.hoverCamera);
         }
+        #region -------- RESET_FREE_LOOK_AXIS
         [Test]
         public void ResetFreeLookAxis__SetFreeLookXAxisNameToCached()
         {
@@ -66,6 +67,8 @@ namespace Tests_EditMode
             //ASSERT
             Assert.AreEqual(hoverControll.cachedYAxis, hoverControll.hoverCamera.m_YAxis.m_InputAxisName);
         }
+        #endregion //RESET_FREE_LOOK_AXIS
+        #region -------- REMOVE_FREE_LOOK_AXIS
         [Test]
         public void RemoveFreeLookAxis__SetFreeLookXAxisNameToEmpty()
         {
@@ -130,6 +133,8 @@ namespace Tests_EditMode
             //ASSERT
             Assert.AreEqual(0, hoverControll.hoverCamera.m_YAxis.m_InputAxisValue);
         }
+        #endregion //REMOVE_FREE_LOOK_AXIS
+        #region -------- SET_ZOOM
         [Test]
         public void SetZoom_Minus3WithHeight2AndRadius2WhenMinZoomIs1_SetHeightTo1([Values(0, 1, 2)] int orbit)
         {
@@ -211,6 +216,68 @@ namespace Tests_EditMode
             hoverControll.AddScaledDeltaZoom(positiveZoom);
             //ASSERT
             Assert.Greater(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
+        }
+        #endregion //SET_ZOOM
+        [Test]
+        public void MultiplyHoverBaseSpeed_AnyFloat_SetHoverSpeedToOriginalTimesMultiplier([NUnit.Framework.Range(-3, 3, 1.5f)] float multiplier)
+        {
+            //SETUP
+            HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>().Initialized() as HoverControll;
+            Vector2 expected = new Vector2(hoverControll.hoverCamera.m_XAxis.m_MaxSpeed, hoverControll.hoverCamera.m_YAxis.m_MaxSpeed) * multiplier;
+            //ACT
+            hoverControll.MultiplyHoverBaseSpeed(multiplier);
+            //ASSERT
+            Assert.AreEqual(expected, hoverControll.GetHoverSpeed());
+        }
+        [Test]
+        public void MultiplyHoverBaseSpeed_HasCalledBefore_SetHoverSpeedToOriginalTimesMultiplier([Values(0, 1, -1, 1.5f, 500)] float multiplier)
+        {
+            //SETUP
+            HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>().Initialized() as HoverControll;
+            Vector2 expected = new Vector2(hoverControll.hoverCamera.m_XAxis.m_MaxSpeed, hoverControll.hoverCamera.m_YAxis.m_MaxSpeed) * multiplier;
+            //ACT
+            hoverControll.MultiplyHoverBaseSpeed(multiplier);
+            hoverControll.MultiplyHoverBaseSpeed(multiplier);
+            //ASSERT
+            Assert.AreEqual(expected, hoverControll.GetHoverSpeed());
+        }
+        [Test]
+        public void GetHoverSpeed__ReturnHoverCameraAxisControlXnYSpeed(
+            [Values(0, 1, 2)] float xSpeed,
+            [Values(-1, 0, 1.5f)] float ySpeed)
+        {
+            HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>().Initialized() as HoverControll;
+            hoverControll.hoverCamera.m_XAxis.m_MaxSpeed = xSpeed;
+            hoverControll.hoverCamera.m_YAxis.m_MaxSpeed = ySpeed;
+
+            //SETUP
+            Vector2 expected = new Vector2(hoverControll.hoverCamera.m_XAxis.m_MaxSpeed, hoverControll.hoverCamera.m_YAxis.m_MaxSpeed);
+            //ACT
+            Vector2 hoverSpeed = hoverControll.GetHoverSpeed();
+            //ASSERT
+            Assert.AreEqual(expected, hoverSpeed);
+        }
+        [Test]
+        public void SetHoverSpeed__ReturnHoverCameraAxisControlXnYSpeed(
+            [Values(0, 1, 2)] float xSpeed,
+            [Values(-1, 0, 1.5f)] float ySpeed)
+        {
+            //SETUP
+            HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>().Initialized() as HoverControll;
+
+            Vector2 expected = new Vector2(xSpeed, ySpeed);
+            //ACT
+            hoverControll.SetHoverSpeed(expected);
+            Vector2 hoverSpeed = new Vector2(hoverControll.hoverCamera.m_XAxis.m_MaxSpeed, hoverControll.hoverCamera.m_YAxis.m_MaxSpeed);
+            //ASSERT
+            Assert.AreEqual(expected, hoverSpeed);
+        }
+        [Test]
+        public void UpdateHoverSpeed_HoverSpeedAsAnyFloat_()
+        {
+            //SETUP
+            //ACT
+            //ASSERT
         }
     }
 }

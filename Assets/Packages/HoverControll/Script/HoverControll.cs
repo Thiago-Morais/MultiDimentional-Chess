@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 using UnityEngine.InputSystem;
+using System;
 
 public class HoverControll : MonoBehaviour, IInitializable
 {
@@ -13,6 +14,7 @@ public class HoverControll : MonoBehaviour, IInitializable
     public float scroll;
     public float zoomMultiplier = 0.01f;
     public float minZoom = .1f;
+    public Vector2 inicialHoverSpeed;
     public Vector2 secondTouchPosition;
     Vector2 secondTouchPositionCached;
     Vector2 firstPointStart;
@@ -21,6 +23,8 @@ public class HoverControll : MonoBehaviour, IInitializable
     Vector2 secondPointPosition;
     Vector2 firstPointDelta;
     Vector2 secondPointDelta;
+    Vector2 m_HoverSpeed = new Vector2();
+    Vector2 m_InitialHoverSpeed;
     #endregion //FIELDS
 
     #region -------- PROPERTIES
@@ -32,6 +36,7 @@ public class HoverControll : MonoBehaviour, IInitializable
         InitializeVariables();
         CacheVCamInputAxis();
         CacheFreeLookOrbits();
+        CacheInitialHoverSpeed();
     }
     void Start() => DeactivateHoverCamera();
     #endregion //OUTSIDE CALL
@@ -94,6 +99,7 @@ $@"---------------------ZOOM---------------------
     public IInitializable Initialized(Transform parent = null)
     {
         InitializeVariables();
+        CacheInitialHoverSpeed();
         return this;
     }
     public void InitializeVariables()
@@ -119,6 +125,7 @@ $@"---------------------ZOOM---------------------
             cachedRadiuses[i] = hoverCamera.m_Orbits[i].m_Radius;
         }
     }
+    void CacheInitialHoverSpeed() => m_InitialHoverSpeed = new Vector2(hoverCamera.m_XAxis.m_MaxSpeed, hoverCamera.m_YAxis.m_MaxSpeed);
     public void ResetFreeLookAxis()
     {
         hoverCamera.m_XAxis.m_InputAxisName = cachedXAxis;
@@ -175,6 +182,19 @@ $@"---------------------ZOOM---------------------
             hoverCamera.m_Orbits[i].m_Radius = orbitVector.y;
         }
     }
-
+    public Vector2 GetHoverSpeed()
+    {
+        m_HoverSpeed.Set(hoverCamera.m_XAxis.m_MaxSpeed, hoverCamera.m_YAxis.m_MaxSpeed);
+        return m_HoverSpeed;
+    }
+    public void MultiplyHoverBaseSpeed(float multiplier)
+    {
+        SetHoverSpeed(m_InitialHoverSpeed * multiplier);
+    }
+    public void SetHoverSpeed(Vector2 hoverSpeed)
+    {
+        hoverCamera.m_XAxis.m_MaxSpeed = hoverSpeed.x;
+        hoverCamera.m_YAxis.m_MaxSpeed = hoverSpeed.y;
+    }
     #endregion //METHODS
 }
