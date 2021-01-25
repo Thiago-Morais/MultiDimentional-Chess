@@ -120,8 +120,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hoverCamera: {fileID: 3042278524634365987}
-  cachedXAxis: 
-  cachedYAxis: 
+  cachedXAxis: Mouse X
+  cachedYAxis: Mouse Y
   cachedHeights: []
   cachedRadiuses: []
   scroll: 0
