@@ -12,6 +12,7 @@ public class HoverControll : MonoBehaviour, IInitializable
     public float[] cachedHeights;
     public float[] cachedRadiuses;
     public float scroll;
+    public float hoverSensitivity = 1;
     public float zoomMultiplier = 0.01f;
     public float minZoom = .1f;
     public Vector2 inicialHoverSpeed;
@@ -37,6 +38,7 @@ public class HoverControll : MonoBehaviour, IInitializable
         CacheVCamInputAxis();
         CacheFreeLookOrbits();
         CacheInitialHoverSpeed();
+        UpdateHoverSensitivity();
     }
     void Start() => DeactivateHoverCamera();
     #endregion //OUTSIDE CALL
@@ -182,14 +184,13 @@ $@"---------------------ZOOM---------------------
             hoverCamera.m_Orbits[i].m_Radius = orbitVector.y;
         }
     }
+    [ContextMenu(nameof(UpdateHoverSensitivity))]
+    public void UpdateHoverSensitivity() => MultiplyHoverSensitivity(hoverSensitivity);
+    public void MultiplyHoverSensitivity(float multiplier) => SetHoverSpeed(m_InitialHoverSpeed * multiplier);
     public Vector2 GetHoverSpeed()
     {
         m_HoverSpeed.Set(hoverCamera.m_XAxis.m_MaxSpeed, hoverCamera.m_YAxis.m_MaxSpeed);
         return m_HoverSpeed;
-    }
-    public void MultiplyHoverBaseSpeed(float multiplier)
-    {
-        SetHoverSpeed(m_InitialHoverSpeed * multiplier);
     }
     public void SetHoverSpeed(Vector2 hoverSpeed)
     {

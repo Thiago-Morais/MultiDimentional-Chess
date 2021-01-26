@@ -136,7 +136,7 @@ namespace Tests_EditMode
         #endregion //REMOVE_FREE_LOOK_AXIS
         #region -------- SET_ZOOM
         [Test]
-        public void SetZoom_Minus3WithHeight2AndRadius2WhenMinZoomIs1_SetHeightTo1([Values(0, 1, 2)] int orbit)
+        public void AddScaledDeltaZoom_Minus3WithHeight2AndRadius2WhenMinZoomIs1_SetHeightTo1([Values(0, 1, 2)] int orbit)
         {
             //SETUP
             HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>();
@@ -154,7 +154,7 @@ namespace Tests_EditMode
             Assert.AreEqual(normalizedOrbit.x, hoverControll.hoverCamera.m_Orbits[orbit].m_Height);
         }
         [Test]
-        public void SetZoom_PositiveWithPositiveHeight_IncreaseHeight([Values(0, 1, 2)] int orbit, [Values(1, 2, 3)] float positiveZoom)
+        public void AddScaledDeltaZoom_PositiveWithPositiveHeight_IncreaseHeight([Values(0, 1, 2)] int orbit, [Values(1, 2, 3)] float positiveZoom)
         {
             //SETUP
             HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>();
@@ -170,7 +170,7 @@ namespace Tests_EditMode
             Assert.Greater(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }
         [Test]
-        public void SetZoom_NegativeWithPositiveHeight_DecreaseHeight([Values(0, 1, 2)] int orbit, [Values(-1, -2, -3)] float positiveZoom)
+        public void AddScaledDeltaZoom_NegativeWithPositiveHeight_DecreaseHeight([Values(0, 1, 2)] int orbit, [Values(-1, -2, -3)] float positiveZoom)
         {
             //SETUP
             HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>();
@@ -186,7 +186,7 @@ namespace Tests_EditMode
             Assert.Less(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }
         [Test]
-        public void SetZoom_PositiveWithNegativeHeight_DecreaseHeight([Values(0, 1, 2)] int orbit, [Values(1, 2, 3)] float positiveZoom)
+        public void AddScaledDeltaZoom_PositiveWithNegativeHeight_DecreaseHeight([Values(0, 1, 2)] int orbit, [Values(1, 2, 3)] float positiveZoom)
         {
             //SETUP
             HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>();
@@ -202,7 +202,7 @@ namespace Tests_EditMode
             Assert.Less(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }
         [Test]
-        public void SetZoom_NegativeWithNegativeHeight_IncreaseHeight([Values(0, 1, 2)] int orbit, [Values(-1, -2, -3)] float positiveZoom)
+        public void AddScaledDeltaZoom_NegativeWithNegativeHeight_IncreaseHeight([Values(0, 1, 2)] int orbit, [Values(-1, -2, -3)] float positiveZoom)
         {
             //SETUP
             HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>();
@@ -218,29 +218,32 @@ namespace Tests_EditMode
             Assert.Greater(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }
         #endregion //SET_ZOOM
+        #region -------- MULTIPLY_HOVER_SENSITIVITY
         [Test]
-        public void MultiplyHoverBaseSpeed_AnyFloat_SetHoverSpeedToOriginalTimesMultiplier([NUnit.Framework.Range(-3, 3, 1.5f)] float multiplier)
+        public void MultiplyHoverSensitivity_AnyFloat_SetHoverSpeedToOriginalTimesMultiplier([NUnit.Framework.Range(-3, 3, 1.5f)] float multiplier)
         {
             //SETUP
             HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>().Initialized() as HoverControll;
             Vector2 expected = new Vector2(hoverControll.hoverCamera.m_XAxis.m_MaxSpeed, hoverControll.hoverCamera.m_YAxis.m_MaxSpeed) * multiplier;
             //ACT
-            hoverControll.MultiplyHoverBaseSpeed(multiplier);
+            hoverControll.MultiplyHoverSensitivity(multiplier);
             //ASSERT
             Assert.AreEqual(expected, hoverControll.GetHoverSpeed());
         }
         [Test]
-        public void MultiplyHoverBaseSpeed_HasCalledBefore_SetHoverSpeedToOriginalTimesMultiplier([Values(0, 1, -1, 1.5f, 500)] float multiplier)
+        public void MultiplyHoverSensitivity_HasCalledBefore_SetHoverSpeedToOriginalTimesMultiplier([Values(0, 1, -1, 1.5f, 500)] float multiplier)
         {
             //SETUP
             HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>().Initialized() as HoverControll;
             Vector2 expected = new Vector2(hoverControll.hoverCamera.m_XAxis.m_MaxSpeed, hoverControll.hoverCamera.m_YAxis.m_MaxSpeed) * multiplier;
             //ACT
-            hoverControll.MultiplyHoverBaseSpeed(multiplier);
-            hoverControll.MultiplyHoverBaseSpeed(multiplier);
+            hoverControll.MultiplyHoverSensitivity(multiplier);
+            hoverControll.MultiplyHoverSensitivity(multiplier);
             //ASSERT
             Assert.AreEqual(expected, hoverControll.GetHoverSpeed());
         }
+        #endregion //MULTIPLY_HOVER_SENSITIVITY
+        #region -------- HOVER_SPEED
         [Test]
         public void GetHoverSpeed__ReturnHoverCameraAxisControlXnYSpeed(
             [Values(0, 1, 2)] float xSpeed,
@@ -272,12 +275,6 @@ namespace Tests_EditMode
             //ASSERT
             Assert.AreEqual(expected, hoverSpeed);
         }
-        [Test]
-        public void UpdateHoverSpeed_HoverSpeedAsAnyFloat_()
-        {
-            //SETUP
-            //ACT
-            //ASSERT
-        }
+        #endregion //HOVER_SPEED
     }
 }

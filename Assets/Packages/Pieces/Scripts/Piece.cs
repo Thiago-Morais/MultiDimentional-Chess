@@ -79,12 +79,9 @@ public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHig
     public void UnHighlightPossibleMoves() => Notify(IntFlags.HidePossibleMoves);       //TODO test it
     public void HighlightPossibleMoves() => Notify(IntFlags.ShowPossibleMoves);     //TODO test it
     public bool IsAnyMovementAvailable(BoardPiece square) => IsMovementAvailable(square) || IsCaptureAvailable(square);     //TODO test it
-    public bool IsCaptureAvailable(BoardPiece square) => IsMovementAvailableWith(square, captureSet);       //TODO test it
-    public bool IsMovementAvailable(BoardPiece square) => IsMovementAvailableWith(square, moveSet);     //TODO test it
-    bool IsMovementAvailableWith(BoardPiece square, PieceMoveSet moveSet)       //TODO test it
-    {
-        return moveSet.IsMovementAvailable(this, square);
-    }
+    public bool IsCaptureAvailable(BoardPiece square) => IsMovementAvailable(square, captureSet);       //TODO test it
+    public bool IsMovementAvailable(BoardPiece square) => IsMovementAvailable(square, moveSet);     //TODO test it
+    bool IsMovementAvailable(BoardPiece square, PieceMoveSet moveSet) => moveSet.IsMovementAvailable(this, square);     //TODO test it
     #endregion //METHODS
 
     #region -------- ENUM
