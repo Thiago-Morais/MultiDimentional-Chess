@@ -54,6 +54,7 @@ public class HoverHighlight : MonoBehaviour, IHighlighter
     {
         Ray ray = camera.ScreenPointToRay(m_PointerPosition);
         RaycastHit hit = default(RaycastHit);
+        // if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         Physics.Raycast(ray.origin, ray.direction, out hit);
         return hit;
     }

@@ -7,12 +7,12 @@ public class HoverControll : MonoBehaviour, IInitializable
 {
     #region -------- FIELDS
     public CinemachineFreeLook hoverCamera;
-    public string cachedXAxis = "Mouse X";
-    public string cachedYAxis = "Mouse Y";
-    public float[] cachedHeights;
-    public float[] cachedRadiuses;
+    public string initialXAxisName = "Mouse X";
+    public string initialYAxisName = "Mouse Y";
+    public float[] initialHeights;
+    public float[] initialRadiuses;
     public float scroll;
-    public float hoverSensitivity = 1;
+    [SerializeField] float hoverSensitivity = 1;
     public float zoomMultiplier = 0.01f;
     public float minZoom = .1f;
     public Vector2 inicialHoverSpeed;
@@ -29,6 +29,15 @@ public class HoverControll : MonoBehaviour, IInitializable
     #endregion //FIELDS
 
     #region -------- PROPERTIES
+    public float HoverSensitivity
+    {
+        get => hoverSensitivity;
+        set
+        {
+            hoverSensitivity = value;
+            SetHoverSpeed(m_InitialHoverSpeed * value);
+        }
+    }
     #endregion //PROPERTIES
 
     #region -------- OUTSIDE CALL
@@ -38,12 +47,9 @@ public class HoverControll : MonoBehaviour, IInitializable
         CacheVCamInputAxis();
         CacheFreeLookOrbits();
         CacheInitialHoverSpeed();
-        UpdateHoverSensitivity();
+        ApplyHoverSensitivity();
     }
     void Start() => DeactivateHoverCamera();
-    #endregion //OUTSIDE CALL
-
-    #region -------- METHODS
     #region -------- INPUTS
     public void OnHover(InputAction.CallbackContext context)
     {
@@ -96,42 +102,23 @@ $@"---------------------ZOOM---------------------
         AddDeltaZoom(-delta);
     }
     #endregion //INPUTS
-    [ContextMenu(nameof(ActivateHoverCamera))] public void ActivateHoverCamera() => ResetFreeLookAxis();
-    [ContextMenu(nameof(DeactivateHoverCamera))] public void DeactivateHoverCamera() => RemoveFreeLookAxis();
+    #endregion //OUTSIDE CALL
+
+    #region -------- METHODS
+    #region -------- INTERFACES
     public IInitializable Initialized(Transform parent = null)
     {
         InitializeVariables();
         CacheInitialHoverSpeed();
         return this;
     }
-    public void InitializeVariables()
-    {
-        if (!hoverCamera) hoverCamera = GetComponentInChildren<CinemachineFreeLook>();
-        if (!hoverCamera)
-        {
-            hoverCamera = new GameObject(nameof(hoverCamera)).AddComponent<CinemachineFreeLook>();
-            hoverCamera.transform.SetParent(transform);
-        }
-    }
-    public void CacheVCamInputAxis()
-    {
-        cachedXAxis = hoverCamera.m_XAxis.m_InputAxisName;
-        cachedYAxis = hoverCamera.m_YAxis.m_InputAxisName;
-    }
-    public void CacheFreeLookOrbits()
-    {
-        cachedHeights = cachedRadiuses = new float[hoverCamera.m_Orbits.Length];
-        for (int i = 0; i < cachedHeights.Length; i++)
-        {
-            cachedHeights[i] = hoverCamera.m_Orbits[i].m_Height;
-            cachedRadiuses[i] = hoverCamera.m_Orbits[i].m_Radius;
-        }
-    }
-    void CacheInitialHoverSpeed() => m_InitialHoverSpeed = new Vector2(hoverCamera.m_XAxis.m_MaxSpeed, hoverCamera.m_YAxis.m_MaxSpeed);
+    #endregion //INTERFACES
+    [ContextMenu(nameof(ActivateHoverCamera))] public void ActivateHoverCamera() => ResetFreeLookAxis();
+    [ContextMenu(nameof(DeactivateHoverCamera))] public void DeactivateHoverCamera() => RemoveFreeLookAxis();
     public void ResetFreeLookAxis()
     {
-        hoverCamera.m_XAxis.m_InputAxisName = cachedXAxis;
-        hoverCamera.m_YAxis.m_InputAxisName = cachedYAxis;
+        hoverCamera.m_XAxis.m_InputAxisName = initialXAxisName;
+        hoverCamera.m_YAxis.m_InputAxisName = initialYAxisName;
     }
     public void RemoveFreeLookAxis()
     {
@@ -140,6 +127,7 @@ $@"---------------------ZOOM---------------------
         hoverCamera.m_XAxis.m_InputAxisValue = 0;
         hoverCamera.m_YAxis.m_InputAxisValue = 0;
     }
+    #region -------- ZOOM HANDLER
     public void AddDeltaZoom(float delta)
     {
         if (delta == 0) return;
@@ -176,17 +164,18 @@ $@"---------------------ZOOM---------------------
     }
     void SetOrbits(float magnitude)
     {
+        Vector2 orbitVector = new Vector2();
         for (int i = 0; i < hoverCamera.m_Orbits.Length; i++)
         {
-            Vector2 orbitVector = new Vector2(hoverCamera.m_Orbits[i].m_Height, hoverCamera.m_Orbits[i].m_Radius);
+            orbitVector.Set(hoverCamera.m_Orbits[i].m_Height, hoverCamera.m_Orbits[i].m_Radius);
             orbitVector = orbitVector.normalized * magnitude;
             hoverCamera.m_Orbits[i].m_Height = orbitVector.x;
             hoverCamera.m_Orbits[i].m_Radius = orbitVector.y;
         }
     }
-    [ContextMenu(nameof(UpdateHoverSensitivity))]
-    public void UpdateHoverSensitivity() => MultiplyHoverSensitivity(hoverSensitivity);
-    public void MultiplyHoverSensitivity(float multiplier) => SetHoverSpeed(m_InitialHoverSpeed * multiplier);
+    #endregion //ZOOM HANDLER
+    [ContextMenu(nameof(ApplyHoverSensitivity))]
+    public void ApplyHoverSensitivity() => SetHoverSpeed(m_InitialHoverSpeed * HoverSensitivity);
     public Vector2 GetHoverSpeed()
     {
         m_HoverSpeed.Set(hoverCamera.m_XAxis.m_MaxSpeed, hoverCamera.m_YAxis.m_MaxSpeed);
@@ -196,6 +185,32 @@ $@"---------------------ZOOM---------------------
     {
         hoverCamera.m_XAxis.m_MaxSpeed = hoverSpeed.x;
         hoverCamera.m_YAxis.m_MaxSpeed = hoverSpeed.y;
+    }
+    #region -------- CACHE
+    public void CacheVCamInputAxis()
+    {
+        initialXAxisName = hoverCamera.m_XAxis.m_InputAxisName;
+        initialYAxisName = hoverCamera.m_YAxis.m_InputAxisName;
+    }
+    public void CacheFreeLookOrbits()
+    {
+        initialHeights = initialRadiuses = new float[hoverCamera.m_Orbits.Length];
+        for (int i = 0; i < initialHeights.Length; i++)
+        {
+            initialHeights[i] = hoverCamera.m_Orbits[i].m_Height;
+            initialRadiuses[i] = hoverCamera.m_Orbits[i].m_Radius;
+        }
+    }
+    void CacheInitialHoverSpeed() => m_InitialHoverSpeed.Set(hoverCamera.m_XAxis.m_MaxSpeed, hoverCamera.m_YAxis.m_MaxSpeed);
+    #endregion //CACHE
+    public void InitializeVariables()
+    {
+        if (!hoverCamera) hoverCamera = GetComponentInChildren<CinemachineFreeLook>();
+        if (!hoverCamera)
+        {
+            hoverCamera = new GameObject(nameof(hoverCamera)).AddComponent<CinemachineFreeLook>();
+            hoverCamera.transform.SetParent(transform);
+        }
     }
     #endregion //METHODS
 }

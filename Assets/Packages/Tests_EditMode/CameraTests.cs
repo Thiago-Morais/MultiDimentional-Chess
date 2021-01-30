@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
 using Cinemachine;
+using System.Reflection;
 
 namespace Tests_EditMode
 {
@@ -34,15 +35,15 @@ namespace Tests_EditMode
             HoverControll hoverControll = gameObject.AddComponent<HoverControll>().Initialized() as HoverControll;
             hoverControll.CacheVCamInputAxis();
 
-            hoverControll.cachedXAxis = freeLook.m_XAxis.m_InputAxisName;
-            hoverControll.cachedYAxis = freeLook.m_YAxis.m_InputAxisName;
+            hoverControll.initialXAxisName = freeLook.m_XAxis.m_InputAxisName;
+            hoverControll.initialYAxisName = freeLook.m_YAxis.m_InputAxisName;
 
             freeLook.m_XAxis.m_InputAxisName = "";
             freeLook.m_XAxis.m_InputAxisValue = 0;
             //ACT
             hoverControll.ResetFreeLookAxis();
             //ASSERT
-            Assert.AreEqual(hoverControll.cachedXAxis, hoverControll.hoverCamera.m_XAxis.m_InputAxisName);
+            Assert.AreEqual(hoverControll.initialXAxisName, hoverControll.hoverCamera.m_XAxis.m_InputAxisName);
         }
         [Test]
         public void ResetFreeLookAxis__SetFreeLookYAxisNameToCached()
@@ -57,15 +58,15 @@ namespace Tests_EditMode
             HoverControll hoverControll = gameObject.AddComponent<HoverControll>().Initialized() as HoverControll;
             hoverControll.CacheVCamInputAxis();
 
-            hoverControll.cachedXAxis = freeLook.m_XAxis.m_InputAxisName;
-            hoverControll.cachedYAxis = freeLook.m_YAxis.m_InputAxisName;
+            hoverControll.initialXAxisName = freeLook.m_XAxis.m_InputAxisName;
+            hoverControll.initialYAxisName = freeLook.m_YAxis.m_InputAxisName;
 
             freeLook.m_YAxis.m_InputAxisName = "";
             freeLook.m_YAxis.m_InputAxisValue = 0;
             //ACT
             hoverControll.ResetFreeLookAxis();
             //ASSERT
-            Assert.AreEqual(hoverControll.cachedYAxis, hoverControll.hoverCamera.m_YAxis.m_InputAxisName);
+            Assert.AreEqual(hoverControll.initialYAxisName, hoverControll.hoverCamera.m_YAxis.m_InputAxisName);
         }
         #endregion //RESET_FREE_LOOK_AXIS
         #region -------- REMOVE_FREE_LOOK_AXIS
@@ -218,31 +219,47 @@ namespace Tests_EditMode
             Assert.Greater(hoverControll.hoverCamera.m_Orbits[orbit].m_Height, m_CachedHeight);
         }
         #endregion //SET_ZOOM
-        #region -------- MULTIPLY_HOVER_SENSITIVITY
+        #region -------- SET_HOVER_SENSITIVITY
         [Test]
-        public void MultiplyHoverSensitivity_AnyFloat_SetHoverSpeedToOriginalTimesMultiplier([NUnit.Framework.Range(-3, 3, 1.5f)] float multiplier)
+        public void SetHoverSensitivity_AnyFloat_SetHoverSpeedToOriginalTimesMultiplier([NUnit.Framework.Range(-3, 3, 1.5f)] float multiplier)
         {
             //SETUP
             HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>().Initialized() as HoverControll;
             Vector2 expected = new Vector2(hoverControll.hoverCamera.m_XAxis.m_MaxSpeed, hoverControll.hoverCamera.m_YAxis.m_MaxSpeed) * multiplier;
             //ACT
-            hoverControll.MultiplyHoverSensitivity(multiplier);
+            hoverControll.HoverSensitivity = multiplier;
             //ASSERT
             Assert.AreEqual(expected, hoverControll.GetHoverSpeed());
         }
         [Test]
-        public void MultiplyHoverSensitivity_HasCalledBefore_SetHoverSpeedToOriginalTimesMultiplier([Values(0, 1, -1, 1.5f, 500)] float multiplier)
+        public void SetHoverSensitivity_HasCalledBefore_SetHoverSpeedToOriginalTimesMultiplier([Values(0, 1, -1, 1.5f, 500)] float multiplier)
         {
             //SETUP
             HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>().Initialized() as HoverControll;
             Vector2 expected = new Vector2(hoverControll.hoverCamera.m_XAxis.m_MaxSpeed, hoverControll.hoverCamera.m_YAxis.m_MaxSpeed) * multiplier;
             //ACT
-            hoverControll.MultiplyHoverSensitivity(multiplier);
-            hoverControll.MultiplyHoverSensitivity(multiplier);
+            hoverControll.HoverSensitivity = multiplier;
+            hoverControll.HoverSensitivity = multiplier;
             //ASSERT
             Assert.AreEqual(expected, hoverControll.GetHoverSpeed());
         }
-        #endregion //MULTIPLY_HOVER_SENSITIVITY
+        #endregion //SET_HOVER_SENSITIVITY
+        #region -------- APPLY_HOVER_SENSITIVITY
+        [Test]
+        public void ApplyHoverSensitivity_HoverSensitivity_SetHoverSpeedToInitialSpeedTimesSensitivity([Values(0, 1, -1, 1.5f, 500)] float sensitivity)
+        {
+            //SETUP
+            HoverControll hoverControll = new GameObject(nameof(hoverControll)).AddComponent<HoverControll>().Initialized() as HoverControll;
+            Vector2 expected = new Vector2(hoverControll.hoverCamera.m_XAxis.m_MaxSpeed, hoverControll.hoverCamera.m_YAxis.m_MaxSpeed) * sensitivity;
+
+            FieldInfo hoverSensitivity = hoverControll.GetType().GetField("hoverSensitivity", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            hoverSensitivity.SetValue(hoverControll, sensitivity);
+            //ACT
+            hoverControll.ApplyHoverSensitivity();
+            //ASSERT
+            Assert.AreEqual(expected, hoverControll.GetHoverSpeed());
+        }
+        #endregion //APPLY_HOVER_SENSITIVITY
         #region -------- HOVER_SPEED
         [Test]
         public void GetHoverSpeed__ReturnHoverCameraAxisControlXnYSpeed(

@@ -11,7 +11,10 @@ public class SetText : MonoBehaviour, IInitializable
         transform.SetParent(parent);
         return this;
     }
+    void Awake()
+    {
 
+    }
     public void SetFloat(float value)
     {
         text.text = value.ToString("F2");
