@@ -1,5 +1,5 @@
 ﻿using System;
-using ExtensionMethods;
+using static ExtensionMethods.ReferenceExtension;
 using UnityEngine;
 
 public class Piece : MonoBehaviour, ISelectable, IMediator<Piece.IntFlags>, IHighlightable, IOnBoard

@@ -47,6 +47,7 @@ public class HoverControll : MonoBehaviour, IInitializable
         CacheVCamInputAxis();
         CacheFreeLookOrbits();
         CacheInitialHoverSpeed();
+
         ApplyHoverSensitivity();
     }
     void Start() => DeactivateHoverCamera();

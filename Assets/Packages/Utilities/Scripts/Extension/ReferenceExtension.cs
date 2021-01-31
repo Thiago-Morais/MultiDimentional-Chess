@@ -10,5 +10,12 @@ namespace ExtensionMethods
             if (!component) component = classReference.GetComponentInChildren<T>();
             return component;
         }
+        public static T InstantiateInitialized<T>(string name = "GameObject") where T : MonoBehaviour, IInitializable
+        {
+            GameObject gameObject = new GameObject(name);
+            T t = gameObject.AddComponent<T>();
+            IInitializable initializable = t.Initialized();
+            return initializable as T;
+        }
     }
 }
