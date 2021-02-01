@@ -1,5 +1,5 @@
 using System;
-using ExtensionMethods;
+using static ExtensionMethods.NumberExtension;
 using NUnit.Framework;
 
 namespace Tests_EditMode
@@ -28,6 +28,16 @@ namespace Tests_EditMode
             SampleFlags flags = rank.RankAs<SampleFlags>();
             //ASSERT
             Assert.AreEqual(expected, flags);
+        }
+        [TestCase(0, 2, 2, 1)]
+        [TestCase(0, 2, 4, 2)]
+        [Test]
+        public void InverseLerpUnclamped(float min, float max, float value, float expected)
+        {
+            //ACT
+            float result = value.InverseLerpUnclamped(min, max);
+            //ASSERT
+            Assert.AreEqual(expected, result);
         }
     }
 }

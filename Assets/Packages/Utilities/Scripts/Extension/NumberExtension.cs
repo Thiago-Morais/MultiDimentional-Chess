@@ -10,5 +10,12 @@ namespace ExtensionMethods
             if (rank != 0) rank = (int)Math.Pow(2, rank - 1);
             return (T)(object)rank;
         }
+        public static float InverseLerpUnclamped(this float value, float minValue, float maxValue)
+        {
+            if (minValue != maxValue)
+                return (value - minValue) / (maxValue - minValue);
+            else
+                return 0.0f;
+        }
     }
 }
