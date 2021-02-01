@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: KnightMoveSet
   m_EditorClassIdentifier: 
   maxDimentionsAmount: -1
-  dimentionalBinding: 0
+  dimensionalBinding: 0
   distanceLimitType: 3
-  distanceLimitPerDimention: 0100000002000000
+  distanceLimitPerDimension: 0100000002000000
   lockedDimentions: 0
   lockedBackwards: 0
   rayBlocked: 0

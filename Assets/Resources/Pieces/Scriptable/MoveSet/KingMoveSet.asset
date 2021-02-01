@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: KingMoveSet
   m_EditorClassIdentifier: 
   maxDimentionsAmount: -1
-  dimentionalBinding: 0
+  dimensionalBinding: 0
   distanceLimitType: 1
-  distanceLimitPerDimention: 010000000100000001000000
-  blockedDimentions: 0
-  backwardsBlocker: 0
+  distanceLimitPerDimension: 010000000100000001000000
+  lockedDimentions: 0
+  lockedBackwards: 0
+  rayBlocked: -1
